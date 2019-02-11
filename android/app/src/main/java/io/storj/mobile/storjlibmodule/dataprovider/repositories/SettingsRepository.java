@@ -124,13 +124,12 @@ public class SettingsRepository extends BaseRepository {
     private SettingsDbo _getSingleFromCursor(Cursor cursor) {
         SettingsDbo model = null;
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             model = _fillSettings(cursor);
         }
 
         return model;
     }
-
 
     private List<SettingsDbo> _getListFromCursor(Cursor cursor) {
         List<SettingsDbo> result = new ArrayList();

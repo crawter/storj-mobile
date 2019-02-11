@@ -65,10 +65,6 @@ public class SyncQueueRepository extends BaseRepository {
         return _executeUpdate(SynchronizationQueueContract.TABLE_NAME, String.valueOf(model.getId()), null,null, map);
     }
 
-    public Response delete(int id) {
-        return _executeDelete(new String[] { String.valueOf(id) }, SynchronizationQueueContract.TABLE_NAME, SynchronizationQueueContract._DEFAULT_WHERE_CLAUSE);
-    }
-
     public List<SyncQueueEntryModel> getAll() {
         List<SyncQueueEntryModel> result = new ArrayList();
 

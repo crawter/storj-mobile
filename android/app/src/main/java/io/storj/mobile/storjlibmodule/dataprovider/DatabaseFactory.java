@@ -10,10 +10,6 @@ import io.storj.mobile.storjlibmodule.dataprovider.contracts.SettingsContract;
 import io.storj.mobile.storjlibmodule.dataprovider.contracts.SynchronizationQueueContract;
 import io.storj.mobile.storjlibmodule.dataprovider.contracts.UploadingFileContract;
 
-/**
- * Created by Crawter on 02.03.2018.
- */
-
 public class DatabaseFactory extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;

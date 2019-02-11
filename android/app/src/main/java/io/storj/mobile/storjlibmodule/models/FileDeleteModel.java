@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Crawter on 26.02.2018.
  */
 
-public class FileDeleteModel implements IStorjModel {
+public class FileDeleteModel {
     @Expose
     @SerializedName("bucketId")
     private String _bucketId;
@@ -20,7 +20,6 @@ public class FileDeleteModel implements IStorjModel {
         _fileId = fileId;
     }
 
-    @Override
     public boolean isValid() {
         return !_bucketId.isEmpty() && !_fileId.isEmpty();
     }

@@ -1,0 +1,204 @@
+package io.storj.mobile.service;
+
+import java.util.List;
+
+import io.storj.mobile.common.responses.ListResponse;
+import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.common.responses.SingleResponse;
+import io.storj.mobile.domain.IDatabase;
+import io.storj.mobile.domain.buckets.Bucket;
+import io.storj.mobile.domain.files.File;
+import io.storj.mobile.service.storj.StorjService;
+
+public class FetchService {
+
+    private final StorjService mStorj;
+    private final IDatabase mStore;
+
+    public FetchService(StorjService storj, IDatabase db) {
+        mStorj = storj;
+        mStore = db;
+    }
+
+    public Response getBuckets() {
+        ListResponse<Bucket> bucketResponse = mStorj.getBuckets();
+        if (!bucketResponse.isSuccess()) {
+            // log here smth
+            return bucketResponse;
+        }
+
+        List<Bucket> buckets = bucketResponse.getResult();
+
+        if (buckets.size() == 0) {
+            Response deleteBucketsResponse = mStore.buckets().deleteAll();
+            if (!deleteBucketsResponse.isSuccess()) {
+                // TODO: notify?
+                return deleteBucketsResponse;
+            }
+
+            //getDb().close();
+            return new Response(true, null);
+        }
+
+        mStore.beginTransaction();
+
+        ListResponse<Bucket> dbBucketResponse = mStore.buckets().getAll();
+        if (!dbBucketResponse.isSuccess()) {
+            //getDb().close(); ???
+            mStore.rollbackTransaction();
+            return dbBucketResponse;
+        }
+
+        List<Bucket> dbBuckets = dbBucketResponse.getResult();
+
+        int length = buckets.size();
+
+        outer:
+        for (Bucket dbBucket : dbBuckets) {
+            int i = 0;
+            String dbBucketId = dbBucket.getId();
+
+            do {
+                Bucket bucket = buckets.get(i);
+                String id = bucket.getId();
+
+                if (dbBucketId.equals(id)) {
+                    Response updateResponse = mStore.buckets().update(bucket);
+                    if (!updateResponse.isSuccess()) {
+                        // TODO: log?
+                        //return updateResponse;
+                    }
+
+                    listShift(buckets, i, length);
+                    length--;
+                    continue outer;
+                }
+
+                i++;
+            } while (i < length);
+
+            Response deleteResponse = mStore.buckets().delete(dbBucketId);
+            if (!deleteResponse.isSuccess()) {
+                // TODO: log?
+                //return deleteResponse;
+            }
+        }
+
+        for (int i = 0; i < length; i++) {
+            Response bucketInsertResponse = mStore.buckets().insert(buckets.get(i));
+            if (!bucketInsertResponse.isSuccess()) {
+                // TODO: log?
+                //return bucketInsertResponse;
+            }
+        }
+
+        mStore.commitTransaction();
+
+        return new Response(true, null);
+    }
+
+    public Response getFiles(final String bucketId) {
+        ListResponse<File> fileResponse = mStorj.getFiles(bucketId);
+        if (!fileResponse.isSuccess()) {
+            return fileResponse;
+        }
+
+        List<File> files = fileResponse.getResult();
+        if(files.size() == 0) {
+            Response deleteAllResponse = mStore.files().deleteAll(bucketId);
+            if (!deleteAllResponse.isSuccess()) {
+                return deleteAllResponse;
+            }
+            //getDb().close();
+            //sendEvent(EVENT_FILES_UPDATED, new SingleResponse(true, bucketId, null).toWritableMap());
+            return new Response(true, null);
+        }
+
+        mStore.beginTransaction();
+
+        ListResponse<File> dbFileResponse = mStore.files().getAll(bucketId);
+        if (!dbFileResponse.isSuccess()) {
+            mStore.rollbackTransaction();
+            return dbFileResponse;
+        }
+
+        List<File> dbFiles = dbFileResponse.getResult();
+
+        int length = files.size();
+        boolean[] isUpdate = new boolean[files.size()];
+
+        outer:
+        for(File dbFile : dbFiles) {
+            int i = 0;
+            String dbFileId = dbFile.getFileId();
+
+            do {
+                File file = files.get(i);
+                String id = file.getFileId();
+
+                if(dbFileId.equals(id)) {
+                    Response updateFileResponse = mStore.files().update(file);
+                    if (!updateFileResponse.isSuccess()) {
+                        // TODO: log?
+                    }
+
+                    listShift(files, i, length);
+                    length--;
+                    continue outer;
+                }
+
+                i++;
+            } while(i < length);
+
+            Response deleteFileResponse = mStore.files().delete(dbFileId);
+            if (!deleteFileResponse.isSuccess()) {
+                // TODO: log?
+            }
+        }
+
+        for(int i = 0; i < length; i ++) {
+            Response isnertFileResponse =mStore.files().insert(files.get(i));
+            if (!isnertFileResponse.isSuccess()) {
+                // TODO: log?
+            }
+        }
+
+        mStore.commitTransaction();
+
+        return new Response(true, null);
+    }
+
+    public Response createBucket(final String bucketName) {
+        SingleResponse<Bucket> createBucketResponse = mStorj.createBucket(bucketName);
+        if (!createBucketResponse.isSuccess()) {
+            return createBucketResponse;
+        }
+
+        return mStore.buckets().insert(createBucketResponse.getResult());
+    }
+
+    public Response deleteBucket(final String bucketId) {
+        Response deleteBucketResponse = mStorj.deleteBucket(bucketId);
+        if (!deleteBucketResponse.isSuccess()) {
+            return deleteBucketResponse;
+        }
+
+        return mStore.buckets().delete(bucketId);
+    }
+
+    public Response deleteFile(final String bucketId, final String fileId) {
+        Response deleteFileResponse = mStorj.deleteFile(bucketId, fileId);
+        if (!deleteFileResponse.isSuccess()) {
+            return deleteFileResponse;
+        }
+
+        return mStore.files().delete(fileId);
+    }
+
+    private <T> void listShift(List<T> array, int pos, int length) {
+        while(pos < length - 1) {
+            array.set(pos, array.get(pos + 1));
+            pos++;
+        }
+    }
+}

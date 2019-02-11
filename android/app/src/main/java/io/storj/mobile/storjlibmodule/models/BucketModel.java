@@ -9,7 +9,7 @@ import io.storj.libstorj.Bucket;
  * Created by Crawter on 22.02.2018.
  */
 
-public class BucketModel implements IStorjModel {
+public class BucketModel {
     @Expose
     @SerializedName("id")
     private String _id;

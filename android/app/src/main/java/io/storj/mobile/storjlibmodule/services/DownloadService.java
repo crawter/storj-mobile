@@ -20,11 +20,10 @@ import io.storj.mobile.storjlibmodule.dataprovider.dbo.FileDbo;
 import io.storj.mobile.storjlibmodule.dataprovider.repositories.FileRepository;
 import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.responses.SingleResponse;
+import io.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 import io.storj.mobile.storjlibmodule.utils.ProgressResolver;
 import io.storj.mobile.storjlibmodule.utils.ThumbnailProcessor;
 import io.storj.mobile.storjlibmodule.utils.UploadSyncObject;
-
-import static io.storj.mobile.storjlibmodule.StorjLibModule.STORJ_URL;
 
 /**
  * Created by Yaroslav-Note on 3/13/2018.
@@ -117,7 +116,7 @@ public class DownloadService extends BaseReactService {
 
         Storj storj;
         try {
-            storj = StorjAndroid.getInstance(DownloadService.this, STORJ_URL);
+            storj = StorjAndroid.getInstance(DownloadService.this, "https://api.v2.storj.io");
         } catch (MalformedURLException e) {
             Log.e("Storj.Lib.Module", "getStorj: ", e);
             // TODO: 06.02.19 Handle NPE corner case
