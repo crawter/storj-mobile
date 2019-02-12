@@ -3,6 +3,9 @@ package io.storj.mobile.dataprovider;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.concurrent.Semaphore;
 
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.dataprovider.buckets.BucketContract;
@@ -30,10 +33,27 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     private IUploadingFilesRepository _uploadingFiles;
     private SQLiteDatabase _db;
 
+    private static IDatabase instance;
+    private static Semaphore semaphore = new Semaphore(1);
+
+    public static IDatabase getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(Context context) throws InterruptedException {
+        semaphore.acquire();
+
+        if (instance == null) {
+            instance = new Database(context, null);
+        }
+
+        semaphore.release();
+    }
+
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "storj.new.db";
 
-    public Database(Context context, SQLiteDatabase.CursorFactory factory) {
+    private Database(Context context, SQLiteDatabase.CursorFactory factory) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
         _db = this.getWritableDatabase();
     }

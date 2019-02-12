@@ -62,7 +62,7 @@ public class DownloadService extends BaseReactService {
             return;
         }
 
-        mStore = new Database(this, null);
+        mStore = Database.getInstance();
     }
 
     @Override

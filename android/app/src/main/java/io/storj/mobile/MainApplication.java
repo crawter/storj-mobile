@@ -18,6 +18,7 @@ import io.storj.mobile.BuildConfig;
 import java.util.Arrays;
 import java.util.List;
 
+import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.storjlibmodule.interfaces.NotificationResolver;
 import io.storj.mobile.storjlibmodule.responses.Response;
 import io.storj.mobile.storjlibmodule.StorjLibPackage;
@@ -59,6 +60,12 @@ public class MainApplication extends Application implements ReactApplication, Ap
 
     @Override
     public void onCreate() {
+        try {
+            Database.setInstance(this);
+        } catch (InterruptedException e) {
+            // TODO: close app
+        }
+
         SynchronizationService.clean(this);
         super.onCreate();
         NotificationService.Init(this);
@@ -68,14 +75,7 @@ public class MainApplication extends Application implements ReactApplication, Ap
 
     @Override
     public void onTerminate() {
-        try(SQLiteDatabase db = new DatabaseFactory(this, null).getWritableDatabase()) {
-            UploadingFilesRepository uploadRepo = new UploadingFilesRepository(db);
-            Response deleteAllResponse = uploadRepo.deleteAll();
-            Log.d("APPLICATION DEBUG", "onTerminate: isSuccess " + deleteAllResponse.isSuccess());
-        } catch(Exception e) {
-            Log.d("APPLICATION DEBUG", "onTerminate: error" + e.getMessage());
-        }
-
+        Database.getInstance().uploadingFiles().deleteAll();
         super.onTerminate();
     }
 

@@ -10,9 +10,6 @@ import com.facebook.react.bridge.ReactMethod;
 import io.storj.mobile.service.storj.StorjService;
 import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.responses.SingleResponse;
-import io.storj.mobile.storjlibmodule.rnmodules.rnparallel.IPromiseCallback;
-import io.storj.mobile.storjlibmodule.rnmodules.rnparallel.PromiseParams;
-import io.storj.mobile.storjlibmodule.rnmodules.rnparallel.RNParallel;
 
 import java.io.File;
 
@@ -38,13 +35,13 @@ public class StorjModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void generateMnemonic(Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void generateMnemonic(final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) {
-                param.getPromise().resolve(mService.generateMnemonic());
+            public void run() {
+                promise.resolve(mService.generateMnemonic());
             }
-        });
+        }).run();
     }
 
     @ReactMethod

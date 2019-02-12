@@ -55,7 +55,7 @@ public class FetchIntentService extends BaseReactService {
         }
 
         StorjService service = new StorjService(storj);
-        mService = new FetchService(service, new Database(this, null));
+        mService = new FetchService(service, Database.getInstance());
     }
 
     @Override

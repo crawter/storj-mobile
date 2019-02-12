@@ -43,15 +43,13 @@ public class StorjLibPackage implements ReactPackage {
             // TODO: 06.02.19 Handle NPE corner case
         }
 
-        IDatabase db = new Database(reactContext, null);
-
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new StorjModule(reactContext, new StorjService(storj)));
         modules.add(new Sha256Module(reactContext));
         modules.add(new FilePickerModule(reactContext));
         modules.add(new ServiceModule(reactContext));
-        modules.add(new SyncModule(reactContext, new SyncService(db)));
+        modules.add(new SyncModule(reactContext, new SyncService(Database.getInstance())));
         modules.add(new CameraModule(reactContext));
         modules.add(new OpenFileModule(reactContext));
 

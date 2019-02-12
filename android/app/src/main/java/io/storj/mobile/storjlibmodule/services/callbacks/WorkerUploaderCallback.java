@@ -49,11 +49,11 @@ public class WorkerUploaderCallback extends BaseUploaderCallback {
     public void onComplete(String localPath, File file) {
         super.onComplete(localPath, file);
 
-        ThumbnailProcessor tProc = new ThumbnailProcessor(mFileRepo);
+        ThumbnailProcessor tProc = new ThumbnailProcessor();
         String thumbnail = null;
 
         if(file.getMimeType().contains("image/")) {
-            SingleResponse resp = tProc.getThumbnail(localPath);
+            io.storj.mobile.common.responses.SingleResponse<String> resp = tProc.getThumbnail(localPath);
 
             if(resp.isSuccess())
                 thumbnail = resp.getResult();
