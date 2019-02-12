@@ -33,12 +33,12 @@ public class StorjService {
         return Storj.checkMnemonic(mnemonic);
     }
 
-    public boolean verifyKeys(final String email, final String password) {
+    public int verifyKeys(final String email, final String password) {
         try {
-            int error = mInstance.verifyKeys(email, password);
-            return error == Storj.NO_ERROR;
+            return mInstance.verifyKeys(email, password);
+            //return error == Storj.NO_ERROR;
         } catch (InterruptedException ex) {
-            return false;
+            return 1;
         }
     }
 

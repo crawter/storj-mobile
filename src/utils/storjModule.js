@@ -15,8 +15,6 @@ const StorjLib = (() => {
 
     /**
      * This module wraps Native Modules for StorjLib.
-     * Will be rafactored after iteration 2.
-     * We should implement more functionality to have more deep understanding of needed arcitecture
      */
     class StorjModule {
 
@@ -29,17 +27,7 @@ const StorjLib = (() => {
          * @returns {Promise<boolean>}
          */
         async generateMnemonic() {
-            try {
-                let response = await storjLib.generateMnemonic();
-
-                if(!response.isSuccess){
-                    console.log('generateMnemonic ', response.error.message);
-                }
-
-                return response;
-            } catch(e) {
-                console.log(e);
-            }
+            return await storjLib.generateMnemonic();
         }
 
         /**
@@ -48,46 +36,25 @@ const StorjLib = (() => {
          * @returns {Promise<boolean>} 
          */
         async checkMnemonic(mnemonic) {    
-            let response = await storjLib.checkMnemonic(mnemonic);
-
-            if(!response.isSuccess){
-                console.log('checkMnemonic ', response.error.message);
-            }
-
-            return response.isSuccess;
+            return storjLib.checkMnemonic(mnemonic);
         };
     
         /**
          * Send new registration request
          * @param {string} email 
          * @param {string} password 
-         * @param {function} sucessCallback Callback that is called on Success, returns email address from the request
-         * @param {function} errorCallback Callback for error handeling, returns error message
          */
-        async register(email, password, errorCallback) {
-            let response = await storjLib.register(email, password);
-
-            if(!response.isSuccess){
-                console.log('register ', response.error.message);
-            }
-
-            return response;
+        async register(email, password) {
+            return await storjLib.register(email, password);
         };
     
         /**
          * Verify if user exist in storj network
          * @param {string} email 
-         * @param {string} password 
-         * @returns {Promise<boolean>}
+         * @param {string} password
          */
         async verifyKeys(email, password) {            
-            let response = await storjLib.verifyKeys(email, password);
-
-            if(!response.isSuccess){
-                console.log('verifyKeys ', response.error.message);
-            }
-
-            return response;
+            return await storjLib.verifyKeys(email, password);
         };
     
         /**
@@ -95,13 +62,7 @@ const StorjLib = (() => {
          * @returns {Promise<boolean>}
          */
         async keysExists() {   
-            let response = await storjLib.keysExists();
-
-            if(!response.isSuccess){
-                console.log('keysExists ', response.error.message);
-            }
-
-            return response.isSuccess;
+            return await storjLib.keysExists();
         };
     
         /**
@@ -114,13 +75,7 @@ const StorjLib = (() => {
          * @returns {Promise<boolean>}
          */
         async importKeys(email, password, mnemonic, passcode) {            
-            let response = await storjLib.importKeys(email, password, mnemonic, passcode);
-
-            if(!response.isSuccess){
-                console.log('importKeys ', response.error.message);
-            }
-
-            return response.isSuccess;
+            return await storjLib.importKeys(email, password, mnemonic, passcode);
         };
 
         
@@ -129,13 +84,7 @@ const StorjLib = (() => {
          * @returns {Promise<boolean>}
          */
         async deleteKeys() {            
-            let response = await storjLib.deleteKeys();
-
-            if(!response.isSuccess){
-                console.log('deleteKeys', response.error.message);
-            }
-
-            return response.isSuccess;
+            return await storjLib.deleteKeys();
         };
     
         /**
@@ -143,8 +92,8 @@ const StorjLib = (() => {
          * @param {string} passcode needed if user has protected your auth file with additional password
          */
         async getKeys(passcode) {
-            let response = await storjLib.getKeys(passcode);
-
+            let response = JSON.parse(await storjLib.getKeys(passcode));
+            
             if(!response.isSuccess) {
                 console.log('getKeys ', response.error.message);
             }
@@ -152,62 +101,6 @@ const StorjLib = (() => {
             return response;
         };
     
-        /**
-         * List buckets for logged in user
-         * @returns {Promise<BucketModel[]>}
-         */
-        async getBuckets() {
-            let result = [];
-            let response = await storjLib.getBuckets();
-
-            if(!response.isSuccess) {
-                console.log('getBuckets ', response.error.message);
-                return result;
-            }
-
-            result = JSON.parse(response.result).map((bucket) => {
-                return new BucketModel(bucket);
-            });
-
-            return result;
-        }
-
-        /**
-         * Deletes bucket by Id
-         * @param {string} bucketId 
-         */
-        async deleteBucket(bucketId) {
-            return await storjLib.deleteBucket(bucketId);
-        }
-
-        /**
-         * download file to storj network
-         * @returns {Promise<any>}
-         */
-        async downloadFile(bucketId, fileId, localPath) {
-            let response = await storjLib.downloadFile(bucketId, fileId, localPath);
-            
-            if(!response.isSuccess) {
-                console.log('downloadFile ', response);
-            }
-
-            return response;
-        }
-
-        /**
-         * cancel file downloading
-         * @returns {Promise<any>}
-         */
-        async cancelDownload(fileRef) {
-            let response = await storjLib.cancelDownload(fileRef);
-
-            if(!response.isSuccess) {
-                console.log('cancelDownload ', response.error.message);
-            }
-
-            return response;
-        }
-
         /**
          * cancel file uploading
          * @returns {Promise<any>}
@@ -222,79 +115,14 @@ const StorjLib = (() => {
             return response;
         }
 
-        /**
-         * download file to storj network
-         * @returns {Promise<any>}
-         */
-         async uploadFile(bucketId, localPath) {
-            let response = await storjLib.uploadFile(bucketId, localPath);
-
-            if(response.isSuccess) {
-                response.result = new FileModel(JSON.parse(response.result));
-            } else {
-                console.log('uploadFile ', response.error.message);
-            }
-
-            return response;
-        };
-
-        /**
-         * List buckets for logged in user
-         * @returns {Promise<FileModel[]>}
-         */
-        async listFiles(bucketId) {
-            let response = await storjLib.listFiles(bucketId);
-
-            if(response.isSuccess) {
-                response.result = JSON.parse(response.result).map(file => {
-                    return new FileModel(file);
-                });      
-            } else {
-                console.log('listFiles ', response.error.message);
-            }
-
-            return response;
-        };
-    
-        /**
-         * Create bucket
-         * @returns {Promise<BucketModel>}
-         */
-        async createBucket(bucketName) {
-            let response = await storjLib.createBucket(bucketName);
-            
-            if(response.isSuccess) {
-                response.result = new BucketModel(JSON.parse(response.result));
-            } else {
-                console.log('createBucket ', response.error.message);
-            }
-
-            return response;
-        };
-
         async getDownloadFolderPath(){
-            let response = await storjLib.getDownloadFolderPath();
+            let response = JSON.parse(await storjLib.getDownloadFolderPath());
 
             if(!response.isSuccess){
                 console.log("getDownloadFolderPath ", response.error.message);
             }
             
             return response.result;
-        }
-
-        /**
-         * 
-         * @param {string} bucketId 
-         * @param {string} fileId 
-         */
-        async deleteFile(bucketId, fileId) {
-            let response = await storjLib.deleteFile(bucketId, fileId);
-
-            if(!response.isSuccess) {
-                console.log('deleteFile ', response.error.message);
-            } 
-
-            return response;
         }
     }
 

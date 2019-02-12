@@ -1,11 +1,24 @@
 package io.storj.mobile.domain.settings;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 // Settings is a domain model that describes settings entity
 public class Settings {
+    @Expose
+    @SerializedName("id")
     private String _id;
+    @Expose
+    @SerializedName("isFirstSignIn")
     private boolean _isFirstSignIn;
+    @Expose
+    @SerializedName("syncStatus")
     private boolean _syncStatus;
+    @Expose
+    @SerializedName("syncSettings")
     private int _syncSettings;
+    @Expose
+    @SerializedName("lastSync")
     private String _lastSync;
 
     public Settings(String id) {

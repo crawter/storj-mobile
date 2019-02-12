@@ -6,7 +6,7 @@ export function listSettingsAsync(settingsId) {
         let getSettingsResponse = await SyncModule.listSettings(settingsId);
         
         if(getSettingsResponse.isSuccess) {
-            let settingsModel = JSON.parse(getSettingsResponse.result);
+            let settingsModel = getSettingsResponse.result;
 
             let syncSettings = settingsModel.syncSettings;
 

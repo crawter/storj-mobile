@@ -28,18 +28,20 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     private ISettingsRepository _settings;
     private ISyncQueueRepository _syncQueue;
     private IUploadingFilesRepository _uploadingFiles;
+    private SQLiteDatabase _db;
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "storj.new.db";
 
     public Database(Context context, SQLiteDatabase.CursorFactory factory) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        _db = this.getWritableDatabase();
     }
 
     @Override
     public IBucketRepository buckets() {
         if (_buckets == null) {
-            _buckets = new BucketRepository(getWritableDatabase());
+            _buckets = new BucketRepository(_db);
         }
 
         return _buckets;
@@ -48,7 +50,7 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     @Override
     public IFileRepository files() {
         if (_files == null) {
-            _files = new FileRepository(getWritableDatabase());
+            _files = new FileRepository(_db);
         }
 
         return _files;
@@ -57,7 +59,7 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     @Override
     public IUploadingFilesRepository uploadingFiles() {
         if (_uploadingFiles == null) {
-            _uploadingFiles = new UploadingFilesRepository(getWritableDatabase());
+            _uploadingFiles = new UploadingFilesRepository(_db);
         }
 
         return _uploadingFiles;
@@ -66,7 +68,7 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     @Override
     public ISyncQueueRepository syncQueueEntries() {
         if (_syncQueue == null) {
-            _syncQueue = new SyncQueueRepository(getWritableDatabase());
+            _syncQueue = new SyncQueueRepository(_db);
         }
 
         return _syncQueue;
@@ -75,7 +77,7 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
     @Override
     public ISettingsRepository settings() {
         if (_settings == null) {
-            _settings = new SettingsRepository(getWritableDatabase());
+            _settings = new SettingsRepository(_db);
         }
 
         return _settings;
@@ -87,37 +89,38 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
         files().createTable();
         settings().createTable();
         syncQueueEntries().createTable();
+        uploadingFiles().createTable();
 
         return new Response(true, null);
     }
 
     @Override
     public Response dropTables() {
-        SQLiteDatabase db = getWritableDatabase();
-
-        db.execSQL("DROP TABLE IF EXISTS " + BucketContract.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + FileContract.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + UploadingFileContract.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + SettingsContract.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + SynchronizationQueueContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + BucketContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + FileContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + UploadingFileContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + SettingsContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + SynchronizationQueueContract.TABLE_NAME);
 
         return null;
     }
 
     public void beginTransaction() {
-        getWritableDatabase().beginTransaction();
+        _db.beginTransaction();
     }
 
     public void commitTransaction() {
-        getWritableDatabase().setTransactionSuccessful();
+        _db.setTransactionSuccessful();
+        _db.endTransaction();
     }
 
     public void rollbackTransaction() {
-        getWritableDatabase().endTransaction();
+        _db.endTransaction();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        _db = db;
         createTables();
     }
 

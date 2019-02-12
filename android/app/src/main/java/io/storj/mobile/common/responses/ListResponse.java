@@ -1,8 +1,13 @@
 package io.storj.mobile.common.responses;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class ListResponse<T> extends Response {
+    @Expose
+    @SerializedName("result")
     private List<T> _result;
 
     public ListResponse(List<T> result, boolean isSuccess, String errorMessage) {

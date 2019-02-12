@@ -1,24 +1,62 @@
 package io.storj.mobile.domain.files;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 // File is a domain model that describes file entity
 public class File {
+    @Expose
+    @SerializedName("bucketId")
     private String _bucketId;
+    @Expose
+    @SerializedName("created")
     private String _created;
+    @Expose
+    @SerializedName("id")
     private String _erasure;
+    @Expose
+    @SerializedName("hmac")
     private String _hmac;
+    @Expose
+    @SerializedName("fileId")
     private String _fileId;
+    @Expose
+    @SerializedName("index")
     private String _index;
+    @Expose
+    @SerializedName("mimeType")
     private String _mimeType;
+    @Expose
+    @SerializedName("name")
     private String _name;
+    @Expose
+    @SerializedName("fileUri")
     private String _fileUri;
+    @Expose
+    @SerializedName("thumbnail")
     private String _thumbnail;
+    @Expose
+    @SerializedName("downloadState")
     private int _downloadState;
+    @Expose
+    @SerializedName("fileHandle")
     private long _fileHandle;
+    @Expose
+    @SerializedName("size")
     private long _size;
+    @Expose
+    @SerializedName("isDecrypted")
     private boolean _isDecrypted;
+    @Expose
+    @SerializedName("isStarred")
     private boolean _isStarred;
+    @Expose
+    @SerializedName("isSynced")
     private boolean _isSynced;
+    @Expose
+    @SerializedName("isFileHandleSet")
     private boolean _isFileHandleSet;
+
 
     // File - is a constructor for file entity
     public File(String bucketId,

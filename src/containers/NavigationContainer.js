@@ -212,7 +212,7 @@ class Apps extends Component {
 			let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
 
 			if(filesResponse.isSuccess) {
-				let files = JSON.parse(filesResponse.result).map((file) => {
+				let files = filesResponse.result.map((file) => {
 					return new ListItemModel(new FileModel(file));
 				});                    
 				this.props.listFiles(response.result, files);
@@ -234,7 +234,7 @@ class Apps extends Component {
 
 	onBucketCreated(response) {
 		if(response.isSuccess) {
-			this.props.createBucket(new ListItemModel(new BucketModel(JSON.parse(response.result))));	
+			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));	
 		} else {
 			switch(response.error.errorCode) {				
 				case 409:
@@ -258,7 +258,7 @@ class Apps extends Component {
 		let bucketsResponse = await SyncModule.listBuckets(this.props.sortingMode);
 
         if(bucketsResponse.isSuccess) {
-            let buckets = JSON.parse(bucketsResponse.result).map((file) => {
+            let buckets = bucketsResponse.result.map((file) => {
                 return new ListItemModel(new BucketModel(file));
             });                    
 
@@ -278,7 +278,7 @@ class Apps extends Component {
 	
 	onFileDeleted(response) {		
 		if(response.isSuccess) {
-			let result = JSON.parse(response.result);
+			let result = response.result;
 			this.props.deleteFile(result.bucketId, result.fileId);
 		}
 	}

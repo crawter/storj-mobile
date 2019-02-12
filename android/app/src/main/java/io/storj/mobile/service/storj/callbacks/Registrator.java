@@ -2,6 +2,7 @@ package io.storj.mobile.service.storj.callbacks;
 
 import io.storj.libstorj.RegisterCallback;
 
+// TODO: user response here
 public class Registrator implements RegisterCallback {
     private boolean mIsSuccess;
 

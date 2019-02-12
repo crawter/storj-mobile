@@ -48,95 +48,95 @@ public class StorjModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void checkMnemonic(final String mnemonic, Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void checkMnemonic(final String mnemonic, final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) {
-                param.getPromise().resolve(mService.checkMnemonic(mnemonic));
+            public void run() {
+                promise.resolve(mService.checkMnemonic(mnemonic));
             }
-        });
+        }).run();
     }
 
     @ReactMethod
     public void verifyKeys(final String email, final String password, final Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) throws Exception {
-                param.getPromise().resolve(mService.verifyKeys(email, password));
+            public void run() {
+                promise.resolve(mService.verifyKeys(email, password));
             }
-        });
+        }).run();
     }
 
     @ReactMethod
-    public void keysExists(Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void keysExists(final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) throws Exception {
-                param.getPromise().resolve(mService.keysExist());
+            public void run() {
+                promise.resolve(mService.keysExist());
             }
-        });
+        }).run();
     }
 
     @ReactMethod
-    public void importKeys(final String email, final String password, final String mnemonic, final String passcode, Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void importKeys(final String email, final String password, final String mnemonic, final String passcode, final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) throws Exception {
-                param.getPromise().resolve(mService.importKeys(email, password, mnemonic, passcode));
+            public void run() {
+                promise.resolve(mService.importKeys(email, password, mnemonic, passcode));
             }
-        });
+        }).run();
     }
 
     @ReactMethod
-    public void deleteKeys(Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void deleteKeys(final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) throws Exception {
-                param.getPromise().resolve(mService.deleteKeys());
+            public void run() {
+                promise.resolve(mService.deleteKeys());
             }
-        });
+        }).run();
     }
 
     @ReactMethod
-    public void getKeys(final String passcode, Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+    public void getKeys(final String passcode, final Promise promise) {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) throws Exception {
-                param.getPromise().resolve(toJson(mService.getKeys(passcode)));
+            public void run() {
+                promise.resolve(toJson(mService.getKeys(passcode)));
             }
-        });
+        }).run();
     }
 
     @ReactMethod
     public void register(final String login, final String password, final Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) {
-                param.getPromise().resolve(mService.register(login, password));
+            public void run() {
+                promise.resolve(mService.register(login, password));
             }
-        });
+        }).run();
     }
 
     //--- FILES ---//
 
     @ReactMethod
     public void cancelDownload(final double fileRef, final Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) {
-                promise.resolve(toJson(mService.cancelDownload((long)fileRef)));
+            public void run() {
+                promise.resolve(mService.cancelDownload((long)fileRef));
             }
-        });
+        }).run();
     }
 
     @ReactMethod
     public void cancelUpload(final double fileRef, final Promise promise) {
-        RNParallel.invokeParallel(new PromiseParams(promise), new IPromiseCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void callback(PromiseParams param) {
-                promise.resolve(toJson(mService.cancelUpload((long)fileRef)));
+            public void run() {
+                promise.resolve(mService.cancelUpload((long)fileRef));
             }
-        });
+        }).run();
     }
 
     @ReactMethod

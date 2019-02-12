@@ -9,7 +9,7 @@ export function uploadFileStart(fileHandle) {
         let getFileResponse = await SyncModule.getUploadingFile(fileHandle);
         
         if(getFileResponse.isSuccess) {
-            let uploadingFile = JSON.parse(getFileResponse.result);
+            let uploadingFile = getFileResponse.result;
 
             let fileModel = new FileModel({ 
                 name: uploadingFile.name, 
@@ -34,7 +34,7 @@ export function uploadFileSuccess(fileHandle, fileId) {
         let getFileResponse = await SyncModule.getFile(fileId);
 
         if(getFileResponse.isSuccess) {
-            let file = JSON.parse(getFileResponse.result);
+            let file = getFileResponse.result;
             dispatch(fileActions.uploadFileSuccess(file.bucketId, new ListItemModel(new FileModel(file)), fileHandle));
         }
     };
@@ -45,7 +45,7 @@ export function listUploadingFiles(bucketId) {
         let listUploadingFilesResponse = await SyncModule.listUploadingFiles(bucketId);
 
         if(listUploadingFilesResponse.isSuccess) {
-            let uploadingFiles = JSON.parse(listUploadingFilesResponse.result);
+            let uploadingFiles = listUploadingFilesResponse.result;
             
             uploadingFiles = uploadingFiles.map(uploadingFile => {
 
@@ -74,7 +74,7 @@ export function listFiles(bucketId) {
         let listFilesResponse = await SyncModule.listFiles(bucketId);
 
         if(listFilesResponse.isSuccess) {
-            let files = JSON.parse(listFilesResponse.result);
+            let files = listFilesResponse.result;
             files = files.map(file => new ListItemModel(new FileModel(file)));
 
             dispatch(fileActions.listFiles(bucketId, files));

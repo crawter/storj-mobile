@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import io.storj.libstorj.Storj;
+import io.storj.libstorj.android.StorjAndroid;
 import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.service.FetchService;
 import io.storj.mobile.service.storj.StorjService;
@@ -39,7 +40,7 @@ public class FetchIntentService extends BaseReactService {
 
         Storj storj;
         try {
-            storj = new Storj("some url");
+            storj = StorjAndroid.getInstance(this, "https://api.v2.storj.io");
         } catch(Exception e) {
             // TODO: add proper logging, notifications, send error intent
             // redirect user to error activity and close app

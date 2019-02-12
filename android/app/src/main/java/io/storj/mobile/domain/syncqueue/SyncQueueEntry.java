@@ -1,15 +1,38 @@
 package io.storj.mobile.domain.syncqueue;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class SyncQueueEntry {
+    @Expose
+    @SerializedName("id")
     private int _id;
+    @Expose
+    @SerializedName("fileName")
     private String _fileName;
+    @Expose
+    @SerializedName("localPath")
     private String _localPath;
+    @Expose
+    @SerializedName("status")
     private int _status;
+    @Expose
+    @SerializedName("errorCode")
     private int _errorCode;
+    @Expose
+    @SerializedName("size")
     private long _size;
+    @Expose
+    @SerializedName("count")
     private int _count;
+    @Expose
+    @SerializedName("creationDate")
     private String _creationDate;
+    @Expose
+    @SerializedName("bucketId")
     private String _bucketId;
+    @Expose
+    @SerializedName("fileHandle")
     private long _fileHandle;
 
     public SyncQueueEntry(int id,

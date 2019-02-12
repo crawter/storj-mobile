@@ -9,7 +9,7 @@ export function listSyncQueueEntriesAsync(syncQueueEntries) {
         let listQueueEntriesResponse = await SyncModule.getSyncQueue();
 
         if(listQueueEntriesResponse.isSuccess) {
-            let syncQueueEntries = JSON.parse(listQueueEntriesResponse.result);
+            let syncQueueEntries = listQueueEntriesResponse.result;
             syncQueueEntries = syncQueueEntries.map(syncQueueEntry => new ListItemModel(SyncQueueEntryModel.fromModel(syncQueueEntry), false, syncQueueEntry.status === SyncState.PROCESSING));
 
             dispatch(listSyncQueueEntries(syncQueueEntries));
@@ -43,7 +43,7 @@ export function getSyncQueueEntryAsync(id) {
 
 function processUpdateResponse(dispatch, response) {
     if(response.isSuccess) {
-        let syncQueueEntry = JSON.parse(response.result);
+        let syncQueueEntry = response.result;
         syncQueueEntry = new ListItemModel(SyncQueueEntryModel.fromModel(syncQueueEntry), false, syncQueueEntry.status === SyncState.PROCESSING);
 
         dispatch(updateSyncQueueEntry(syncQueueEntry));

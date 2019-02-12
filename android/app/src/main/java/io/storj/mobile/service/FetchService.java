@@ -23,7 +23,6 @@ public class FetchService {
     public Response getBuckets() {
         ListResponse<Bucket> bucketResponse = mStorj.getBuckets();
         if (!bucketResponse.isSuccess()) {
-            // log here smth
             return bucketResponse;
         }
 
@@ -32,11 +31,9 @@ public class FetchService {
         if (buckets.size() == 0) {
             Response deleteBucketsResponse = mStore.buckets().deleteAll();
             if (!deleteBucketsResponse.isSuccess()) {
-                // TODO: notify?
                 return deleteBucketsResponse;
             }
 
-            //getDb().close();
             return new Response(true, null);
         }
 
@@ -44,7 +41,6 @@ public class FetchService {
 
         ListResponse<Bucket> dbBucketResponse = mStore.buckets().getAll();
         if (!dbBucketResponse.isSuccess()) {
-            //getDb().close(); ???
             mStore.rollbackTransaction();
             return dbBucketResponse;
         }
@@ -109,8 +105,7 @@ public class FetchService {
             if (!deleteAllResponse.isSuccess()) {
                 return deleteAllResponse;
             }
-            //getDb().close();
-            //sendEvent(EVENT_FILES_UPDATED, new SingleResponse(true, bucketId, null).toWritableMap());
+
             return new Response(true, null);
         }
 

@@ -165,11 +165,10 @@ export class RegisterContainer extends Component {
 
         const registrationResult = await StorjModule.register(
             this.state.stateModel.email, 
-            this.state.stateModel.password, 
-            this.registerErrorCallback.bind(this));
+            this.state.stateModel.password);
 
-        if(!registrationResult.isSuccess) {
-            const errorMessage = registrationResult.errorMessage;
+        if(!registrationResult) {
+            const errorMessage = "Registration failed";
             this.props.registerError(errorMessage);
 
             //TODO: improve in future, we need better error codes from StorjLib

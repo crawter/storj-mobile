@@ -38,9 +38,9 @@ export default class MnemonicGenerationComponent extends Component {
     }
 
     async componentDidMount() {
-        StorjModule.generateMnemonic().then((res)=>{
-            this.props.screenProps.saveMnemonic(res.result);
-            this.setState({mnemonic: res.result, isBackButtonBlocked: true});
+        StorjModule.generateMnemonic().then((mnemonic)=>{
+            this.props.screenProps.saveMnemonic(mnemonic);
+            this.setState({mnemonic: mnemonic, isBackButtonBlocked: true});
         })
     }
 

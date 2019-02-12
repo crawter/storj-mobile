@@ -58,11 +58,13 @@ class InitializeContainer extends Component {
     async componentWillMount() {
         try {
             if(!await getFirstAction()) {
+                console.log("no first action")
                 this.props.redirectToOnBoardingScreen();
                 return;
             }
             
             if(!await StorjLib.keysExists()) {
+                console.log("keys not exists")
                 this.props.redirectToLoginScreen();
                 return;
             }
@@ -70,6 +72,7 @@ class InitializeContainer extends Component {
             await this.getKeys();
         } catch(e) {            
             this.props.redirectToOnBoardingScreen();
+            console.log(e)
         }
     }
 
@@ -105,13 +108,13 @@ class InitializeContainer extends Component {
             return;
         }
 
-        let getKeysResult = JSON.parse(getKeyResponse.result);
+        let getKeysResult = getKeyResponse.result;
         this.props.login(getKeysResult.email, getKeysResult.password, getKeysResult.mnemonic);
 
         let getSettingsResponse = await SyncModule.listSettings(getKeysResult.email);
 
         if(getSettingsResponse.isSuccess) {
-            let settingsModel = JSON.parse(getSettingsResponse.result);
+            let settingsModel = getSettingsResponse.result;
             if(settingsModel.isFirstSignIn) 
                 this.props.setFirstSignIn();
         }
@@ -132,7 +135,7 @@ class InitializeContainer extends Component {
         let bucketsResponse = await SyncModule.listBuckets(this.props.sortingMode);
 
         if(bucketsResponse.isSuccess) {
-            let buckets = JSON.parse(bucketsResponse.result).map((file) => {
+            let buckets = bucketsResponse.result.map((file) => {
                 return new ListItemModel(new BucketModel(file));
             });                    
 
@@ -144,7 +147,7 @@ class InitializeContainer extends Component {
         let filesResponse = await SyncModule.listAllFiles(this.props.sortingMode);		
 
         if(filesResponse.isSuccess) {
-            let files = JSON.parse(filesResponse.result).map((file) => {
+            let files = filesResponse.result.map((file) => {
                 return new ListItemModel(new FileModel(file));
             });                    
 

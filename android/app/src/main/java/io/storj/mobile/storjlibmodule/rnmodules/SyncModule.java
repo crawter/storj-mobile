@@ -71,7 +71,8 @@ public class SyncModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.listBuckets(sortingMode)));
+                String wer = toJson(mSyncService.listBuckets(sortingMode));
+                promise.resolve(wer);
             }
         }).run();
     }

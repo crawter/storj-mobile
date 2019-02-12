@@ -21,7 +21,6 @@ import infoScreensConstants from '../../utils/constants/infoScreensConstants';
  * Container for QRCodeScannerComponent
  */
 class QRScannerContainer extends Component {
-
     constructor(props) {
         super(props);
 
@@ -80,11 +79,11 @@ class QRScannerContainer extends Component {
             this.stateModel.mnemonic
         );
         
-        let areCredentialsValid = await StorjLib.verifyKeys(
+        let areCredentialsValidError = await StorjLib.verifyKeys(
             this.stateModel.email, 
             this.stateModel.password);
 
-        if(!areCredentialsValid) {
+        if(areCredentialsValidError != 0) {
             this.props.loginError();
             this.props.redirectToAuthFailureScreen({
                 mainText: infoScreensConstants.loginFailureMainText, 

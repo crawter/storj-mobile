@@ -122,7 +122,7 @@ class LoginContainer extends Component {
             await setFirstAction();
         }
 
-        SyncModule.insertSyncSetting(email);
+        console.log(await SyncModule.insertSyncSetting(email));
     };
 
     /**
@@ -159,21 +159,21 @@ class LoginContainer extends Component {
             this.state.stateModel.password,
             formatInput(this.state.stateModel.mnemonic));
 
-        let areCredentialsValid = await StorjLib.verifyKeys(
+        let areCredentialsValidError = await StorjLib.verifyKeys(
             this.state.stateModel.email, 
             this.state.stateModel.password);
             
-        if(!areCredentialsValid.isSuccess) {
+        if(areCredentialsValidError != 0) {
             this.setState({
                 errorModel: new LoginErrorModel(
                     this.state.errorModel.isEmailError,
                     this.state.errorModel.isPasswordError,
                     this.state.errorModel.isMnemonicError,
-                    !areCredentialsValid.isSuccess
+                    true
                 )
             });
 
-            switch (areCredentialsValid.error.errorCode) {
+            switch (areCredentialsValidError) {
                 case 403: this.props.setEmailNotConfirmed();
                 break;
                 case 401: this.props.setAccountNotExist();

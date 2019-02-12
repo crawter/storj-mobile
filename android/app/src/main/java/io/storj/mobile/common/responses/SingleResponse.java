@@ -1,6 +1,11 @@
 package io.storj.mobile.common.responses;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class SingleResponse<T> extends Response {
+    @Expose
+    @SerializedName("result")
     private T _result;
 
     public SingleResponse(T result, boolean isSuccess, String errorMessage) {

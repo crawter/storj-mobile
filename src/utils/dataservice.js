@@ -107,7 +107,7 @@ async function _getAuthorizationString() {
 
     if(!keysResponse.isSuccess) return authString;
 
-    let keys = JSON.parse(keysResponse.result);
+    let keys = keysResponse.result;
 
     let passwordHash = await sha256(keys.password);
             

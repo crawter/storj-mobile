@@ -687,7 +687,7 @@ class MainContainer extends Component {
 		let bucketsResponse = await SyncModule.listBuckets(sortingMode);
 
         if(bucketsResponse.isSuccess) {
-            let buckets = JSON.parse(bucketsResponse.result).map((file) => {
+            let buckets = bucketsResponse.result.map((file) => {
                 return new ListItemModel(new BucketModel(file));
             });                    
 
@@ -716,7 +716,7 @@ class MainContainer extends Component {
         let filesResponse = await SyncModule.listFiles(bucketId, sortingMode);		
 
         if(filesResponse.isSuccess) {
-            let files = JSON.parse(filesResponse.result).map((file) => {
+            let files = filesResponse.result.map((file) => {
                 return new ListItemModel(new FileModel(file));
             });                    
             this.props.listFiles(bucketId, files);
