@@ -37,15 +37,25 @@ public abstract class BaseRepository {
     }
 
     protected Response _deleteAll(String tableName) {
-        boolean isSuccess;
-
         try {
-            isSuccess = mDb.delete(tableName, null, null) > 0;
+            mDb.delete(tableName, null, null);
         } catch(SQLException error) {
             return new Response(false, error.getMessage());
         }
 
-        return new Response(isSuccess, null);
+        return new Response(true, null);
+    }
+
+    protected Response _deleteAll(String tableName, String whereClause, String[] params) {
+        int result;
+
+        try {
+            result = mDb.delete(tableName, whereClause, params);
+        } catch(SQLException error) {
+            return new Response(false, error.getMessage());
+        }
+
+        return new Response(true, null);
     }
 
     protected Response _executeUpdate(String tableName, String id, String[] columnNames, String[] columnValues, String[] columnsToUpdate, String [] updatedValues) {

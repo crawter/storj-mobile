@@ -14,7 +14,7 @@ const SyncModule = (() => {
         }
 
         async listFiles(bucketId, sortingMode) {
-            return JSON.parse(await syncModule.listFiles(bucketId, sortingMode));
+            return JSON.parse(await syncModule.listFiles(bucketId, ""));
         }
 
         async listAllFiles(sortingMode) {

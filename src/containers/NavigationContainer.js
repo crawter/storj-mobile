@@ -218,8 +218,9 @@ class Apps extends Component {
 				this.props.listFiles(response.result, files);
 			}
 		}
-        
-		this.props.popLoading(response.result);
+        console.log("received")
+		this.props.popLoading("files");
+		//this.props.unsetLoading("files");
 	}
 	
 	unsetNameAlreadyExistException() {

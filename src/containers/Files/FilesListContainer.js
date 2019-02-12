@@ -6,7 +6,7 @@ import { bucketNavigateBack, dashboardNavigateBack, openImageViewer, openFilePre
 import { filesListContainerMainActions } from '../../reducers/mainContainer/mainReducerActions';
 import { filesListContainerFileActions } from '../../reducers/mainContainer/Files/filesReducerActions';
 import { getFileSize, getFullFileName, getShortFileName } from "../../utils/fileUtils";
-import { listFiles, listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync";
+import { listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync";
 import FilesListComponent from '../../components/Files/FilesListComponent';
 import BaseFilesListContainer from './BaseFilesListContainer';
 import PropTypes from 'prop-types';
@@ -126,8 +126,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ bucketNavigateBack, dashboardNavigateBack, openImageViewer, openFilePreview, ...filesListContainerMainActions, ...filesListContainerFileActions,
-        listFilesAsync: (bucketId) => dispatch(listFiles(bucketId)),
-        listUploadingFilesAsync: (bucketId) => dispatch(listUploadingFiles(bucketId))
+        listUploadingFilesAsync: listUploadingFiles,
     }, dispatch);    
 }
 

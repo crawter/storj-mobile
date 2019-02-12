@@ -182,7 +182,7 @@ public class FileRepository extends BaseRepository implements IFileRepository {
 
     @Override
     public Response deleteAll(String bucketId) {
-        return null;
+        return _deleteAll(FileContract.TABLE_NAME, "bucketId = ?", new String[]{bucketId});
     }
 
     @Override

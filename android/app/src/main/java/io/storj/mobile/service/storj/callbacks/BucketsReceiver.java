@@ -9,7 +9,7 @@ import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.domain.buckets.Bucket;
 
 public class BucketsReceiver implements GetBucketsCallback {
-    private ListResponse<Bucket> mResult = new ListResponse<Bucket>(null, false, null);
+    private ListResponse<Bucket> mResult;
 
     @Override
     public void onBucketsReceived(io.storj.libstorj.Bucket[] buckets) {
@@ -29,6 +29,7 @@ public class BucketsReceiver implements GetBucketsCallback {
     }
 
     public ListResponse<Bucket> getResult() {
+
         return mResult;
     }
 }
