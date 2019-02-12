@@ -4,7 +4,7 @@ import SyncQueueEntryModel from "../../../models/SyncQueueEntryModel";
 import ListItemModel from "../../../models/ListItemModel";
 import SyncState from "../../../utils/constants/syncState";
 
-export function listSyncQueueEntriesAsync(syncQueueEntries) {
+export function listSyncQueueEntriesAsync() {
     return async (dispatch) => {
         let listQueueEntriesResponse = await SyncModule.getSyncQueue();
 
@@ -42,10 +42,12 @@ export function getSyncQueueEntryAsync(id) {
 }
 
 function processUpdateResponse(dispatch, response) {
-    if(response.isSuccess) {
-        let syncQueueEntry = response.result;
-        syncQueueEntry = new ListItemModel(SyncQueueEntryModel.fromModel(syncQueueEntry), false, syncQueueEntry.status === SyncState.PROCESSING);
-
-        dispatch(updateSyncQueueEntry(syncQueueEntry));
+    if(!response.isSuccess) {
+        return
     }
+
+    let syncQueueEntry = response.result;
+    syncQueueEntry = new ListItemModel(SyncQueueEntryModel.fromModel(syncQueueEntry), false, syncQueueEntry.status === SyncState.PROCESSING);
+
+    dispatch(updateSyncQueueEntry(syncQueueEntry));
 }

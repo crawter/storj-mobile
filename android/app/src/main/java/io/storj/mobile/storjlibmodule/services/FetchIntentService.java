@@ -6,9 +6,12 @@ import android.util.Log;
 
 import io.storj.libstorj.Storj;
 import io.storj.libstorj.android.StorjAndroid;
+import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.service.FetchService;
 import io.storj.mobile.service.storj.StorjService;
+import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 
 import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.GET_BUCKETS;
@@ -90,18 +93,25 @@ public class FetchIntentService extends BaseReactService {
     }
 
     private void getFiles(final String bucketId) {
-        sendEvent(EVENT_FILES_UPDATED, mService.getFiles(bucketId).isSuccess());
+        Response getFileResponse = mService.getFiles(bucketId);
+        SingleResponse<String> result = new SingleResponse<String>(
+                bucketId,
+                getFileResponse.isSuccess(),
+                getFileResponse.getError().getMessage()
+        );
+
+        sendEvent(EVENT_FILES_UPDATED, toJson(result));
     }
 
     private void createBucket(final String bucketName) {
-        sendEvent(EVENT_BUCKET_CREATED, mService.createBucket(bucketName).isSuccess());
+        sendEvent(EVENT_BUCKET_CREATED, toJson(mService.createBucket(bucketName)));
     }
 
     private void deleteBucket(final String bucketId) {
-        sendEvent(EVENT_BUCKET_DELETED, mService.deleteBucket(bucketId).isSuccess());
+        sendEvent(EVENT_BUCKET_DELETED, toJson(mService.deleteBucket(bucketId)));
     }
 
     private void deleteFile(final String bucketId, final String fileId) {
-        sendEvent(EVENT_FILE_DELETED, mService.deleteFile(bucketId, fileId).isSuccess());
+        sendEvent(EVENT_FILE_DELETED, toJson(mService.deleteFile(bucketId, fileId)));
     }
 }

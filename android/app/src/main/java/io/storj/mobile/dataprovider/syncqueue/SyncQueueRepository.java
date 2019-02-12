@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.dataprovider.BaseRepository;
 import io.storj.mobile.domain.syncqueue.ISyncQueueRepository;
 import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
@@ -84,11 +85,11 @@ public class SyncQueueRepository extends BaseRepository implements ISyncQueueRep
 
         cursor.close();
 
-        return new ListResponse<SyncQueueEntry>(result, true, null);
+        return new ListResponse<>(result, true, null);
     }
 
     @Override
-    public SyncQueueEntry get(int id) {
+    public SingleResponse<SyncQueueEntry> get(int id) {
         Cursor cursor = mDb.query(SyncQueueContract.TABLE_NAME,
                 null,
                 SyncQueueContract._ID + " = ?",
@@ -99,7 +100,7 @@ public class SyncQueueRepository extends BaseRepository implements ISyncQueueRep
 
         cursor.close();
 
-        return sqe;
+        return new SingleResponse<>(sqe, sqe != null, null);
     }
 
     @Override

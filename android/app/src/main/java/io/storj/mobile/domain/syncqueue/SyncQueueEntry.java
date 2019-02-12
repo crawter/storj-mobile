@@ -60,40 +60,36 @@ public class SyncQueueEntry {
     public int getId() {
         return _id;
     }
-
     public String getFileName() {
         return _fileName;
     }
-
     public String getLocalPath() {
         return _localPath;
     }
-
     public int getStatus() {
         return _status;
     }
-
     public int getErrorCode() {
         return _errorCode;
     }
-
     public long getSize() {
         return _size;
     }
-
-    public int getCount() {
-        return _count;
-    }
-
+    public int getCount() { return _count; }
     public String getCreationDate() {
         return _creationDate;
     }
-
     public String getBucketId() {
         return _bucketId;
     }
-
     public long getFileHandle() {
         return _fileHandle;
+    }
+
+    public void setName(String name) {
+        _fileName = name;
+    }
+    public void setStatus(int status) {
+        _status = status;
     }
 }

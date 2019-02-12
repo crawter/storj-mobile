@@ -208,8 +208,13 @@ class Apps extends Component {
 	}
 
 	async onFilesReceived(response) {
-		if(response.isSuccess) {
-			let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
+		response = JSON.parse(response);
+		if(!response.isSuccess) {
+			this.props.popLoading("files");
+			return;
+		}
+
+		let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
 
 			if(filesResponse.isSuccess) {
 				let files = filesResponse.result.map((file) => {
@@ -217,10 +222,8 @@ class Apps extends Component {
 				});                    
 				this.props.listFiles(response.result, files);
 			}
-		}
-        console.log("received")
+        
 		this.props.popLoading("files");
-		//this.props.unsetLoading("files");
 	}
 	
 	unsetNameAlreadyExistException() {

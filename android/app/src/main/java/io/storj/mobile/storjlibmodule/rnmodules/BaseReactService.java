@@ -46,6 +46,13 @@ public abstract class BaseReactService extends IntentService {
         return GsonSingle.getInstanse().toJson(convertible);
     }
 
+    protected final void sendEvent(String eventName, String result) {
+        if(mContext != null) {
+            mContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, result);
+        }
+    }
+
     protected final void sendEvent(String eventName, WritableMap result) {
         if(mContext != null) {
             mContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)

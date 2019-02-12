@@ -83,10 +83,6 @@ public class StorjService {
             return new ListResponse<>(null, false, ex.getMessage());
         }
 
-        while(bReceiver.getResult() == null) {
-
-        }
-
         return bReceiver.getResult();
     }
 
@@ -99,10 +95,6 @@ public class StorjService {
             return new SingleResponse<>(null, false, ex.getMessage());
         }
 
-        while(bCreator.getResult() == null) {
-
-        }
-
         return bCreator.getResult();
     }
 
@@ -113,10 +105,6 @@ public class StorjService {
             mInstance.deleteBucket(bucketId, bDeleter);
         } catch (KeysNotFoundException ex) {
             return new Response(false, ex.getMessage());
-        }
-
-        while(bDeleter.getResult() == null) {
-
         }
 
         return bDeleter.getResult();
@@ -133,10 +121,6 @@ public class StorjService {
             return new ListResponse<>(null,false, ex.getMessage());
         }
 
-        while(fReceiver.getResult() == null) {
-
-        }
-
         return fReceiver.getResult();
     }
 
@@ -147,10 +131,6 @@ public class StorjService {
             mInstance.deleteFile(bucketId, fileId, null);
         } catch (KeysNotFoundException ex) {
             return new ListResponse<>(null,false, ex.getMessage());
-        }
-
-        while(fdeleter.getResult() == null) {
-
         }
 
         return fdeleter.getResult();

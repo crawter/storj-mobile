@@ -145,4 +145,13 @@ public class File {
     public void setStarred(boolean isStarred) {
         _isStarred = isStarred;
     }
+    public void setDownloadState(int downState) {
+        _downloadState = downState;
+    }
+    public void setFileHandle(long fileHandle) {
+        _fileHandle = fileHandle;
+    }
+    public void setUri(String localPath) {
+        _fileUri = localPath;
+    }
 }

@@ -56,4 +56,7 @@ public class Settings {
     public void setFirstSignIn(boolean isFirstSignIn) {
         _isFirstSignIn = isFirstSignIn;
     }
+    public void setSyncStatus(boolean syncStatus) {
+        _syncStatus = syncStatus;
+    }
 }

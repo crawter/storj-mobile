@@ -3,6 +3,7 @@ package io.storj.mobile.storjlibmodule.rnmodules;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.facebook.common.internal.Objects;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -28,9 +29,12 @@ import java.util.concurrent.TimeUnit;
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.domain.settings.Settings;
+import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
+import io.storj.mobile.domain.syncqueue.SyncStateEnum;
 import io.storj.mobile.service.SyncService;
 import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.dataprovider.dbo.SyncQueueEntryDbo;
+import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
 import io.storj.mobile.storjlibmodule.dataprovider.contracts.SettingsContract;
 import io.storj.mobile.storjlibmodule.services.SynchronizationSchedulerJobService;
@@ -242,47 +246,28 @@ public class SyncModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void changeSyncStatus(final String id, final boolean value, final Promise promise) {
-        if(id == null) {
-            promise.resolve(new Response(false, "settingId is not specified!"));
+    public void changeSyncStatus(final String id, final boolean syncStatus, final Promise promise) {
+        if(id == null || id.isEmpty()) {
+            promise.resolve(new Response(false, "setting id is not specified!"));
             return;
         }
 
-        promise.resolve(toJson(new Response(false, "not implemented")));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Driver driver = new GooglePlayDriver(getReactApplicationContext());
+                FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
+                dispatcher.cancelAll();
+                cancelSync();
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try(SQLiteDatabase db = new DatabaseFactory(getReactApplicationContext(), null).getWritableDatabase()){
-//                    Driver driver = new GooglePlayDriver(getReactApplicationContext());
-//                    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-//                    dispatcher.cancelAll();
-//                    cancelSync();
-//
-//                    SettingsRepository settingsRepo = new SettingsRepository(db);
-//                    SettingsDbo settingsDbo = settingsRepo.get(id);
-//
-//                    if(settingsDbo == null) {
-//                        promise.resolve(new Response(false, "No settings entry for current account!"));
-//                        return;
-//                    }
-//
-//                    SettingsModel settingsModel = settingsDbo.toModel();
-//
-//                    if(value) {
-//                        scheduleSync(settingsModel, dispatcher);
-//                        Log.d("SYNC MODULE", "changeSyncStatus: Scheduled succesfully!");
-//                    }
-//
-//                    promise.resolve(settingsRepo.update(id, value).toWritableMap());
-//                    Log.d("SYNC MODULE", "changeSyncStatus: settings entry updated successfully!");
-//
-//                } catch(Exception e) {
-//                    promise.resolve(new Response(false, "Something went wrong! " + e.getMessage()).toWritableMap());
-//                    Log.d("SYNC MODULE", "changeSyncStatus: Error " + e.getMessage());
-//                }
-//            }
-//        }).run();
+                SingleResponse<Settings> changeSyncStatusResponse = mSyncService.changeSyncStatus(id, syncStatus);
+                promise.resolve(toJson(changeSyncStatusResponse));
+
+                if(changeSyncStatusResponse.isSuccess() && syncStatus) {
+                    scheduleSync(changeSyncStatusResponse.getResult(), dispatcher);
+                }
+            }
+        }).run();
     }
 
     private void cancelSync() {
@@ -294,147 +279,75 @@ public class SyncModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getSyncQueue(final Promise promise) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try(SQLiteDatabase db = new DatabaseFactory(getReactApplicationContext(), null).getWritableDatabase()) {
-//                    SyncQueueRepository syncRepo = new SyncQueueRepository(db);
-//                    List<SyncQueueEntryModel> models = syncRepo.getAll();
-//
-//                    promise.resolve(new SingleResponse(true, toJson(models), null).toWritableMap());
-//                } catch (Exception e) {
-//                    promise.resolve(new Response(false, e.getMessage()).toWritableMap());
-//                }
-//            }
-//        });
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                promise.resolve(toJson(mSyncService.getSyncQueue()));
+            }
+        });
     }
 
     @ReactMethod
     public void getSyncQueueEntry(final int id, final Promise promise) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try(SQLiteDatabase db = new DatabaseFactory(getReactApplicationContext(), null).getWritableDatabase()) {
-//                    SyncQueueRepository syncRepo = new SyncQueueRepository(db);
-//                    SyncQueueEntryModel model = syncRepo.get(id);
-//
-//                    if(model == null)
-//                        throw new Exception("Sync entrie not found");
-//
-//                    promise.resolve(new SingleResponse(true, toJson(model), null).toWritableMap());
-//                } catch (Exception e) {
-//                    promise.resolve(new Response(false, e.getMessage()).toWritableMap());
-//                }
-//            }
-//        });
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                promise.resolve(toJson(mSyncService.getSyncQueueEntry(id)));
+            }
+        });
     }
 
     @ReactMethod
     public void updateSyncQueueEntryFileName(final int id, final String newFileName, final Promise promise) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
-//        if(newFileName == null)
-//            promise.resolve(new Response(false, "File name can't be null!"));
-//
-//        updateSyncEntry(id, promise, new SetDboPropCallback() {
-//            @Override
-//            public void setProp(SyncQueueEntryDbo dbo) {
-//                dbo.setProp(SynchronizationQueueContract._STATUS, SyncStateEnum.IDLE.getValue());
-//                dbo.setProp(SynchronizationQueueContract._FILE_NAME, newFileName);
-//            }
-//        });
+        if(newFileName == null) {
+            promise.resolve(toJson(new Response(false, "File name can't be null!")));
+        }
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                promise.resolve(toJson(mSyncService.updateSyncEntryName(id, newFileName)));
+            }});
     }
 
     @ReactMethod
     public void updateSyncQueueEntryStatus(final int id, final int newStatus, final Promise promise) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
-//       updateSyncEntry(id, promise, new SetDboPropCallback() {
-//           @Override
-//           public void setProp(SyncQueueEntryDbo dbo) {
-//               List<SyncStateEnum> enums = Arrays.asList(SyncStateEnum.values());
-//
-//               if(enums.contains(SyncStateEnum.valueOf(newStatus))) {
-//                   dbo.setProp(SynchronizationQueueContract._STATUS, newStatus);
-//               }
-//           }
-//       });
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                promise.resolve(toJson(mSyncService.updateSyncEntryStatus(id, newStatus)));
+            }});
     }
 
-    private interface SetDboPropCallback {
-        void setProp(SyncQueueEntryDbo dbo);
-    }
-
-    private void updateSyncEntry(final int id, final Promise promise, final SetDboPropCallback callback) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try(SQLiteDatabase db = new DatabaseFactory(getReactApplicationContext(), null).getWritableDatabase()) {
-//                    SyncQueueRepository syncRepo = new SyncQueueRepository(db);
-//                    SyncQueueEntryModel model = syncRepo.get(id);
-//
-//                    if(model == null)
-//                        throw new Exception("No entrie has been found!");
-//
-//                    if(model.getStatus() == SyncStateEnum.PROCESSING.getValue() || model.getStatus() == SyncStateEnum.QUEUED.getValue())
-//                        throw new Exception("Can't update processing entry");
-//
-//                    SyncQueueEntryDbo dbo = new SyncQueueEntryDbo(model);
-//                    callback.setProp(dbo);
-//
-//                    model = dbo.toModel();
-//                    Response response = syncRepo.update(model);
-//
-//                    if(!response.isSuccess())
-//                        throw new Exception(response.getError().getMessage());
-//
-//                    promise.resolve(new SingleResponse(true, toJson(model), null).toWritableMap());
-//                } catch (Exception e) {
-//                    promise.resolve(new Response(false, e.getMessage()).toWritableMap());
-//                }
-//            }
-//        });
-    }
 
     @ReactMethod
     public void checkFile(final String fileId, final String localPath, final Promise promise) {
-        promise.resolve(toJson(new Response(false, "not implemented")));
+        if(localPath == null) {
+            promise.resolve(toJson(new Response(false, "localPath is null!")));
+            return;
+        }
 
-//        if(localPath == null) {
-//            promise.resolve(new Response(false, "localPath is null!").toWritableMap());
-//            Log.d("SYNC MODULE", "checkImage: Error local path is null!");
-//            return;
-//        }
-//
-//        File file = new File(localPath);
-//
-//        if(!file.exists() || file.isDirectory()) {
-//            Log.d("SYNC MODULE", "checkImage: File has been removed from file System!");
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try(SQLiteDatabase db = new DatabaseFactory(getReactApplicationContext(), null).getWritableDatabase()) {
-//                        FileRepository fileRepo = new FileRepository(db);
-//
-//                        Response updateResponse = fileRepo.update(fileId, DownloadStateEnum.DEFAULT.getValue(), 0, null);
-//
-//                        if(!updateResponse.isSuccess()) {
-//                            Log.d("SYNC MODULE", "checkImage: Error while updating file entry");
-//                        } else {
-//                            Log.d("SYNC MODULE", "checkImage: File entry updated successfully");
-//                        }
-//                    } catch(Exception e) {
-//                        Log.d("SYNC MODULE", "checkImage: Error while updating file entry, exception: " + e.getMessage());
-//                    }
-//                }
-//            }).run();
-//
-//            promise.resolve(new Response(false, "File has been removed from file System!").toWritableMap());
-//            return;
-//        }
-//
-//        promise.resolve(new Response(true, null).toWritableMap());
+        File file = new File(localPath);
+
+        if(!file.exists() || file.isDirectory()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Response fileUpdateResponse = mSyncService.updateFileState(
+                            fileId,
+                            null,
+                            DownloadStateEnum.DEFAULT.getValue(),
+                            0);
+
+                    if (!fileUpdateResponse.isSuccess()) {
+                        promise.resolve(toJson(new Response(false, "File has been removed from file System!")));
+                    }
+                }
+            }).run();
+
+            return;
+        }
+
+        promise.resolve(toJson(new Response(true, null)));
     }
 
     private void scheduleSync(Settings settings, FirebaseJobDispatcher dispatcher) {
