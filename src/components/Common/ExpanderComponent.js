@@ -34,7 +34,7 @@ export default class ExpanderComponent extends Component {
     } 
 
     render() {        
-        var expanderContainerStyle = this.state.isExpanded ? styles.expanderContainer : [styles.expanderContainer, styles.expanderBorder];
+        const expanderContainerStyle = this.state.isExpanded ? styles.expanderContainer : [styles.expanderContainer, styles.expanderBorder];
         return (
             <TouchableOpacity style = { expanderContainerStyle } onPress = { this.onPress }>
                 <View style = { styles.expanderTextView }>

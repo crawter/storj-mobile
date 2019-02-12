@@ -12,12 +12,12 @@ const FilePicker = (() => {
     class FilePicker {
 
         async show(type) {
-            var options = {
+            const options = {
                 mimeType:'*/*',
                 pickerTitle:'Choose file to download'
             };
 
-            var filePickerLib = null;
+            let filePickerLib = null;
 
             switch(type) {
                 case "image":

@@ -73,7 +73,7 @@ export default class FileListManager {
         let newFilesListLength = this.newFilesList.length;
 
         for(let i = 0; i < newFilesListLength; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
 
             if(includes(fileIds, temp.getId())) { 
                 temp.entity.isStarred = starredStatus;
@@ -113,7 +113,7 @@ export default class FileListManager {
         let newFileUploadingListLength = this.newFileUploadingList.length;
 
         for(let i = 0; i < newFileUploadingListLength; i++) {
-            var temp = this.newFileUploadingList[i];
+            let temp = this.newFileUploadingList[i];
 
             if(temp.getId() !== id) {
                 resultArray.push(temp);
@@ -219,7 +219,7 @@ export default class FileListManager {
         let length = this.newFileUploadingList.length;
 
         for(let i = 0; i < length; i++) {
-            var temp = this.newFileUploadingList[i];
+            let temp = this.newFileUploadingList[i];
 
             if (temp.getId() === id) {
                 temp.progress = progress;
@@ -270,7 +270,7 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for(let i = 0; i < length; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
 
             if (temp.getId() === fileId) {
                 temp.isLoading = true;
@@ -293,7 +293,7 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for(let i = 0; i < length; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
 
             if(temp.getId() === fileId){
                 temp.isLoading = false;
@@ -339,7 +339,7 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for (let i = 0; i < length; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
             temp.isSelected = false;
             resultArray.push(temp);
         }
@@ -357,7 +357,7 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for (let i = 0; i < length; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
 
             if (temp.getId() === fileId) {
                 temp.isSelected = value; 
@@ -379,7 +379,7 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for(let i = 0; i < length; i++) {
-            var temp = this.newFilesList[i];
+            let temp = this.newFilesList[i];
 
             for(let j = 0; j < filteredFiles.length; j++) {
                 if (temp.entity.id === filteredFiles[j].entity.id)

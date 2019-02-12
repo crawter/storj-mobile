@@ -27,7 +27,7 @@ export default class ListComponent extends PureComponent {
     }
 
     sortByDate(items, sortingObject) {
-        let monthNames = [
+        const monthNames = [
             "January", "February", "March",
             "April", "May", "June", "July",
             "August", "September", "October",
@@ -35,13 +35,9 @@ export default class ListComponent extends PureComponent {
         ];
 
         items.forEach((item) => {
-            var date = new Date(item.getDate());
-            
-            var day = date.getDate();
-            var monthIndex = date.getMonth();
-            var year = date.getFullYear();
+            const date = new Date(item.getDate());
 
-            var prop = day + ' ' + monthNames[monthIndex] + ' ' + year;            
+            const prop = date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
             
             if(!sortingObject[prop]) {
                 sortingObject[prop] = [];
@@ -53,7 +49,7 @@ export default class ListComponent extends PureComponent {
 
     sortByName(items, sortingObject) {         
         items.forEach((item) => {
-            var prop = item.getName().charAt(0).toUpperCase();            
+            let prop = item.getName().charAt(0).toUpperCase();
             
             if(!sortingObject[prop]) {
                 sortingObject[prop] = [];
@@ -95,7 +91,7 @@ export default class ListComponent extends PureComponent {
     isItemActionsSelected(item) { return item.getId() === this.props.selectedItemId; } 
 
     getListExpanders() {
-        var sorting = this.sort(this.props.data);
+        let sorting = this.sort(this.props.data);
 
         return Object.getOwnPropertyNames(sorting).reverse().map((propName) => {
             return {

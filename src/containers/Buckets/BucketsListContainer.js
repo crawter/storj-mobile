@@ -46,9 +46,9 @@ class BucketsListContainer extends BaseListContainer {
     }
 
     shouldComponentUpdate(nextProps) {
-        var currenName = nextProps.nav.routes[nextProps.nav.index].routeName;
+        const currentName = nextProps.nav.routes[nextProps.nav.index].routeName;
 
-        if (currenName === "FilesScreen" ) {
+        if (currentName === "FilesScreen" ) {
             return false;
         } 
 

@@ -18,17 +18,17 @@ export default class ListItemComponent extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        var isSelectedChanged = this.props.isSelected !== nextProps.isSelected;
-        var isProgressChanged = this.props.progress !== nextProps.progress;        
-        var isSelectionModeChanged = this.props.isSelectionMode !== nextProps.isSelectionMode;
-        var isSingleItemSelectedChanged = this.props.isSingleItemSelected !== nextProps.isSingleItemSelected;
-        var isStarredChanged = this.props.isStarred !== nextProps.isStarred;
+        const isSelectedChanged = this.props.isSelected !== nextProps.isSelected;
+        const isProgressChanged = this.props.progress !== nextProps.progress;
+        const isSelectionModeChanged = this.props.isSelectionMode !== nextProps.isSelectionMode;
+        const isSingleItemSelectedChanged = this.props.isSingleItemSelected !== nextProps.isSingleItemSelected;
+        const isStarredChanged = this.props.isStarred !== nextProps.isStarred;
 
         return isSelectedChanged || isProgressChanged || isSelectionModeChanged || isSingleItemSelectedChanged || isStarredChanged;
     }
 
     render() {
-        var props = this.props;
+        const props = this.props;
         return ( 
         <TouchableOpacity 
             style = { props.isSingleItemSelected ? [listItemStyles.listItemContainer, listItemStyles.itemSelected] : listItemStyles.listItemContainer }

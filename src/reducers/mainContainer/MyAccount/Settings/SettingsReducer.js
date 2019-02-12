@@ -90,7 +90,7 @@ formatLastSync = function(lastSync) {
 
     if(!lastSync || !moment(lastSync).isValid()) return result;
   
-    var diff = moment.duration(moment().diff(moment(lastSync))).asMinutes();
+    const diff = moment.duration(moment().diff(moment(lastSync))).asMinutes();
 
     let diffMins = Math.abs(Math.round(diff));  
     let diffHrs = Math.abs(Math.round(diffMins / 60));

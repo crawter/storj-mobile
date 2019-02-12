@@ -477,8 +477,8 @@ class MainContainer extends Component {
     async updateBucketsStarred(bucketsArray, starredStatus) {
         let updatedItems = []; 
 
-        for(var i = 0; i < bucketsArray.length; i++) {
-            var item = bucketsArray[i];
+        for(let i = 0; i < bucketsArray.length; i++) {
+            const item = bucketsArray[i];
             let updateStarredResponse = await SyncModule.updateBucketStarred(item.getId(), starredStatus);
 
             if(updateStarredResponse.isSuccess) {
@@ -509,8 +509,8 @@ class MainContainer extends Component {
     async updateFilesStarred(filesArray, starredStatus) {
         let updatedItems = [];        
 
-        for(var i = 0; i < filesArray.length; i++) {
-            var item = filesArray[i];
+        for(let i = 0; i < filesArray.length; i++) {
+            const item = filesArray[i];
             let updateStarredResponse = await SyncModule.updateFileStarred(item.getId(), starredStatus);
 
             if(updateStarredResponse.isSuccess) {
