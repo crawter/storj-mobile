@@ -5,6 +5,7 @@ export default class LoadingStack {
 
     setLoading(value) {
         this.loadingStack.push(value);
+        console.log("LOADING STACK PUSH", this.loadingStack)
         return this.loadingStack;
     }
 
@@ -16,6 +17,7 @@ export default class LoadingStack {
         }
 
         this.loadingStack.splice(index, 1);
+        console.log("LOADING STACK AFTER UNSET", this.loadingStack)
         return this.loadingStack;
     }
 }

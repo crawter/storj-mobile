@@ -54,7 +54,7 @@ class DashboardFilesListContainer extends BaseFilesListContainer {
     }
 
     onRefresh() {
-        this.props.pushLoading(this.props.bucketId);
+        this.props.pushLoading("files");
         ServiceModule.getFiles(this.props.bucketId); 
         this.props.listUploadingFiles(this.props.bucketId);     
     }
@@ -65,7 +65,7 @@ class DashboardFilesListContainer extends BaseFilesListContainer {
         return (
             <this.HeaderFilesListComponent
                 lastSync = { this.props.lastSync }
-                isLoading = { this.props.loadingStack.includes(this.props.bucketId) }                            
+                isLoading = { this.props.loadingStack.includes("files") }                            
                 data = { data }
                 animatedScrollValue = { this.animatedScrollValue }
                 isFilesScreen = { true }

@@ -115,7 +115,7 @@ export default class TabBarComponent extends Component {
             if(!picturesBucketId) return;
             this.props.navigation.listSettings(this.props.navigation.email);
             ServiceModule.getFiles(picturesBucketId);   
-            this.props.navigation.pushLoading(picturesBucketId);
+            this.props.navigation.pushLoading("files");
             this.props.navigation.setPhotosBucketId(picturesBucketId);                     
             this.props.navigation.navigate("MyPhotosScreen");
     }

@@ -82,7 +82,7 @@ class FilesListContainer extends BaseFilesListContainer {
 
         return(
             <FilesListComponent
-                isLoading = { this.props.loadingStack.includes(this.props.bucketId) }
+                isLoading = { this.props.loadingStack.includes("files") }
                 selectedItemId = { this.props.selectedItemId }
                 isGridViewShown = { this.props.isGridViewShown }
                 onPress = { this.onPress }

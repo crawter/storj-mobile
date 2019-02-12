@@ -77,6 +77,7 @@ class BaseFilesListContainer extends BaseListContainer {
      * Uploads data from Storj Network, set loader indicators
      */
     async onRefresh() {
+        console.log("loh")
         this.props.pushLoading("files");
         ServiceModule.getFiles(this.props.bucketId); 
         this.props.listUploadingFiles(this.props.bucketId);
