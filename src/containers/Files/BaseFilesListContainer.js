@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ListItemModel from '../../models/ListItemModel';
 import FileModel from '../../models/FileModel';
 import { isImage } from '../../utils/fileUtils';
+import {listUploadingFiles} from "../../reducers/asyncActions/fileActionsAsync";
 
 /** 
  * Base class for all screen with file lists
@@ -78,7 +79,7 @@ class BaseFilesListContainer extends BaseListContainer {
     async onRefresh() {
         this.props.pushLoading("files");
         ServiceModule.getFiles(this.props.bucketId); 
-        this.props.listUploadingFilesAsync(this.props.bucketId);     
+        this.props.listUploadingFiles(this.props.bucketId);
     }
 
     /**

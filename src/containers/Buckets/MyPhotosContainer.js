@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { openImageViewer, openFilePreview } from '../../reducers/navigation/navigationActions';
 import { myPicturesListContainerMainActions } from '../../reducers/mainContainer/mainReducerActions';
 import filesActions from '../../reducers/mainContainer/Files/filesReducerActions';
-import { listFiles, listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync";
+import { listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync";
 import headerFilesListBinder from "../../viewBinders/headerFilesListBinder";
 import BaseFilesListContainer from '../Files/BaseFilesListContainer';
 import PropTypes from 'prop-types';
@@ -73,9 +73,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        ...bindActionCreators({ openImageViewer, openFilePreview, ...myPicturesListContainerMainActions, ...filesActions,
-            listFilesAsync: (bucketId) => dispatch(listFiles(bucketId)),
-            listUploadingFilesAsync: (bucketId) => dispatch(listUploadingFiles(bucketId))
+        ...bindActionCreators({
+            openImageViewer,
+            openFilePreview,
+            listUploadingFiles,
+            ...myPicturesListContainerMainActions,
+            ...filesActions,
         }, dispatch)
     };
 }

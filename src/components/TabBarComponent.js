@@ -100,8 +100,10 @@ export default class TabBarComponent extends Component {
     }
 
     onDashboardPress() {                              
-            this.props.navigation.navigate("DashboardScreen");  
+            this.props.navigation.navigate("DashboardScreen");
+            console.log("addddddddd 11111");
             this.props.navigation.listSettings(this.props.navigation.email);
+            console.log("addddddddd 2222222");
     }
 
     onBucketPress() {

@@ -125,8 +125,14 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ bucketNavigateBack, dashboardNavigateBack, openImageViewer, openFilePreview, ...filesListContainerMainActions, ...filesListContainerFileActions,
-        listUploadingFilesAsync: listUploadingFiles,
+    return bindActionCreators({
+        bucketNavigateBack,
+        dashboardNavigateBack,
+        openImageViewer,
+        openFilePreview,
+        listUploadingFiles,
+        ...filesListContainerMainActions,
+        ...filesListContainerFileActions,
     }, dispatch);    
 }
 

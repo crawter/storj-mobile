@@ -42,7 +42,6 @@ class MainNavigationContainer extends Component {
                     isSingleItemSelected: this.props.isSingleItemSelected,
                     dispatch: this.props.dispatch,
                     state: this.props.nav,
-                    test: this.props.testAction,
                     goToBucketsScreen: this.props.goToBucketsScreen,
                     onActionBarPress: this.props.onActionBarPress,
                     hideActionBar: this.props.hideActionBar,
@@ -73,7 +72,6 @@ function mapDispatchToProps(dispatch) {
             hideActionBar,
             pushLoading 
         }, dispatch),
-        testAction: () => { dispatch(NavigationActions.navigate({ routeName: 'TestScreen'})); },
         goToBucketsScreen: () => { dispatch(NavigationActions.navigate({ routeName: 'BucketsScreen'})); },
 		listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId)),
         dispatch
