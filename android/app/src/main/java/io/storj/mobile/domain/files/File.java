@@ -141,6 +141,7 @@ public class File {
     public boolean isSynced() {
         return _isSynced;
     }
+    public boolean isFileHandleSet() { return _isFileHandleSet; }
 
     public void setStarred(boolean isStarred) {
         _isStarred = isStarred;
@@ -154,4 +155,5 @@ public class File {
     public void setUri(String localPath) {
         _fileUri = localPath;
     }
+    public void setThumbnail(String thumb) { _thumbnail = thumb; }
 }

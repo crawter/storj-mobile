@@ -53,7 +53,7 @@ public class WorkerUploaderCallback extends BaseUploaderCallback {
         String thumbnail = null;
 
         if(file.getMimeType().contains("image/")) {
-            SingleResponse resp = tProc.getThumbbnail(localPath);
+            SingleResponse resp = tProc.getThumbnail(localPath);
 
             if(resp.isSuccess())
                 thumbnail = resp.getResult();

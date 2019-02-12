@@ -1,7 +1,6 @@
 package io.storj.mobile.storjlibmodule.services;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,25 +8,20 @@ import android.util.Log;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import java.net.MalformedURLException;
-
 import io.storj.libstorj.DownloadFileCallback;
 import io.storj.libstorj.Storj;
 import io.storj.libstorj.android.StorjAndroid;
-import io.storj.mobile.storjlibmodule.dataprovider.DatabaseFactory;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.FileContract;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.FileDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.FileRepository;
+import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.common.responses.SingleResponse;
+import io.storj.mobile.dataprovider.Database;
+import io.storj.mobile.domain.IDatabase;
+import io.storj.mobile.domain.files.File;
+import io.storj.mobile.dataprovider.files.FileContract;
 import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
-import io.storj.mobile.storjlibmodule.responses.SingleResponse;
 import io.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 import io.storj.mobile.storjlibmodule.utils.ProgressResolver;
 import io.storj.mobile.storjlibmodule.utils.ThumbnailProcessor;
 import io.storj.mobile.storjlibmodule.utils.UploadSyncObject;
-
-/**
- * Created by Yaroslav-Note on 3/13/2018.
- */
 
 public class DownloadService extends BaseReactService {
 
@@ -50,8 +44,25 @@ public class DownloadService extends BaseReactService {
 
     private final static String DEBUG_TAG = "DOWNLOAD SERVICE DEBUG";
 
+    private IDatabase mStore;
+    private Storj storj;
+
     public DownloadService() {
         super(SERVICE_NAME_SHORT);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        try {
+            storj = StorjAndroid.getInstance(this, "https://api.v2.storj.io");
+        } catch(Exception e) {
+            this.stopSelf();
+            return;
+        }
+
+        mStore = new Database(this, null);
     }
 
     @Override
@@ -93,35 +104,24 @@ public class DownloadService extends BaseReactService {
 
     private boolean downloadFile(String bucketId, final String fileId, String localPath) {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        //Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
         java.io.File file = new java.io.File(localPath);
 
-        if(bucketId == null || fileId == null /*|| !file.exists() || */|| file.isDirectory()) {
+        if(bucketId == null || fileId == null || file.isDirectory()) {
             return false;
         }
 
-        final SQLiteDatabase db = new DatabaseFactory(this, null).getWritableDatabase();
-        final FileRepository fileRepo = new FileRepository(db);
-        final ThumbnailProcessor tProc = new ThumbnailProcessor(fileRepo);
+        final ThumbnailProcessor tProc = new ThumbnailProcessor();
 
-        final FileDbo fileDbo = fileRepo.get(fileId);
+        final SingleResponse<File> getFileResponse = mStore.files().get(fileId);
+        if (!getFileResponse.isSuccess()) {
+            return false;
+        }
 
         final UploadSyncObject uploadSyncObject = new UploadSyncObject();
         final ProgressResolver progressResolver = new ProgressResolver();
 
-        if(fileDbo == null) {
-            return false;
-        }
-
-        Storj storj;
-        try {
-            storj = StorjAndroid.getInstance(DownloadService.this, "https://api.v2.storj.io");
-        } catch (MalformedURLException e) {
-            Log.e("Storj.Lib.Module", "getStorj: ", e);
-            // TODO: 06.02.19 Handle NPE corner case
-            return false;
-        }
+        final File fileDbo = getFileResponse.getResult();
 
         final long fileHandle = storj.downloadFile(bucketId, fileId, localPath, new DownloadFileCallback() {
             @Override
@@ -147,7 +147,7 @@ public class DownloadService extends BaseReactService {
                 }
 
                 WritableMap map = new WritableNativeMap();
-                map.putString(FileContract._FILE_ID, fileId);
+                map.putString("fileId", fileId);
                 map.putDouble(FileContract._FILE_HANDLE, fileDbo.getFileHandle());
                 map.putDouble("progress", _progress);
 
@@ -156,23 +156,29 @@ public class DownloadService extends BaseReactService {
 
             @Override
             public void onComplete(String fileId, String localPath) {
-                if(fileRepo.update(fileId, DownloadStateEnum.DOWNLOADED.getValue(), 0, localPath).isSuccess()) {
+                fileDbo.setFileHandle(0);
+                fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADED.getValue());
+                fileDbo.setUri(localPath);
+
+                Response updateFileResponse = mStore.files().update(fileDbo);
+                if(updateFileResponse.isSuccess()) {
                     WritableMap map = new WritableNativeMap();
-                    map.putString(FileContract._FILE_ID, fileId);
+                    map.putString("fileId", fileId);
                     map.putString("localPath", localPath);
 
-                    if(fileDbo.toModel().getMimeType().contains("image/")) {
-                        SingleResponse resp = tProc.getThumbbnail(fileId, localPath);
-
+                    if(fileDbo.getMimeType().contains("image/")) {
+                        SingleResponse<String> resp = tProc.getThumbnail(localPath);
                         if(resp.isSuccess()) {
                             map.putString(FileContract._FILE_THUMBNAIL, resp.getResult());
                         }
+
+                        fileDbo.setThumbnail(resp.getResult());
+                        mStore.files().update(fileDbo);
                     }
 
                     sendEvent(EVENT_FILE_DOWNLOAD_SUCCESS, map);
                 }
 
-                db.close();
                 synchronized(uploadSyncObject) {
                     uploadSyncObject.setJobFinishedSuccess();
                 }
@@ -180,16 +186,20 @@ public class DownloadService extends BaseReactService {
 
             @Override
             public void onError(String fileId, int code, String message) {
-                if(fileRepo.update(fileId, DownloadStateEnum.DEFAULT.getValue(), 0, null).isSuccess()) {
+                fileDbo.setFileHandle(0);
+                fileDbo.setDownloadState(DownloadStateEnum.DEFAULT.getValue());
+                fileDbo.setUri(null);
+
+                Response updateFileResponse = mStore.files().update(fileDbo);
+                if(updateFileResponse.isSuccess()) {
                     WritableMap map = new WritableNativeMap();
-                    map.putString(FileContract._FILE_ID, fileId);
-                    map.putString("errorMessage", message);
-                    map.putInt("errorCode", code);
+                    map.putString("fileId", fileId);
+                    map.putString("message", message);
+                    map.putInt("code", code);
 
                     sendEvent(EVENT_FILE_DOWNLOAD_ERROR, map);
                 }
 
-                db.close();
                 synchronized(uploadSyncObject) {
                     uploadSyncObject.setJobFinished();
                 }
@@ -197,11 +207,15 @@ public class DownloadService extends BaseReactService {
         });
 
         synchronized(fileDbo) {
-            fileDbo.setProp(FileContract._FILE_HANDLE, fileHandle);
+            fileDbo.setFileHandle(fileHandle);
+            fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADING.getValue());
+            fileDbo.setUri(null);
 
-            if(fileRepo.update(fileId, DownloadStateEnum.DOWNLOADING.getValue(), fileHandle, null).isSuccess()) {
+            Response updateFileResponse = mStore.files().update(fileDbo);
+
+            if(updateFileResponse.isSuccess()) {
                 WritableMap map = new WritableNativeMap();
-                map.putString(FileContract._FILE_ID, fileId);
+                map.putString("fileId", fileId);
                 map.putDouble(FileContract._FILE_HANDLE, fileHandle);
 
                 sendEvent(EVENT_FILE_DOWNLOAD_START, map);
