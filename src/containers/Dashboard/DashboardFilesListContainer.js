@@ -13,6 +13,7 @@ import { listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync
 import BaseFilesListContainer from '../Files/BaseFilesListContainer';
 import headerFilesListBinder from "../../viewBinders/headerFilesListBinder";
 import ServiceModule from "../../utils/serviceModule";
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants";
 import PropTypes from 'prop-types';
 
 /** 
@@ -47,7 +48,7 @@ class DashboardFilesListContainer extends BaseFilesListContainer {
      * disables selecion mode and closes opened in dashboard screen bucket.
     */
     navigateBack() {
-        this.props.clearSearch(4);
+        this.props.clearSearch(SEARCH_LOCATION.FAV_FILES);
         this.props.dashboardNavigateBack();
         this.props.disableSelectionMode();
         this.props.setDashboardBucketId(null);
@@ -69,7 +70,7 @@ class DashboardFilesListContainer extends BaseFilesListContainer {
                 data = { data }
                 animatedScrollValue = { this.animatedScrollValue }
                 isFilesScreen = { true }
-                searchIndex = { 4 }
+                searchIndex = { SEARCH_LOCATION.FAV_FILES }
                 navigateBack = { this.navigateBack }
                 selectAll = { this.props.screenProps.selectAll }
                 deselectAll = { this.props.screenProps.deselectAll }

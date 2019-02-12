@@ -11,6 +11,7 @@ import { filesListContainerMainActions } from '../../reducers/mainContainer/main
 import { filesListContainerFileActions } from '../../reducers/mainContainer/Files/filesReducerActions';
 import { dashboardNavigateBack, navigateToDashboardFilesScreen, navigateBack } from '../../reducers/navigation/navigationActions';
 import DashboardComponent from '../../components/Dashboard/DashboardComponent';
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants"
 
 
 class DashboardScreenContainer extends Component {
@@ -38,8 +39,8 @@ class DashboardScreenContainer extends Component {
 	}
 
     navigateBack() {
-        this.props.clearSearch(3);
-        this.props.clearSearch(4);
+        this.props.clearSearch(SEARCH_LOCATION.FAV_BUCKETS);
+        this.props.clearSearch(SEARCH_LOCATION.FAV_FILES);
         this.props.dashboardNavigateBack();
         this.props.disableSelectionMode();
         this.props.setDashboardBucketId(null);

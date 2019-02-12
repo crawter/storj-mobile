@@ -8,6 +8,7 @@ import filesActions from '../../reducers/mainContainer/Files/filesReducerActions
 import { listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync";
 import headerFilesListBinder from "../../viewBinders/headerFilesListBinder";
 import BaseFilesListContainer from '../Files/BaseFilesListContainer';
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants";
 import PropTypes from 'prop-types';
 
 /** 
@@ -40,7 +41,7 @@ class MyPhotosContainer extends BaseFilesListContainer {
                 animatedScrollValue = { this.animatedScrollValue }
                 placeholder = { "Pictures" }
                 isFilesScreen = { false }
-                searchIndex = { 0 }
+                searchIndex = { SEARCH_LOCATION.MY_PHOTOS }
                 navigateBack = { () => {} }
                 selectAll = { this.props.screenProps.selectAll }
                 deselectAll = { this.props.screenProps.deselectAll }

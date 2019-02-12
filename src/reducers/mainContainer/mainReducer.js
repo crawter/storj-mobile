@@ -1,6 +1,7 @@
 import { MAIN_ACTIONS } from '../../utils/constants/actionConstants';
 import LoadingStack from "../../utils/loadingStack";
 import SORTING from '../../utils/constants/sortingConstants';
+import { SEARCH_LOCATION } from '../../utils/constants/searchConstants';
 
 const { 
     SHOW_ACTION_BAR, 
@@ -177,11 +178,11 @@ export default function mainReducer(state = initialState, action) {
 
 function setSearch(newState, index, value) {
     switch(index) {
-        case 0 : newState.myPhotosSearchSubSequence = value; break;
-        case 1 : newState.bucketSearchSubSequence = value; break;
-        case 2 : newState.filesSearchSubSequence = value; break;
-        case 3 : newState.starredSearchSubSequence = value; break;
-        case 4 : newState.dashboardFilesSearchSubSequence = value; break;
-        case 5 : newState.selectBucketsSearchSubSequence = value; break;
+        case SEARCH_LOCATION.MY_PHOTOS : newState.myPhotosSearchSubSequence = value; break;
+        case SEARCH_LOCATION.BUCKETS : newState.bucketSearchSubSequence = value; break;
+        case SEARCH_LOCATION.FILES : newState.filesSearchSubSequence = value; break;
+        case SEARCH_LOCATION.FAV_BUCKETS : newState.starredSearchSubSequence = value; break;
+        case SEARCH_LOCATION.FAV_FILES : newState.dashboardFilesSearchSubSequence = value; break;
+        case SEARCH_LOCATION.SELECT_BUCKETS : newState.selectBucketsSearchSubSequence = value; break;
     }
 }

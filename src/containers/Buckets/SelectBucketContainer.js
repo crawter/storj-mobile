@@ -15,6 +15,7 @@ import {
 } from '../../reducers/mainContainer/mainReducerActions';
 import SelectBucketComponent from '../../components/Buckets/SelectBucketComponent';
 import BaseListContainer from "../BaseListContainer";
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants";
 
 /**
  * Container for SelectBucketComponent
@@ -94,7 +95,7 @@ class SelectBucketContainer extends BaseListContainer {
                 getBucketName = { getShortBucketName }
                 setSearch = { this.props.setSearch }
                 clearSearch = { this.props.clearSearch }
-                searchIndex = { 5 } 
+                searchIndex = { SEARCH_LOCATION.SELECT_BUCKETS }
                 bucketIdToCopy = { this.getBucketToCopyId() }
                 copyFiles = { this.props.navigation.state.params.callback }
                 setBucketIdToCopy = { this.props.setBucketIdToCopy }

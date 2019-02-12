@@ -13,6 +13,7 @@ import { listUploadingFiles } from "../../reducers/asyncActions/fileActionsAsync
 import filesActions from '../../reducers/mainContainer/Files/filesReducerActions';
 import BaseFilesListContainer from "./BaseFilesListContainer";
 import headerFilesListBinder from "../../viewBinders/headerFilesListBinder";
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants";
 
 /**
  * Container for recentSync files screen on dashboard
@@ -55,7 +56,7 @@ class FavoriteFilesContainer extends BaseFilesListContainer {
      * disables selecion mode and closes opened in dashboard screen bucket.
     */
     navigateBack() {
-        this.props.clearSearch(4);
+        this.props.clearSearch(SEARCH_LOCATION.FAV_FILES);
         this.props.dashboardNavigateBack();
         this.props.disableSelectionMode();
         this.props.setDashboardBucketId(null);
@@ -85,7 +86,7 @@ class FavoriteFilesContainer extends BaseFilesListContainer {
                 data = { data }
                 animatedScrollValue = { this.animatedScrollValue }
                 isFilesScreen = { true }
-                searchIndex = { 4 }
+                searchIndex = { SEARCH_LOCATION.FAV_FILES }
                 navigateBack = { this.navigateBack }
                 selectAll = { this.selectAll }
                 deselectAll = { this.deselectFiles }

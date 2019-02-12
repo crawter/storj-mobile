@@ -10,6 +10,7 @@ import { getShortBucketName } from "../../utils/fileUtils";
 import BaseListContainer from "../BaseListContainer";
 import HeaderBucketsListComponent from "../../components/Buckets/HeaderBucketsListComponent";
 import BucketModel from '../../models/BucketModel';
+import { SEARCH_LOCATION } from "../../utils/constants/searchConstants";
 
 /**
  * Container for favorite buckets screen on dashboard
@@ -70,7 +71,7 @@ class FavoriteBucketsContainer extends BaseListContainer {
      * disables selecion mode and closes opened in dashboard screen bucket.
     */
     navigateBack() {
-        this.props.clearSearch(3);
+        this.props.clearSearch(SEARCH_LOCATION.FAV_BUCKETS);
         this.props.dashboardNavigateBack();
         this.props.disableSelectionMode();
         this.props.setDashboardBucketId(null);
@@ -114,7 +115,7 @@ class FavoriteBucketsContainer extends BaseListContainer {
                 onRefresh = { this.emptyFunction }
 
                 isFilesScreen = { true }
-                searchIndex = { 3 }
+                searchIndex = { SEARCH_LOCATION.FAV_BUCKETS }
                 navigateBack = { this.navigateBack }
                 buckets = { [] }
                 setSearch = { this.props.setSearch }
