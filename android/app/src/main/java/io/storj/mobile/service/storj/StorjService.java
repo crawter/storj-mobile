@@ -115,12 +115,12 @@ public class StorjService {
 
     public Response deleteFile(final String bucketId, final String fileId) throws InterruptedException, KeysNotFoundException {
         CountDownLatch latch = new CountDownLatch(1);
-        FileDeleter fdeleter = new FileDeleter(latch);
+        FileDeleter fDeleter = new FileDeleter(latch);
 
-        mInstance.deleteFile(bucketId, fileId, fdeleter);
+        mInstance.deleteFile(bucketId, fileId, fDeleter);
 
         latch.await();
-        return fdeleter.getResult();
+        return fDeleter.getResult();
     }
 
     // TODO: check behavior with zero value

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import io.storj.libstorj.KeysNotFoundException;
 import io.storj.libstorj.Storj;
 import io.storj.libstorj.android.StorjAndroid;
 import io.storj.mobile.common.responses.Response;
@@ -11,14 +12,13 @@ import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.service.FetchService;
 import io.storj.mobile.service.storj.StorjService;
-import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 
-import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.GET_BUCKETS;
-import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.GET_FILES;
 import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.BUCKET_CREATED;
 import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.BUCKET_DELETED;
 import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.FILE_DELETED;
+import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.GET_BUCKETS;
+import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.GET_FILES;
 
 public class FetchIntentService extends BaseReactService {
     public final static String SERVICE_NAME = "io.storj.mobile.storjlibmodule.services.FetchIntentService";
@@ -50,7 +50,7 @@ public class FetchIntentService extends BaseReactService {
             this.stopSelf();
 
             // GRACEFULLY CLOSE APP :D
-            mService.createBucket("");
+            //mService.createBucket("");
             return;
         }
 
@@ -67,6 +67,8 @@ public class FetchIntentService extends BaseReactService {
         String action = intent.getAction();
         Log.d(TAG, "onHandleIntent: " + action);
 
+        // TODO: move exception handling here
+        // as we don't care which method throw
         switch(action) {
             case GET_BUCKETS:
                 getBuckets();
@@ -89,29 +91,69 @@ public class FetchIntentService extends BaseReactService {
     }
 
     private void getBuckets() {
-        sendEvent(EVENT_BUCKETS_UPDATED, mService.getBuckets().isSuccess());
+        try {
+            sendEvent(EVENT_BUCKETS_UPDATED, mService.getBuckets().isSuccess());
+        } catch (KeysNotFoundException ex) {
+            // TODO: finish handling keys not found exception, send
+            // a toast that will ask user to sign out and sign in again
+            sendEvent(EVENT_BUCKETS_UPDATED, false);
+        } catch (InterruptedException ex) {
+            //TODO: handle InterruptedException, no need to send event
+        }
     }
 
     private void getFiles(final String bucketId) {
-        Response getFileResponse = mService.getFiles(bucketId);
-        SingleResponse<String> result = new SingleResponse<String>(
-                bucketId,
-                getFileResponse.isSuccess(),
-                getFileResponse.getError().getMessage()
-        );
+        try {
+            Response getFileResponse = mService.getFiles(bucketId);
+            SingleResponse<String> result = new SingleResponse<String>(
+                    bucketId,
+                    getFileResponse.isSuccess(),
+                    getFileResponse.getError().getMessage()
+            );
 
-        sendEvent(EVENT_FILES_UPDATED, toJson(result));
+            sendEvent(EVENT_FILES_UPDATED, toJson(result));
+        } catch (KeysNotFoundException ex) {
+            // TODO: finish handling keys not found exception, send
+            // a toast that will ask user to sign out and sign in again
+            sendEvent(EVENT_FILES_UPDATED, toJson(new SingleResponse<String>(null, false, "keys not found")));
+        } catch (InterruptedException ex) {
+            //TODO: handle InterruptedException, no need to send event
+        }
     }
 
     private void createBucket(final String bucketName) {
-        sendEvent(EVENT_BUCKET_CREATED, toJson(mService.createBucket(bucketName)));
+        try {
+            sendEvent(EVENT_BUCKET_CREATED, toJson(mService.createBucket(bucketName)));
+        } catch (KeysNotFoundException ex) {
+            // TODO: finish handling keys not found exception, send
+            // a toast that will ask user to sign out and sign in again
+            sendEvent(EVENT_BUCKET_CREATED, toJson(new Response(false, "keys not found")));
+        } catch (InterruptedException ex) {
+            //TODO: handle InterruptedException, no need to send event
+        }
     }
 
     private void deleteBucket(final String bucketId) {
-        sendEvent(EVENT_BUCKET_DELETED, toJson(mService.deleteBucket(bucketId)));
+        try {
+            sendEvent(EVENT_BUCKET_DELETED, toJson(mService.deleteBucket(bucketId)));
+        } catch (KeysNotFoundException ex) {
+            // TODO: finish handling keys not found exception, send
+            // a toast that will ask user to sign out and sign in again
+            sendEvent(EVENT_BUCKET_DELETED, toJson(new Response(false, "keys not found")));
+        } catch (InterruptedException ex) {
+            //TODO: handle InterruptedException, no need to send event
+        }
     }
 
     private void deleteFile(final String bucketId, final String fileId) {
-        sendEvent(EVENT_FILE_DELETED, toJson(mService.deleteFile(bucketId, fileId)));
+        try {
+            sendEvent(EVENT_FILE_DELETED, toJson(mService.deleteFile(bucketId, fileId)));
+        } catch (KeysNotFoundException ex) {
+            // TODO: finish handling keys not found exception, send
+            // a toast that will ask user to sign out and sign in again
+            sendEvent(EVENT_BUCKET_DELETED, toJson(new Response(false, "keys not found")));
+        } catch (InterruptedException ex) {
+            //TODO: handle InterruptedException, no need to send event
+        }
     }
 }

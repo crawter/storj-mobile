@@ -7,11 +7,11 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import java.io.File;
+
 import io.storj.mobile.service.storj.StorjService;
 import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.responses.SingleResponse;
-
-import java.io.File;
 
 public class StorjModule extends ReactContextBaseJavaModule {
     private static final String MODULE_NAME = "StorjLibAndroid";
@@ -59,7 +59,14 @@ public class StorjModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(mService.verifyKeys(email, password));
+                int errorCode = 1;
+                try {
+                    errorCode = mService.verifyKeys(email, password);
+                } catch (InterruptedException ex) {
+                    //TODO: handle InterruptedException
+                } finally {
+                    promise.resolve(errorCode);
+                }
             }
         }).run();
     }

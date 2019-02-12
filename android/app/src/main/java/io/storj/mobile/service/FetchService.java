@@ -2,6 +2,7 @@ package io.storj.mobile.service;
 
 import java.util.List;
 
+import io.storj.libstorj.KeysNotFoundException;
 import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.common.responses.SingleResponse;
@@ -20,7 +21,7 @@ public class FetchService {
         mStore = db;
     }
 
-    public Response getBuckets() {
+    public Response getBuckets() throws InterruptedException, KeysNotFoundException {
         ListResponse<Bucket> bucketResponse = mStorj.getBuckets();
         if (!bucketResponse.isSuccess()) {
             return bucketResponse;
@@ -93,7 +94,7 @@ public class FetchService {
         return new Response(true, null);
     }
 
-    public Response getFiles(final String bucketId) {
+    public Response getFiles(final String bucketId) throws InterruptedException, KeysNotFoundException {
         ListResponse<File> fileResponse = mStorj.getFiles(bucketId);
         if (!fileResponse.isSuccess()) {
             return fileResponse;
@@ -163,7 +164,7 @@ public class FetchService {
         return new Response(true, null);
     }
 
-    public Response createBucket(final String bucketName) {
+    public Response createBucket(final String bucketName) throws InterruptedException, KeysNotFoundException {
         SingleResponse<Bucket> createBucketResponse = mStorj.createBucket(bucketName);
         if (!createBucketResponse.isSuccess()) {
             return createBucketResponse;
@@ -172,7 +173,7 @@ public class FetchService {
         return mStore.buckets().insert(createBucketResponse.getResult());
     }
 
-    public Response deleteBucket(final String bucketId) {
+    public Response deleteBucket(final String bucketId) throws InterruptedException, KeysNotFoundException {
         Response deleteBucketResponse = mStorj.deleteBucket(bucketId);
         if (!deleteBucketResponse.isSuccess()) {
             return deleteBucketResponse;
@@ -181,7 +182,7 @@ public class FetchService {
         return mStore.buckets().delete(bucketId);
     }
 
-    public Response deleteFile(final String bucketId, final String fileId) {
+    public Response deleteFile(final String bucketId, final String fileId) throws InterruptedException, KeysNotFoundException {
         Response deleteFileResponse = mStorj.deleteFile(bucketId, fileId);
         if (!deleteFileResponse.isSuccess()) {
             return deleteFileResponse;
@@ -190,7 +191,7 @@ public class FetchService {
         return mStore.files().delete(fileId);
     }
 
-    private <T> void listShift(List<T> array, int pos, int length) {
+    private <T> void listShift(List<T> array, int pos, int length)  {
         while(pos < length - 1) {
             array.set(pos, array.get(pos + 1));
             pos++;
