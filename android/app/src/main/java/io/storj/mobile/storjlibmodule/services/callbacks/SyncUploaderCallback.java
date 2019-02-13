@@ -3,17 +3,15 @@ package io.storj.mobile.storjlibmodule.services.callbacks;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.NotificationCompat;
 
 import io.storj.libstorj.File;
 import io.storj.mobile.R;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.SynchronizationQueueContract;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.SyncQueueEntryDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.SyncQueueRepository;
+import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.common.responses.SingleResponse;
+import io.storj.mobile.domain.IDatabase;
+import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
 import io.storj.mobile.storjlibmodule.enums.SyncStateEnum;
-import io.storj.mobile.storjlibmodule.models.SyncQueueEntryModel;
-import io.storj.mobile.storjlibmodule.responses.Response;
 import io.storj.mobile.storjlibmodule.services.NotificationService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
 import io.storj.mobile.storjlibmodule.services.UploadService;
@@ -23,17 +21,15 @@ import io.storj.mobile.storjlibmodule.utils.Uploader;
 
 public class SyncUploaderCallback extends WorkerUploaderCallback {
     private int mSyncEntryId;
-    private SyncQueueRepository mSyncRepo;
-    private SyncQueueEntryModel mSyncEntryModel;
+    private SyncQueueEntry mSyncEntryModel;
     private NotificationService mNotificationService;
     private SynchronizationEventEmitter mSyncEventEmitter;
     private Context mContext;
 
-    public SyncUploaderCallback(Context context, SQLiteDatabase db, Uploader.Callback eventEmitter, NotificationService notificationService, int syncEntryId) {
+    public SyncUploaderCallback(Context context, IDatabase db, Uploader.Callback eventEmitter, NotificationService notificationService, int syncEntryId) {
         super(db, eventEmitter, true);
         mContext = context;
         mSyncEntryId = syncEntryId;
-        mSyncRepo = new SyncQueueRepository(db);
         mNotificationService = notificationService;
         mSyncEventEmitter = new SynchronizationEventEmitter((BaseEventEmitter)eventEmitter);
     }
@@ -41,13 +37,16 @@ public class SyncUploaderCallback extends WorkerUploaderCallback {
     @Override
     public void onStart(long fileHandle, String bucketId, String fileName, String localPath) {
         super.onStart(fileHandle, bucketId, fileName, localPath);
-        mSyncEntryModel = mSyncRepo.get(mSyncEntryId);
+        SingleResponse<SyncQueueEntry> getEntryResponse = mStore.syncQueueEntries().get(mSyncEntryId);
+        if (!getEntryResponse.isSuccess()) {
+            return;
+        }
 
-        SyncQueueEntryDbo syncEntryDbo = new SyncQueueEntryDbo(mSyncEntryModel);
-        syncEntryDbo.setProp(SynchronizationQueueContract._STATUS, SyncStateEnum.PROCESSING.getValue());
-        syncEntryDbo.setProp(SynchronizationQueueContract._FILE_HANDLE, fileHandle);
+        mSyncEntryModel = getEntryResponse.getResult();
+        mSyncEntryModel.setStatus(SyncStateEnum.PROCESSING.getValue());
+        mSyncEntryModel.setFileHandle(fileHandle);
 
-        Response response = mSyncRepo.update(syncEntryDbo.toModel());
+        Response response = mStore.syncQueueEntries().update(mSyncEntryModel);
 
         if(response.isSuccess()) {
             mSyncEventEmitter.SyncEntryUpdated(mSyncEntryId);
@@ -63,7 +62,7 @@ public class SyncUploaderCallback extends WorkerUploaderCallback {
             return false;
         }
 
-        int filesLeftToProcess = mSyncRepo.getActiveCount();
+        int filesLeftToProcess = mStore.syncQueueEntries().getActiveCount();
         int totalMb = (int) (totalBytes/1024);
         int uploadedMb = (int) (uploadedBytes/1024);
         String state = "Uploading";
@@ -79,11 +78,9 @@ public class SyncUploaderCallback extends WorkerUploaderCallback {
     public void onComplete(String localPath, File file) {
         super.onComplete(localPath, file);
 
-        SyncQueueEntryDbo syncEntryDbo = new SyncQueueEntryDbo(mSyncEntryModel);
-        syncEntryDbo.setProp(SynchronizationQueueContract._STATUS, SyncStateEnum.PROCESSED.getValue());
+        mSyncEntryModel.setStatus(SyncStateEnum.PROCESSED.getValue());
 
-        Response response = mSyncRepo.update(syncEntryDbo.toModel());
-
+        Response response = mStore.syncQueueEntries().update(mSyncEntryModel);
         if(response.isSuccess()) {
             mSyncEventEmitter.SyncEntryUpdated(mSyncEntryId);
         }
@@ -93,11 +90,10 @@ public class SyncUploaderCallback extends WorkerUploaderCallback {
     public void onError(String localPath, int code, String message) {
         super.onError(localPath, code, message);
 
-        SyncQueueEntryDbo syncEntryDbo = new SyncQueueEntryDbo(mSyncEntryModel);
-        syncEntryDbo.setProp(SynchronizationQueueContract._STATUS, SyncStateEnum.ERROR.getValue());
-        syncEntryDbo.setProp(SynchronizationQueueContract._ERROR_CODE, code);
+        mSyncEntryModel.setStatus(SyncStateEnum.ERROR.getValue());
+        mSyncEntryModel.setErrorCode(code);
 
-        Response response = mSyncRepo.update(syncEntryDbo.toModel());
+        Response response = mStore.syncQueueEntries().update(mSyncEntryModel);
 
         if(response.isSuccess()) {
             mSyncEventEmitter.SyncEntryUpdated(mSyncEntryId);

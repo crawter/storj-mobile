@@ -28,15 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.common.responses.SingleResponse;
+import io.storj.mobile.dataprovider.settings.SettingsContract;
 import io.storj.mobile.domain.settings.Settings;
-import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
-import io.storj.mobile.domain.syncqueue.SyncStateEnum;
 import io.storj.mobile.service.SyncService;
 import io.storj.mobile.storjlibmodule.GsonSingle;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.SyncQueueEntryDbo;
 import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.SettingsContract;
 import io.storj.mobile.storjlibmodule.services.SynchronizationSchedulerJobService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
 

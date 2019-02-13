@@ -92,4 +92,10 @@ public class SyncQueueEntry {
     public void setStatus(int status) {
         _status = status;
     }
+    public void setFileHandle(long handle) {
+        _fileHandle = handle;
+    }
+    public void setErrorCode(int code) {
+        _errorCode = code;
+    }
 }

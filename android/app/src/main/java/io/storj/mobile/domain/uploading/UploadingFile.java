@@ -25,32 +25,35 @@ public class UploadingFile {
     public long getFileHandle() {
         return _fileHandle;
     }
-
     public double getProgress() {
         return _progress;
     }
-
     public long getSize() {
         return _size;
     }
-
     public long getUploaded() {
         return _uploaded;
     }
-
     public String getName() {
         return _name;
     }
-
     public String getUri() {
         return _uri;
     }
-
     public String getBucketId() {
         return _bucketId;
     }
-
     public boolean isIdSet() {
         return isIdSet;
+    }
+
+    public void setProgress(double progress) {
+        _progress = progress;
+    }
+    public void setUploaded(long uploadedBytes) {
+        _uploaded = uploadedBytes;
+    }
+    public void setSize(long totalBytes) {
+        _size = totalBytes;
     }
 }

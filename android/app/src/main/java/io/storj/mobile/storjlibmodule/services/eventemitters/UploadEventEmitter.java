@@ -4,8 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import io.storj.libstorj.File;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.FileContract;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.UploadingFileContract;
+import io.storj.mobile.dataprovider.uploading.UploadingFileContract;
 import io.storj.mobile.storjlibmodule.utils.Uploader;
 
 public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Callback {
@@ -30,7 +29,7 @@ public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Cal
     @Override
     public void onStart(long fileHandle, String bucketId, String fileName, String localPath) {
         ContentValues map = new ContentValues();
-        map.put(UploadingFileContract._FILE_HANDLE, fileHandle);
+        map.put("fileHandle", fileHandle);
 
         mFileHandle = fileHandle;
 
@@ -40,7 +39,7 @@ public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Cal
     @Override
     public boolean onProgress(String localPath, double progress, long uploadedBytes, long totalBytes) {
         ContentValues map = new ContentValues();
-        map.put(UploadingFileContract._FILE_HANDLE, mFileHandle);
+        map.put("fileHandle", mFileHandle);
         map.put(UploadingFileContract._PROGRESS, progress);
         map.put(UploadingFileContract._UPLOADED, uploadedBytes);
 
@@ -51,8 +50,8 @@ public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Cal
     @Override
     public void onComplete(String localPath, File file) {
         ContentValues map = new ContentValues();
-        map.put(UploadingFileContract._FILE_HANDLE, mFileHandle);
-        map.put(FileContract._FILE_ID, file.getId());
+        map.put("fileHandle", mFileHandle);
+        map.put("fileId", file.getId());
 
         Emit(EVENT_FILE_UPLOADED_SUCCESSFULLY, map);
     }
@@ -63,7 +62,7 @@ public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Cal
 
         map.put(ERROR_MESSAGE, message);
         map.put(ERROR_CODE, code);
-        map.put(UploadingFileContract._FILE_HANDLE, mFileHandle);
+        map.put("fileHandle", mFileHandle);
 
         Emit(EVENT_FILE_UPLOAD_ERROR, map);
     }

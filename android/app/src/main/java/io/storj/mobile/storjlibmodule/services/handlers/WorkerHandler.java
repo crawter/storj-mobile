@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import io.storj.mobile.storjlibmodule.dataprovider.DatabaseFactory;
+import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.storjlibmodule.services.callbacks.WorkerUploaderCallback;
 import io.storj.mobile.storjlibmodule.services.eventemitters.UploadEventEmitter;
 import io.storj.mobile.storjlibmodule.utils.Uploader;
@@ -39,11 +39,12 @@ public class WorkerHandler extends Handler {
             }
         }
 
-        try(SQLiteDatabase db = new DatabaseFactory(mContext, null).getWritableDatabase()) {
-            Uploader uploader = new Uploader(mContext, new WorkerUploaderCallback(db, new UploadEventEmitter(mContext), false));
+        Uploader uploader = new Uploader(mContext, new WorkerUploaderCallback(Database.getInstance(), new UploadEventEmitter(mContext), false));
+        try {
             uploader.uploadFile(bucketId, fileName, localPath);
         } catch (Exception e) {
-            String message = e.getMessage();
+
         }
+
     }
 }

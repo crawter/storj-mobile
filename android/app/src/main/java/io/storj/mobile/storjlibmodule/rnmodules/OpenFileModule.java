@@ -12,7 +12,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.io.File;
 import java.util.Arrays;
 
-import io.storj.mobile.storjlibmodule.responses.Response;
+import io.storj.mobile.common.responses.Response;
 
 /**
  * React-native module. Contains functionality to open
@@ -38,7 +38,7 @@ public class OpenFileModule  extends ReactContextBaseJavaModule {
     public void openFile(String fileUri, Promise promise) {
 
         if (fileUri == null || fileUri.isEmpty()) {
-            promise.resolve(new Response(false, "Uri is corrupted").toWritableMap());
+            //promise.resolve(toJson(new Response(false, "Uri is corrupted")));
             return;
         }
 
@@ -54,19 +54,19 @@ public class OpenFileModule  extends ReactContextBaseJavaModule {
         PackageManager packageManager = getReactApplicationContext().getPackageManager();
 
         if (intent.resolveActivity(packageManager) == null) {
-            promise.resolve(new Response(false, "File type not suported or no default application for file found.").toWritableMap());
+            //promise.resolve(new Response(false, "File type not suported or no default application for file found.").toWritableMap());
             return;
         }
 
         getReactApplicationContext().startActivity(intent);
 
-        promise.resolve(new Response(true, null).toWritableMap());
+        //promise.resolve(new Response(true, null).toWritableMap());
     }
 
     @ReactMethod
     public void shareFile(String uri, Promise promise) {
         if (uri == null || uri.isEmpty()) {
-            promise.resolve(new Response(false, "Uri is corrupted").toWritableMap());
+            //promise.resolve(new Response(false, "Uri is corrupted").toWritableMap());
             return;
         }
 
@@ -83,18 +83,18 @@ public class OpenFileModule  extends ReactContextBaseJavaModule {
         PackageManager packageManager = getReactApplicationContext().getPackageManager();
 
         if (shareIntent.resolveActivity(packageManager) == null) {
-            promise.resolve(new Response(false, "File type not suported or no default application for file found.").toWritableMap());
+            //promise.resolve(new Response(false, "File type not suported or no default application for file found.").toWritableMap());
             return;
         }
 
         getCurrentActivity().startActivity(Intent.createChooser(shareIntent, "Share file to..."));
-        promise.resolve(new Response(true, null).toWritableMap());
+        //promise.resolve(new Response(true, null).toWritableMap());
     }
 
     @ReactMethod
     public void checkFile(String fileName, Promise promise) {
         if (fileName == null || fileName.isEmpty()) {
-            promise.resolve(new Response(false, "Uri is corrupted").toWritableMap());
+            //promise.resolve(new Response(false, "Uri is corrupted").toWritableMap());
             return;
         }
 
@@ -102,7 +102,7 @@ public class OpenFileModule  extends ReactContextBaseJavaModule {
 
         boolean contains = Arrays.asList(new String[] {"doc", "pdf",  "ppt", "pptx", "rtf", "wav", "mp3", "txt", "3gp", "mpg", "mpeg", "mpe", "mp4", "avi"}).contains(ext);
 
-        promise.resolve(new Response(contains, null).toWritableMap());
+        //promise.resolve(new Response(contains, null).toWritableMap());
     }
 
     private String getType(String ext) {

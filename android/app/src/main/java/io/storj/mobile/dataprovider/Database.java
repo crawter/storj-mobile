@@ -11,6 +11,7 @@ import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.dataprovider.buckets.BucketContract;
 import io.storj.mobile.dataprovider.files.FileContract;
 import io.storj.mobile.dataprovider.settings.SettingsContract;
+import io.storj.mobile.dataprovider.syncqueue.SyncQueueContract;
 import io.storj.mobile.dataprovider.syncqueue.SyncQueueRepository;
 import io.storj.mobile.dataprovider.buckets.BucketRepository;
 import io.storj.mobile.dataprovider.files.FileRepository;
@@ -23,7 +24,6 @@ import io.storj.mobile.domain.IDatabase;
 import io.storj.mobile.domain.settings.ISettingsRepository;
 import io.storj.mobile.domain.syncqueue.ISyncQueueRepository;
 import io.storj.mobile.domain.uploading.IUploadingFilesRepository;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.SynchronizationQueueContract;
 
 public class Database extends SQLiteOpenHelper implements IDatabase  {
     private IBucketRepository _buckets;
@@ -120,7 +120,7 @@ public class Database extends SQLiteOpenHelper implements IDatabase  {
         _db.execSQL("DROP TABLE IF EXISTS " + FileContract.TABLE_NAME);
         _db.execSQL("DROP TABLE IF EXISTS " + UploadingFileContract.TABLE_NAME);
         _db.execSQL("DROP TABLE IF EXISTS " + SettingsContract.TABLE_NAME);
-        _db.execSQL("DROP TABLE IF EXISTS " + SynchronizationQueueContract.TABLE_NAME);
+        _db.execSQL("DROP TABLE IF EXISTS " + SyncQueueContract.TABLE_NAME);
 
         return null;
     }

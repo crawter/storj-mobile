@@ -1,7 +1,6 @@
 package io.storj.mobile.storjlibmodule.services;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -13,28 +12,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import io.storj.mobile.storjlibmodule.dataprovider.DatabaseFactory;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.BucketContract;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.FileContract;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.SettingsContract;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.UploadingFileContract;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.BucketDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.FileDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.SettingsDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.dbo.SyncQueueEntryDbo;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.BucketRepository;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.FileRepository;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.SettingsRepository;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.SyncQueueRepository;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.UploadingFilesRepository;
+import io.storj.mobile.common.responses.SingleResponse;
+import io.storj.mobile.dataprovider.Database;
+import io.storj.mobile.dataprovider.buckets.BucketContract;
+import io.storj.mobile.dataprovider.files.FileContract;
+import io.storj.mobile.dataprovider.settings.SettingsContract;
+import io.storj.mobile.domain.IDatabase;
+import io.storj.mobile.domain.buckets.Bucket;
+import io.storj.mobile.domain.settings.Settings;
+import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
-import io.storj.mobile.storjlibmodule.models.SyncQueueEntryModel;
-import io.storj.mobile.storjlibmodule.models.UploadingFileModel;
-import io.storj.mobile.storjlibmodule.responses.Response;
-
-/**
- * Created by Yaroslav-Note on 3/13/2018.
- */
 
 public class SynchronizationSchedulerJobService extends JobService {
     private AsyncTask mBackgroundTask;
@@ -44,6 +31,7 @@ public class SynchronizationSchedulerJobService extends JobService {
         mBackgroundTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
+                IDatabase db = Database.getInstance();
                 String settingsId = job.getExtras().getString(SettingsContract._SETTINGS_ID);
 
                 if(settingsId == null) {
@@ -51,27 +39,20 @@ public class SynchronizationSchedulerJobService extends JobService {
                     return null;
                 }
 
-                try(SQLiteDatabase db = new DatabaseFactory(SynchronizationSchedulerJobService.this, null).getReadableDatabase()) {
-                    SettingsRepository settingsRepo = new SettingsRepository(db);
-                    SettingsDbo dbo = settingsRepo.get(settingsId);
-
-                    if(dbo == null) {
-                        Log.d(DEBUG_TAG, "sync: " + "No settings settings found by specified id!");
-                        return null;
-                    }
-
-                    BucketRepository bucketRepo = new BucketRepository(db);
-                    int syncSettings = dbo.toModel().getSyncSettings();
-
-                    syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_PHOTOS, bucketRepo, db);
-                    syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_MOVIES, bucketRepo, db);
-                    syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_DOCUMENTS, bucketRepo, db);
-                    syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_MUSIC, bucketRepo, db);
-
-                    settingsRepo.update(settingsId, getDateTime());
-                } catch (Exception e) {
-                    Log.d(DEBUG_TAG, "sync error: " + e.getMessage());
+                SingleResponse<Settings> getSettingsResponse = db.settings().get(settingsId);
+                if (!getSettingsResponse.isSuccess()) {
+                    return  null;
                 }
+
+                Settings settings = getSettingsResponse.getResult();
+                int syncSettings = settings.getSyncSettings();
+
+                syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_PHOTOS);
+                syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_MOVIES);
+                syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_DOCUMENTS);
+                syncFolder(settingsId, syncSettings, SyncSettingsEnum.SYNC_MUSIC);
+
+                db.settings().update(settings);
 
                 return null;
             }
@@ -86,6 +67,7 @@ public class SynchronizationSchedulerJobService extends JobService {
         };
 
         mBackgroundTask.execute();
+
         return true;
     }
 
@@ -98,7 +80,9 @@ public class SynchronizationSchedulerJobService extends JobService {
 
     private final static String DEBUG_TAG = "SYNCHRONIZATION DEBUG";
 
-    private void syncFolder(String settingsId, int syncSettings, SyncSettingsEnum syncEnum, BucketRepository bucketRepo, SQLiteDatabase db) {
+    private void syncFolder(String settingsId, int syncSettings, SyncSettingsEnum syncEnum) {
+        IDatabase db = Database.getInstance();
+
         if(syncEnum != SyncSettingsEnum.SYNC_DOCUMENTS
                 && syncEnum != SyncSettingsEnum.SYNC_MUSIC
                 && syncEnum != SyncSettingsEnum.SYNC_MOVIES
@@ -106,24 +90,25 @@ public class SynchronizationSchedulerJobService extends JobService {
             return;
         }
 
-        if(bucketRepo == null) {
-            return;
-        }
-
         int syncValue = syncEnum.getValue();
         String bucketName = syncEnum.getBucketName();
 
-        BucketDbo dbo = bucketRepo.get(BucketContract._NAME, bucketName);
-        boolean dboIsNotNull = dbo != null;
+        SingleResponse<Bucket> getBucketResponse = db.buckets().get(BucketContract._NAME, bucketName);
+        if (!getBucketResponse.isSuccess()) {
+            return;
+        }
+
         boolean isSyncOn = (syncSettings & syncValue) == syncValue;
 
-        if(isSyncOn && dboIsNotNull)
-            _syncFolder(syncEnum.geetFolderUri(), dbo.getId(), settingsId, syncSettings, db);
-        else
-            Log.d(DEBUG_TAG, "sync: " + "Settings for " + bucketName + " - " + " Dbo: " + dboIsNotNull + ", Sync settings: " + isSyncOn);
+        if(isSyncOn) {
+            _syncFolder(syncEnum.geetFolderUri(), getBucketResponse.getResult().getId(), settingsId, syncSettings);
+        }
+
     }
 
-    private void _syncFolder(String folderUri, String bucketId, String settingsId, int syncSettings, SQLiteDatabase db) {
+    private void _syncFolder(String folderUri, String bucketId, String settingsId, int syncSettings) {
+        IDatabase db = Database.getInstance();
+
         Log.d(DEBUG_TAG, "sync: " + "Start sync of " + folderUri + " and " + bucketId);
         File folder = new File(folderUri);
 
@@ -134,9 +119,6 @@ public class SynchronizationSchedulerJobService extends JobService {
 
         File[] files = folder.listFiles();
 
-        FileRepository fileRepo = new FileRepository(db);
-        SyncQueueRepository syncRepo = new SyncQueueRepository(db);
-
         for(File file : files) {
             Log.d(DEBUG_TAG, "sync: " + "File, name: " + file.getName());
             if (file.isDirectory()) {
@@ -144,20 +126,14 @@ public class SynchronizationSchedulerJobService extends JobService {
                 continue;
             }
 
-            FileDbo fileDbo = fileRepo.get(file.getName(), FileContract._NAME, bucketId);
-            SyncQueueEntryModel syncEntry = syncRepo.get(file.getPath(), bucketId);
+            SingleResponse<io.storj.mobile.domain.files.File> getFileResponse = db.files().get(file.getName(), FileContract._NAME, bucketId);
+            SyncQueueEntry syncEntry = db.syncQueueEntries().get(file.getPath(), bucketId);
 
-            if (fileDbo == null && syncEntry == null) {
-                syncFile(file.getName(), file.getPath(), bucketId, db);
+            if (!getFileResponse.isSuccess() && syncEntry == null) {
+                SyncQueueEntry dbo = new SyncQueueEntry(0, file.getName(), file.getPath(), 0, 0, 0, 0, null, bucketId, 0);
+                db.syncQueueEntries().insert(dbo);
             }
         }
-    }
-
-    private void syncFile(String fileName, String localPath, String bucketId, SQLiteDatabase db) {
-        SyncQueueRepository syncRepo = new SyncQueueRepository(db);
-
-        SyncQueueEntryDbo dbo = new SyncQueueEntryDbo(fileName, localPath, bucketId);
-        Response response = syncRepo.insert(dbo.toModel());
     }
 
     private String getDateTime() {

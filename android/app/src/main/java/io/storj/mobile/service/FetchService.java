@@ -164,13 +164,18 @@ public class FetchService {
         return new Response(true, null);
     }
 
-    public Response createBucket(final String bucketName) throws InterruptedException, KeysNotFoundException {
+    public SingleResponse<Bucket> createBucket(final String bucketName) throws InterruptedException, KeysNotFoundException {
         SingleResponse<Bucket> createBucketResponse = mStorj.createBucket(bucketName);
         if (!createBucketResponse.isSuccess()) {
             return createBucketResponse;
         }
 
-        return mStore.buckets().insert(createBucketResponse.getResult());
+        Response insertBucketResponse = mStore.buckets().insert(createBucketResponse.getResult());
+        if (!insertBucketResponse.isSuccess()) {
+            return new SingleResponse<>(null, false, null);
+        }
+
+        return createBucketResponse;
     }
 
     public Response deleteBucket(final String bucketId) throws InterruptedException, KeysNotFoundException {

@@ -151,6 +151,7 @@ public class File {
     }
     public void setFileHandle(long fileHandle) {
         _fileHandle = fileHandle;
+        _isFileHandleSet = true;
     }
     public void setUri(String localPath) {
         _fileUri = localPath;

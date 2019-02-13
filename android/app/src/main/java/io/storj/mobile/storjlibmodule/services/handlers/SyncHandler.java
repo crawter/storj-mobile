@@ -7,10 +7,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import io.storj.mobile.storjlibmodule.dataprovider.DatabaseFactory;
+import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.storjlibmodule.interfaces.NotificationResolver;
 import io.storj.mobile.storjlibmodule.services.NotificationService;
-import io.storj.mobile.storjlibmodule.services.UploadService;
 import io.storj.mobile.storjlibmodule.services.callbacks.SyncUploaderCallback;
 import io.storj.mobile.storjlibmodule.services.eventemitters.UploadEventEmitter;
 import io.storj.mobile.storjlibmodule.utils.Uploader;
@@ -36,13 +35,13 @@ public class SyncHandler extends Handler {
         String bucketId = data.getString(PARAM_BUCKET_ID);
         int syncEntryId = data.getInt(PARAM_SYNC_ENTRY_ID);
 
-        try(SQLiteDatabase db = new DatabaseFactory(mContext, null).getWritableDatabase()) {
+        try {
 
             NotificationService notificationService = new NotificationService();
             notificationService.init(mContext, mContext instanceof NotificationResolver ? (NotificationResolver) mContext : null);
 
             SyncUploaderCallback syncUploaderCallback = new SyncUploaderCallback(mContext,
-                    db,
+                    Database.getInstance(),
                     new UploadEventEmitter(mContext),
                     notificationService,
                     syncEntryId);

@@ -9,9 +9,10 @@ import com.facebook.react.bridge.ReactMethod;
 
 import java.io.File;
 
+import io.storj.mobile.common.responses.SingleResponse;
+
 import io.storj.mobile.service.storj.StorjService;
 import io.storj.mobile.storjlibmodule.GsonSingle;
-import io.storj.mobile.storjlibmodule.responses.SingleResponse;
 
 public class StorjModule extends ReactContextBaseJavaModule {
     private static final String MODULE_NAME = "StorjLibAndroid";
@@ -147,13 +148,13 @@ public class StorjModule extends ReactContextBaseJavaModule {
     public void getDownloadFolderPath(Promise promise) {
         File downloadDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS);
-        SingleResponse response = null;
+        SingleResponse<String> response = null;
 
         if(downloadDir == null || !downloadDir.exists() || !downloadDir.isDirectory()) {
-            response = new SingleResponse(false, null,
+            response = new SingleResponse<>(null, false,
                     "Unable to retrieve downloads folder path.");
         } else {
-            response = new SingleResponse(true, downloadDir.getAbsolutePath(), null);
+            response = new SingleResponse<>(downloadDir.getAbsolutePath(),true, null);
         }
         
         promise.resolve(toJson(response));

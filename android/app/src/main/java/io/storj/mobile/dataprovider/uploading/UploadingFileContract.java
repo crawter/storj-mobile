@@ -1,6 +1,6 @@
 package io.storj.mobile.dataprovider.uploading;
 
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.BaseContract;
+import io.storj.mobile.dataprovider.BaseContract;
 
 /**
  * Created by Yaroslav-Note on 3/7/2018.

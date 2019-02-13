@@ -87,8 +87,9 @@ class BaseFilesListContainer extends BaseListContainer {
      * @param {ListItemModel<FileModel>} file ListItemModel initialized with FileModel
      */
     async cancelDownload(file) {
+        console.log("cancel start")
         let cancelDownloadResponse = await StorjModule.cancelDownload(file.fileRef);
-
+        console.log("cancel end")
         if(cancelDownloadResponse.isSuccess) {
             this.props.fileDownloadCanceled(file.entity.bucketId, file.getId());
         }

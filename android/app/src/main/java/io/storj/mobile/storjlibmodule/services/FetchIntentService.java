@@ -12,6 +12,7 @@ import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.service.FetchService;
 import io.storj.mobile.service.storj.StorjService;
+import io.storj.mobile.storjlibmodule.models.FileDeleteModel;
 import io.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 
 import static io.storj.mobile.storjlibmodule.rnmodules.ServiceModule.BUCKET_CREATED;
@@ -135,7 +136,12 @@ public class FetchIntentService extends BaseReactService {
 
     private void deleteBucket(final String bucketId) {
         try {
-            sendEvent(EVENT_BUCKET_DELETED, toJson(mService.deleteBucket(bucketId)));
+            Response deleteBucketResponse = mService.deleteBucket(bucketId);
+            if (!deleteBucketResponse.isSuccess()) {
+                sendEvent(EVENT_BUCKET_DELETED, toJson(deleteBucketResponse));
+            }
+
+            sendEvent(EVENT_BUCKET_DELETED, toJson(new SingleResponse<>(bucketId, true, null)));
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again
@@ -147,7 +153,16 @@ public class FetchIntentService extends BaseReactService {
 
     private void deleteFile(final String bucketId, final String fileId) {
         try {
-            sendEvent(EVENT_FILE_DELETED, toJson(mService.deleteFile(bucketId, fileId)));
+            Response fileDeleteResponse = mService.deleteFile(bucketId, fileId);
+            if (!fileDeleteResponse.isSuccess()) {
+                sendEvent(EVENT_FILE_DELETED, toJson(fileDeleteResponse));
+            }
+
+            sendEvent(EVENT_FILE_DELETED, toJson(new SingleResponse<>(
+                    new FileDeleteModel(bucketId, fileId),
+                    true,
+                    null
+            )));
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again

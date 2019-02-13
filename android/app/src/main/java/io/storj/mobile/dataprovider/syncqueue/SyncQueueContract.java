@@ -1,6 +1,6 @@
 package io.storj.mobile.dataprovider.syncqueue;
 
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.BaseContract;
+import io.storj.mobile.dataprovider.BaseContract;
 
 public final class SyncQueueContract extends BaseContract {
     public final static String TABLE_NAME = "synchronizationQueue";

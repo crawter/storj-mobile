@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
 import io.storj.mobile.common.responses.SingleResponse;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.FileRepository;
 
 
 public class ThumbnailProcessor {

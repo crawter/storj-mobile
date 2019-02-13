@@ -3,11 +3,7 @@ package io.storj.mobile.storjlibmodule.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.SettingsContract;
-
-/**
- * Created by Yaroslav-Note on 3/19/2018.
- */
+import io.storj.mobile.dataprovider.settings.SettingsContract;
 
 public class SettingsModel {
     @Expose

@@ -1,25 +1,19 @@
 package io.storj.mobile.storjlibmodule.services.callbacks;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import io.storj.libstorj.File;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.FileRepository;
+import io.storj.mobile.common.responses.Response;
+import io.storj.mobile.domain.IDatabase;
 import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
-import io.storj.mobile.storjlibmodule.models.FileModel;
-import io.storj.mobile.storjlibmodule.responses.Response;
-import io.storj.mobile.storjlibmodule.responses.SingleResponse;
 import io.storj.mobile.storjlibmodule.services.eventemitters.UploadEventEmitter;
 import io.storj.mobile.storjlibmodule.utils.ThumbnailProcessor;
 import io.storj.mobile.storjlibmodule.utils.Uploader;
 
 public class WorkerUploaderCallback extends BaseUploaderCallback {
-    private FileRepository mFileRepo;
     protected Uploader.Callback mEventEmitter;
     protected boolean mIsSync;
 
-    public WorkerUploaderCallback(SQLiteDatabase db, Uploader.Callback eventEmitter, boolean isSync) {
+    public WorkerUploaderCallback(IDatabase db, Uploader.Callback eventEmitter, boolean isSync) {
         super(db);
-        mFileRepo = new FileRepository(db);
         mEventEmitter = eventEmitter;
         mIsSync = isSync;
 
@@ -59,14 +53,25 @@ public class WorkerUploaderCallback extends BaseUploaderCallback {
                 thumbnail = resp.getResult();
         }
 
-        FileModel fileModel = new FileModel(
-                file,
-                mIsSync,
-                DownloadStateEnum.DOWNLOADED.getValue(),
+        io.storj.mobile.domain.files.File fileModel = new io.storj.mobile.domain.files.File(
+                file.getBucketId(),
+                file.getCreated(),
+                file.getErasure(),
+                file.getHMAC(),
+                file.getId(),
+                file.getIndex(),
+                file.getMimeType(),
+                file.getName(),
                 localPath,
-                thumbnail);
+                thumbnail,
+                DownloadStateEnum.DOWNLOADED.getValue(),
+                0,
+                file.getSize(),
+                file.isDecrypted(),
+                false,
+                mIsSync);
 
-        Response response = mFileRepo.insert(fileModel);
+        Response response = mStore.files().insert(fileModel);
         mEventEmitter.onComplete(localPath, file);
     }
 

@@ -2,9 +2,7 @@ package io.storj.mobile;
 
 import android.app.Activity;
 import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.reactnative.photoview.PhotoViewPackage;
@@ -13,17 +11,13 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import io.storj.mobile.BuildConfig;
 
 import java.util.Arrays;
 import java.util.List;
 
 import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.storjlibmodule.interfaces.NotificationResolver;
-import io.storj.mobile.storjlibmodule.responses.Response;
 import io.storj.mobile.storjlibmodule.StorjLibPackage;
-import io.storj.mobile.storjlibmodule.dataprovider.DatabaseFactory;
-import io.storj.mobile.storjlibmodule.dataprovider.repositories.UploadingFilesRepository;
 import io.storj.mobile.storjlibmodule.services.NotificationService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
 

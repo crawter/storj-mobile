@@ -156,18 +156,22 @@ class Apps extends Component {
 	}
 
 	onFileDownloadStart(params) {
+		console.log("onFileDownloadStart", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadProgress(params) {
+		console.log("onFileDownloadProgress", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadSuccess(params) {		
+		console.log("onFileDownloadSuccess", params);
 		this.props.downloadFileSuccess(null, params.fileId, params.localPath, params.thumbnail);
 	}
 
 	onFileDownloadError(params) {
+		console.log("onFileDownloadError", params);
 		this.props.downloadFileError(null, params.fileId);
 	}
 
@@ -209,6 +213,7 @@ class Apps extends Component {
 
 	async onFilesReceived(response) {
 		response = JSON.parse(response);
+
 		if(!response.isSuccess) {
 			this.props.popLoading("files");
 			return;
@@ -237,10 +242,12 @@ class Apps extends Component {
 	}
 
 	onBucketCreated(response) {
+		response = JSON.parse(response);
+		
 		if(response.isSuccess) {
 			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));	
 		} else {
-			switch(response.error.errorCode) {				
+			switch(response.error.code) {				
 				case 409:
 					this.props.setNameAlreadyExistException();
 					this.timer = setTimeout(this.unsetNameAlreadyExistException.bind(this), 3000);
@@ -274,13 +281,17 @@ class Apps extends Component {
         this.props.unsetLoading();
 	}
 
-	onBucketDeleted(response) {	
+	onBucketDeleted(response) {			
+		response = JSON.parse(response);		
+
 		if(response.isSuccess) {
 			this.props.deleteBucket(response.result);
 		}
 	}
 	
 	onFileDeleted(response) {		
+		response = JSON.parse(response);
+
 		if(response.isSuccess) {
 			let result = response.result;
 			this.props.deleteFile(result.bucketId, result.fileId);

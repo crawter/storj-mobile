@@ -5,8 +5,7 @@ import android.content.ContentValues;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.FileContract;
-import io.storj.mobile.storjlibmodule.dataprovider.contracts.UploadingFileContract;
+import io.storj.mobile.dataprovider.uploading.UploadingFileContract;
 import io.storj.mobile.storjlibmodule.services.UploadService;
 import io.storj.mobile.storjlibmodule.services.eventemitters.UploadEventEmitter;
 
@@ -21,13 +20,13 @@ public class WritableMapMapper {
 
         for (String key : values.keySet()) {
             switch(key) {
-                case UploadingFileContract._FILE_HANDLE:
+                case "fileHandle":
                 case UploadingFileContract._PROGRESS:
                 case UploadingFileContract._SIZE:
                 case UploadingFileContract._UPLOADED:
                     map.putDouble(key, values.getAsDouble(key));
                     break;
-                case FileContract._FILE_ID:
+                case "fileId":
                 case UploadEventEmitter.ERROR_MESSAGE:
                     map.putString(key, values.getAsString(key));
                     break;

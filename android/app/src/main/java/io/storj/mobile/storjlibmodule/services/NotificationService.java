@@ -12,8 +12,6 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import java.util.List;
-
 import io.storj.mobile.MainActivity;
 import io.storj.mobile.R;
 import io.storj.mobile.storjlibmodule.interfaces.NotificationResolver;
