@@ -31,7 +31,7 @@ const FilePicker = (() => {
                     break;
             }
 
-            return await filePickerLib.show(options);
+            return JSON.parse(await filePickerLib.show(options));
         }
     }
 

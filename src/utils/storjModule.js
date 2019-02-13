@@ -100,6 +100,20 @@ const StorjLib = (() => {
 
             return response;
         };
+
+        /**
+         * cancel file downloading
+         * @returns {Promise<any>}
+         */
+        async cancelDownload(fileRef) {
+            let response = await storjLib.cancelDownload(fileRef);
+            
+            if(!response) {
+                console.log('cancelDownload error');
+            }
+
+            return response;
+        }
     
         /**
          * cancel file uploading
@@ -108,8 +122,8 @@ const StorjLib = (() => {
         async cancelUpload(fileRef) {
             let response = await storjLib.cancelUpload(fileRef);
 
-            if(!response.isSuccess) {
-                console.log('cancelUpload ', response.error.message);
+            if(!response) {
+                console.log('cancelUpload error');
             }
 
             return response;

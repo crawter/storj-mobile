@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import ListItemModel from '../../models/ListItemModel';
 import FileModel from '../../models/FileModel';
 import { isImage } from '../../utils/fileUtils';
-import {listUploadingFiles} from "../../reducers/asyncActions/fileActionsAsync";
 
 /** 
  * Base class for all screen with file lists
@@ -87,10 +86,7 @@ class BaseFilesListContainer extends BaseListContainer {
      * @param {ListItemModel<FileModel>} file ListItemModel initialized with FileModel
      */
     async cancelDownload(file) {
-        console.log("cancel start")
-        let cancelDownloadResponse = await StorjModule.cancelDownload(file.fileRef);
-        console.log("cancel end")
-        if(cancelDownloadResponse.isSuccess) {
+        if(await StorjModule.cancelDownload(file.fileRef)) {            
             this.props.fileDownloadCanceled(file.entity.bucketId, file.getId());
         }
     }
@@ -100,9 +96,7 @@ class BaseFilesListContainer extends BaseListContainer {
      * @param {ListItemModel<FileModel>} file ListItemModel initialized with FileModel
      */
     async cancelUpload(file) {        
-        let cancelUploadResponse = await StorjModule.cancelUpload(file.fileRef);
-
-        if(cancelUploadResponse.isSuccess) {
+        if(await StorjModule.cancelUpload(file.fileRef)) {
             this.props.fileUploadCanceled(file.entity.bucketId, file.getId());
         }
     }

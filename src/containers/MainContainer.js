@@ -443,6 +443,7 @@ class MainContainer extends Component {
 
     async uploadFile(bucketId, type) {
         let filePickerResponse = await filePicker.show(type);
+        console.log("uploadFile", filePickerResponse)
         this.props.hideActionBar();
 
         if(filePickerResponse.isSuccess) {
