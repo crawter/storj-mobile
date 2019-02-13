@@ -1,5 +1,7 @@
 package io.storj.mobile.service.storj;
 
+import java.util.concurrent.CountDownLatch;
+
 import io.storj.libstorj.Keys;
 import io.storj.libstorj.KeysNotFoundException;
 import io.storj.libstorj.Storj;
@@ -33,13 +35,8 @@ public class StorjService {
         return Storj.checkMnemonic(mnemonic);
     }
 
-    public int verifyKeys(final String email, final String password) {
-        try {
+    public int verifyKeys(final String email, final String password) throws InterruptedException {
             return mInstance.verifyKeys(email, password);
-            //return error == Storj.NO_ERROR;
-        } catch (InterruptedException ex) {
-            return 1;
-        }
     }
 
     public boolean keysExist() {
@@ -74,73 +71,65 @@ public class StorjService {
 
     //--- BUCKETS ---//
 
-    public ListResponse<Bucket> getBuckets() {
-        BucketsReceiver bReceiver = new BucketsReceiver();
+    public ListResponse<Bucket> getBuckets() throws InterruptedException, KeysNotFoundException {
+        CountDownLatch latch = new CountDownLatch(1);
+        BucketsReceiver bReceiver = new BucketsReceiver(latch);
 
-        try {
-            mInstance.getBuckets(bReceiver);
-        } catch (KeysNotFoundException ex) {
-            return new ListResponse<>(null, false, ex.getMessage());
-        }
+        mInstance.getBuckets(bReceiver);
 
+        latch.await();
         return bReceiver.getResult();
     }
 
-    public SingleResponse<Bucket> createBucket(final String bucketName) {
-        BucketCreator bCreator = new BucketCreator();
+    public SingleResponse<Bucket> createBucket(final String bucketName) throws InterruptedException, KeysNotFoundException {
+        CountDownLatch latch = new CountDownLatch(1);
+        BucketCreator bCreator = new BucketCreator(latch);
 
-        try {
-            mInstance.createBucket(bucketName, bCreator);
-        } catch (KeysNotFoundException ex) {
-            return new SingleResponse<>(null, false, ex.getMessage());
-        }
+        mInstance.createBucket(bucketName, bCreator);
 
+        latch.await();
         return bCreator.getResult();
     }
 
-    public Response deleteBucket(final String bucketId) {
-        BucketDeleter bDeleter = new BucketDeleter();
+    public Response deleteBucket(final String bucketId) throws InterruptedException, KeysNotFoundException {
+        CountDownLatch latch = new CountDownLatch(1);
+        BucketDeleter bDeleter = new BucketDeleter(latch);
 
-        try {
-            mInstance.deleteBucket(bucketId, bDeleter);
-        } catch (KeysNotFoundException ex) {
-            return new Response(false, ex.getMessage());
-        }
+        mInstance.deleteBucket(bucketId, bDeleter);
 
+        latch.await();
         return bDeleter.getResult();
     }
 
     //--- FILES ---//
 
-    public ListResponse<File> getFiles(final String bucketId) {
-        FilesReceiver fReceiver = new FilesReceiver();
+    public ListResponse<File> getFiles(final String bucketId) throws InterruptedException, KeysNotFoundException {
+        CountDownLatch latch = new CountDownLatch(1);
+        FilesReceiver fReceiver = new FilesReceiver(latch);
 
-        try {
-            mInstance.listFiles(bucketId, fReceiver);
-        } catch (KeysNotFoundException ex) {
-            return new ListResponse<>(null,false, ex.getMessage());
-        }
+        mInstance.listFiles(bucketId, fReceiver);
 
+        latch.await();
         return fReceiver.getResult();
     }
 
-    public Response deleteFile(final String bucketId, final String fileId) {
-        FileDeleter fdeleter = new FileDeleter();
+    public Response deleteFile(final String bucketId, final String fileId) throws InterruptedException, KeysNotFoundException {
+        CountDownLatch latch = new CountDownLatch(1);
+        FileDeleter fDeleter = new FileDeleter(latch);
 
-        try {
-            mInstance.deleteFile(bucketId, fileId, null);
-        } catch (KeysNotFoundException ex) {
-            return new ListResponse<>(null,false, ex.getMessage());
-        }
+        mInstance.deleteFile(bucketId, fileId, fDeleter);
 
-        return fdeleter.getResult();
+        latch.await();
+        return fDeleter.getResult();
     }
 
+    // TODO: check behavior with zero value
     public boolean cancelDownload(final long fileRef) {
-        return fileRef != 0 && mInstance.cancelDownload(fileRef);
+        return mInstance.cancelDownload(fileRef);
     }
 
-    public boolean cancelUpload(final double fileRef) {
-        return !(fileRef == 0) && mInstance.cancelUpload((long) fileRef);
+    // TODO: check behavior with zero value
+    public boolean cancelUpload(final long fileRef) {
+        return mInstance.cancelUpload(fileRef);
     }
 }

@@ -1,22 +1,31 @@
 package io.storj.mobile.service.storj.callbacks;
 
+import java.util.concurrent.CountDownLatch;
+
 import io.storj.libstorj.DeleteBucketCallback;
 import io.storj.mobile.common.responses.Response;
 
 public class BucketDeleter implements DeleteBucketCallback {
-    private Response result;
+    private Response mResult;
+    private CountDownLatch mCounter;
+
+    public BucketDeleter(CountDownLatch counter) {
+        mCounter = counter;
+    }
 
     @Override
     public void onBucketDeleted(String bucketId) {
-        result = new Response(true, null);
+        mResult = new Response(true, null);
+        mCounter.countDown();
     }
 
     @Override
     public void onError(String bucketId, int code, String message) {
-        result = new Response(false, null, code);
+        mResult = new Response(false, null, code);
+        mCounter.countDown();
     }
 
     public Response getResult() {
-        return result;
+        return mResult;
     }
 }
