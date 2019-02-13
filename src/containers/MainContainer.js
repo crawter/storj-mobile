@@ -442,8 +442,7 @@ class MainContainer extends Component {
     }
 
     async uploadFile(bucketId, type) {
-        let filePickerResponse = await filePicker.show(type);
-        console.log("uploadFile", filePickerResponse)
+        let filePickerResponse = await filePicker.show(type);        
         this.props.hideActionBar();
 
         if(filePickerResponse.isSuccess) {

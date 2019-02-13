@@ -209,14 +209,14 @@ class Apps extends Component {
 
 	async onFilesReceived(response) {
 		response = JSON.parse(response);
-
+		
 		if(!response.isSuccess) {
 			this.props.popLoading("files");
 			return;
 		}
 
 		let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
-
+			console.log(filesResponse);
 			if(filesResponse.isSuccess) {
 				let files = filesResponse.result.map((file) => {
 					return new ListItemModel(new FileModel(file));

@@ -57,14 +57,12 @@ class InitializeContainer extends Component {
 
     async componentWillMount() {
         try {
-            if(!await getFirstAction()) {
-                console.log("no first action")
+            if(!await getFirstAction()) {                
                 this.props.redirectToOnBoardingScreen();
                 return;
             }
             
-            if(!await StorjLib.keysExists()) {
-                console.log("keys not exists")
+            if(!await StorjLib.keysExists()) {                
                 this.props.redirectToLoginScreen();
                 return;
             }

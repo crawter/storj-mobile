@@ -60,6 +60,7 @@ public class FetchService {
                 String id = bucket.getId();
 
                 if (dbBucketId.equals(id)) {
+                    bucket.setStarred(dbBucket.isStarred());
                     Response updateResponse = mStore.buckets().update(bucket);
                     if (!updateResponse.isSuccess()) {
                         // TODO: log?
@@ -133,6 +134,7 @@ public class FetchService {
                 String id = file.getFileId();
 
                 if(dbFileId.equals(id)) {
+                    file.setStarred(dbFile.isStarred());
                     Response updateFileResponse = mStore.files().update(file);
                     if (!updateFileResponse.isSuccess()) {
                         // TODO: log?
