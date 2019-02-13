@@ -141,11 +141,11 @@ class Apps extends Component {
 		this.props.uploadSuccess(result.fileHandle, result.fileId);
 	}
 
-	async fileUploadProgress(result) {
+	async fileUploadProgress(result) {		
 		this.props.updateFileUploadProgress(result.fileHandle, result.progress, result.uploaded);
 	}
 
-	async onFileUploadStart(result) {
+	async onFileUploadStart(result) {		
 		this.props.getUploadingFile(result.fileHandle);
 	}
 

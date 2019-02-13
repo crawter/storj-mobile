@@ -1,7 +1,6 @@
 package io.storj.mobile.storjlibmodule.services.handlers;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,6 +44,5 @@ public class WorkerHandler extends Handler {
         } catch (Exception e) {
 
         }
-
     }
 }

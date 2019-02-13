@@ -1,13 +1,30 @@
 package io.storj.mobile.domain.uploading;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class UploadingFile {
+    @Expose
+    @SerializedName("fileHandle")
     private long _fileHandle;
+    @Expose
+    @SerializedName("progress")
     private double _progress;
+    @Expose
+    @SerializedName("size")
     private long _size;
+    @Expose
+    @SerializedName("uploaded")
     private long _uploaded;
 
+    @Expose
+    @SerializedName("name")
     private String _name;
+    @Expose
+    @SerializedName("uri")
     private String _uri;
+    @Expose
+    @SerializedName("bucketId")
     private String _bucketId;
 
     private boolean isIdSet;
@@ -20,6 +37,10 @@ public class UploadingFile {
         _name = name;
         _uri = uri;
         _bucketId = bucketId;
+
+        if (fileHandle != 0) {
+            isIdSet = true;
+        }
     }
 
     public long getFileHandle() {

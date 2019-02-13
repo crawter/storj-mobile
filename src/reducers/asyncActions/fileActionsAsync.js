@@ -6,8 +6,8 @@ import moment from 'moment';
 
 export function uploadFileStart(fileHandle) {
     return async (dispatch) => {
-        let getFileResponse = await SyncModule.getUploadingFile(fileHandle);
-        
+        let getFileResponse = await SyncModule.getUploadingFile(fileHandle);        
+
         if(getFileResponse.isSuccess) {
             let uploadingFile = getFileResponse.result;
 
