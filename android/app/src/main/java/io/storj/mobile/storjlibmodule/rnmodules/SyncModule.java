@@ -3,7 +3,6 @@ package io.storj.mobile.storjlibmodule.rnmodules;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.facebook.common.internal.Objects;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -19,7 +18,6 @@ import com.firebase.jobdispatcher.Trigger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -31,8 +29,7 @@ import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.dataprovider.settings.SettingsContract;
 import io.storj.mobile.domain.settings.Settings;
 import io.storj.mobile.service.SyncService;
-import io.storj.mobile.storjlibmodule.GsonSingle;
-import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
+import io.storj.mobile.service.download.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
 import io.storj.mobile.storjlibmodule.services.SynchronizationSchedulerJobService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
@@ -72,8 +69,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String wer = toJson(mSyncService.listBuckets(sortingMode));
-                promise.resolve(wer);
+                promise.resolve(mSyncService.listBuckets(sortingMode).toJson());
             }
         }).run();
     }
@@ -84,11 +80,11 @@ public class SyncModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 if(bucketId == null || bucketId.isEmpty()) {
-                    promise.resolve(toJson(new Response(false,  "bucket id is not valid")));
+                    promise.resolve(new Response(false,  "bucket id is not valid").toJson());
                     return;
                 }
 
-                promise.resolve(toJson(mSyncService.listFiles(bucketId, sortingMode)));
+                promise.resolve(mSyncService.listFiles(bucketId, sortingMode).toJson());
             }
         }).run();
     }
@@ -98,7 +94,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.listAllFiles(sortingMode)));
+                promise.resolve(mSyncService.listAllFiles(sortingMode).toJson());
             }
         }).run();
     }
@@ -108,7 +104,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.listUploadingFiles()));
+                promise.resolve(mSyncService.listUploadingFiles().toJson());
             }
         }).run();
     }
@@ -116,13 +112,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getUploadingFile(final String fileHandle, final Promise promise) {
         if (fileHandle == null) {
-            promise.resolve(toJson(new Response(false, "invalid file handle")));
+            promise.resolve(new Response(false, "invalid file handle").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.getUploadingFile(fileHandle)));
+                promise.resolve(mSyncService.getUploadingFile(fileHandle).toJson());
             }
         }).run();
     }
@@ -130,13 +126,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getFile(final String fileId, final Promise promise) {
         if (fileId == null || fileId.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid file id")));
+            promise.resolve(new Response(false, "invalid file id").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.getFile(fileId)));
+                promise.resolve(mSyncService.getFile(fileId).toJson());
             }
         }).run();
     }
@@ -144,13 +140,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateBucketStarred(final String bucketId, final boolean isStarred, final Promise promise) {
         if (bucketId == null || bucketId.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid bucket id")));
+            promise.resolve(new Response(false, "invalid bucket id").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.updateBucketStarred(bucketId, isStarred)));
+                promise.resolve(mSyncService.updateBucketStarred(bucketId, isStarred).toJson());
             }
         }).run();
     }
@@ -158,13 +154,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateFileStarred(final String fileId, final boolean isStarred, final Promise promise) {
         if (fileId == null || fileId.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid file id")));
+            promise.resolve(new Response(false, "invalid file id").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.updateFileStarred(fileId, isStarred)));
+                promise.resolve(mSyncService.updateFileStarred(fileId, isStarred).toJson());
             }
         }).run();
     }
@@ -172,13 +168,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void listSettings(final String id, final Promise promise) {
         if (id == null || id.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid setting id")));
+            promise.resolve(new Response(false, "invalid setting id").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.listSettings(id)));
+                promise.resolve(mSyncService.listSettings(id).toJson());
             }
         }).run();
     }
@@ -186,13 +182,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void insertSyncSetting(final String id, final Promise promise) {
         if (id == null || id.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid setting id")));
+            promise.resolve(new Response(false, "invalid setting id").toJson());
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.insertSyncSetting(id)));
+                promise.resolve(mSyncService.insertSyncSetting(id).toJson());
             }
         }).run();
     }
@@ -200,7 +196,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateSettings(final String id, final int syncSettings, final Promise promise) {
         if (id == null || id.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid setting id")));
+            promise.resolve(new Response(false, "invalid setting id").toJson());
         }
 
         new Thread(new Runnable() {
@@ -208,13 +204,13 @@ public class SyncModule extends ReactContextBaseJavaModule {
             public void run() {
                 SingleResponse<Settings> settingResponse = mSyncService.getSetings(id);
                 if (!settingResponse.isSuccess()) {
-                    promise.resolve(toJson(settingResponse));
+                    promise.resolve(settingResponse.toJson());
                 }
 
                 Settings settingToUpdate = settingResponse.getResult();
                 settingToUpdate.setSyncSettings(syncSettings);
 
-                promise.resolve(toJson(mSyncService.updateSettings(settingToUpdate)));
+                promise.resolve(mSyncService.updateSettings(settingToUpdate).toJson());
             }
         }).run();
     }
@@ -222,7 +218,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setFirstSignIn(final String id, final int syncSettings, final Promise promise) {
         if (id == null || id.isEmpty()) {
-            promise.resolve(toJson(new Response(false, "invalid setting id")));
+            promise.resolve(new Response(false, "invalid setting id").toJson());
         }
 
         new Thread(new Runnable() {
@@ -230,14 +226,14 @@ public class SyncModule extends ReactContextBaseJavaModule {
             public void run() {
                 SingleResponse<Settings> settingResponse = mSyncService.getSetings(id);
                 if (!settingResponse.isSuccess()) {
-                    promise.resolve(toJson(settingResponse));
+                    promise.resolve(settingResponse.toJson());
                 }
 
                 Settings settingToUpdate = settingResponse.getResult();
                 settingToUpdate.setSyncSettings(syncSettings);
                 settingToUpdate.setFirstSignIn(false);
 
-                promise.resolve(toJson(mSyncService.updateSettings(settingToUpdate)));
+                promise.resolve(mSyncService.updateSettings(settingToUpdate).toJson());
             }
         }).run();
     }
@@ -258,7 +254,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
                 cancelSync();
 
                 SingleResponse<Settings> changeSyncStatusResponse = mSyncService.changeSyncStatus(id, syncStatus);
-                promise.resolve(toJson(changeSyncStatusResponse));
+                promise.resolve(changeSyncStatusResponse.toJson());
 
                 if(changeSyncStatusResponse.isSuccess() && syncStatus) {
                     scheduleSync(changeSyncStatusResponse.getResult(), dispatcher);
@@ -279,7 +275,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.getSyncQueue()));
+                promise.resolve(mSyncService.getSyncQueue().toJson());
             }
         });
     }
@@ -289,7 +285,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.getSyncQueueEntry(id)));
+                promise.resolve(mSyncService.getSyncQueueEntry(id).toJson());
             }
         });
     }
@@ -297,12 +293,12 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateSyncQueueEntryFileName(final int id, final String newFileName, final Promise promise) {
         if(newFileName == null) {
-            promise.resolve(toJson(new Response(false, "File name can't be null!")));
+            promise.resolve(new Response(false, "File name can't be null!").toJson());
         }
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.updateSyncEntryName(id, newFileName)));
+                promise.resolve(mSyncService.updateSyncEntryName(id, newFileName).toJson());
             }});
     }
 
@@ -311,7 +307,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mSyncService.updateSyncEntryStatus(id, newStatus)));
+                promise.resolve(mSyncService.updateSyncEntryStatus(id, newStatus).toJson());
             }});
     }
 
@@ -319,7 +315,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void checkFile(final String fileId, final String localPath, final Promise promise) {
         if(localPath == null) {
-            promise.resolve(toJson(new Response(false, "localPath is null!")));
+            promise.resolve(new Response(false, "localPath is null!").toJson());
             return;
         }
 
@@ -336,7 +332,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
                             0);
 
                     if (!fileUpdateResponse.isSuccess()) {
-                        promise.resolve(toJson(new Response(false, "File has been removed from file System!")));
+                        promise.resolve(new Response(false, "File has been removed from file System!").toJson());
                     }
                 }
             }).run();
@@ -344,7 +340,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        promise.resolve(toJson(new Response(true, null)));
+        promise.resolve(new Response(true, null).toJson());
     }
 
     private void scheduleSync(Settings settings, FirebaseJobDispatcher dispatcher) {
@@ -404,9 +400,5 @@ public class SyncModule extends ReactContextBaseJavaModule {
         }
 
         return myJobBuilder;
-    }
-
-    private <T> String toJson(T convertible) {
-        return GsonSingle.getInstanse().toJson(convertible);
     }
 }

@@ -2,6 +2,7 @@ package io.storj.mobile.service.storj;
 
 import java.util.concurrent.CountDownLatch;
 
+import io.storj.libstorj.DownloadFileCallback;
 import io.storj.libstorj.Keys;
 import io.storj.libstorj.KeysNotFoundException;
 import io.storj.libstorj.Storj;
@@ -121,6 +122,25 @@ public class StorjService {
 
         latch.await();
         return fDeleter.getResult();
+    }
+
+    public long downloadFile(String bucketId, String fileId, String localPath, final DownloadFileCallback callback) throws Exception {
+        return mInstance.downloadFile(bucketId, fileId, localPath, new DownloadFileCallback() {
+            @Override
+            public void onProgress(String fileId, double progress, long downloadedBytes, long totalBytes) {
+                callback.onProgress(fileId, progress, downloadedBytes, totalBytes);
+            }
+
+            @Override
+            public void onComplete(String fileId, String localPath) {
+                callback.onComplete(fileId, localPath);
+            }
+
+            @Override
+            public void onError(String fileId, int code, String message) {
+                callback.onError(fileId, code, message);
+            }
+        });
     }
 
     // TODO: check behavior with zero value

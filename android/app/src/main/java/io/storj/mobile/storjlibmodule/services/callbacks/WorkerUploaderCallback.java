@@ -3,9 +3,9 @@ package io.storj.mobile.storjlibmodule.services.callbacks;
 import io.storj.libstorj.File;
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.domain.IDatabase;
-import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
+import io.storj.mobile.service.download.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.services.eventemitters.UploadEventEmitter;
-import io.storj.mobile.storjlibmodule.utils.ThumbnailProcessor;
+import io.storj.mobile.service.utils.ThumbnailProcessor;
 import io.storj.mobile.storjlibmodule.utils.Uploader;
 
 public class WorkerUploaderCallback extends BaseUploaderCallback {
@@ -47,10 +47,7 @@ public class WorkerUploaderCallback extends BaseUploaderCallback {
         String thumbnail = null;
 
         if(file.getMimeType().contains("image/")) {
-            io.storj.mobile.common.responses.SingleResponse<String> resp = tProc.getThumbnail(localPath);
-
-            if(resp.isSuccess())
-                thumbnail = resp.getResult();
+            thumbnail = tProc.getThumbnail(localPath);
         }
 
         io.storj.mobile.domain.files.File fileModel = new io.storj.mobile.domain.files.File(

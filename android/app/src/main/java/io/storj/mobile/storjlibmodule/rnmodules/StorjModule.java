@@ -10,9 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.io.File;
 
 import io.storj.mobile.common.responses.SingleResponse;
-
 import io.storj.mobile.service.storj.StorjService;
-import io.storj.mobile.storjlibmodule.GsonSingle;
 
 public class StorjModule extends ReactContextBaseJavaModule {
     private static final String MODULE_NAME = "StorjLibAndroid";
@@ -29,10 +27,6 @@ public class StorjModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return MODULE_NAME;
-    }
-
-    private String toJson(Object convertible) {
-        return GsonSingle.getInstanse().toJson(convertible);
     }
 
     @ReactMethod
@@ -107,7 +101,7 @@ public class StorjModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(toJson(mService.getKeys(passcode)));
+                promise.resolve(mService.getKeys(passcode).toJson());
             }
         }).run();
     }
@@ -157,6 +151,6 @@ public class StorjModule extends ReactContextBaseJavaModule {
             response = new SingleResponse<>(downloadDir.getAbsolutePath(),true, null);
         }
         
-        promise.resolve(toJson(response));
+        promise.resolve(response.toJson());
     }
 }

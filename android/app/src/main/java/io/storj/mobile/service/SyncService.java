@@ -10,7 +10,6 @@ import io.storj.mobile.domain.settings.Settings;
 import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
 import io.storj.mobile.domain.syncqueue.SyncStateEnum;
 import io.storj.mobile.domain.uploading.UploadingFile;
-import io.storj.mobile.storjlibmodule.enums.DownloadStateEnum;
 
 public class SyncService {
     private final IDatabase mStore;

@@ -21,7 +21,6 @@ import java.util.List;
 
 import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.common.responses.Response;
-import io.storj.mobile.storjlibmodule.GsonSingle;
 import io.storj.mobile.storjlibmodule.models.FilePathModel;
 import io.storj.mobile.storjlibmodule.utils.FileUtils;
 
@@ -67,13 +66,13 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
         Activity currentActivity = getCurrentActivity();
 
         if (currentActivity == null) {
-            mPromise.resolve(toJson(new Response(false, "Cannot retrieve activity")));
+            mPromise.resolve(new Response(false, "Cannot retrieve activity").toJson());
             return;
         }
 
         if (!checkPermissionsGranted(currentActivity)) {
             ActivityCompat.requestPermissions(currentActivity, mPermissions, Integer.MAX_VALUE);
-            mPromise.resolve(toJson(new Response(false, "Permissions not granted")));
+            mPromise.resolve(new Response(false, "Permissions not granted").toJson());
             return;
         }
 
@@ -86,7 +85,7 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
         Intent pickerIntent = FileUtils.createGetContentIntent(mimeType);
 
         if (pickerIntent.resolveActivity(mReactContext.getPackageManager()) == null) {
-            mPromise.resolve(toJson(new Response(false, "Unable to launch file picker")));
+            mPromise.resolve(new Response(false, "Unable to launch file picker").toJson());
             return;
         }
 
@@ -94,7 +93,7 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
             currentActivity.startActivityForResult(Intent.createChooser(pickerIntent, pickerTitle),
                     REQUEST_CODE_FILE_PICKER);
         } catch (ActivityNotFoundException ex) {
-            mPromise.resolve(toJson(new Response(false, ex.getMessage())));
+            mPromise.resolve(new Response(false, ex.getMessage()).toJson());
         }
     }
 
@@ -107,7 +106,7 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
         ListResponse<FilePathModel> result = null;
 
         if (Activity.RESULT_OK != resultCode) {
-            mPromise.resolve(toJson(new Response(false, "Canceled by user")));
+            mPromise.resolve(new Response(false, "Canceled by user").toJson());
             return;
         }
 
@@ -120,11 +119,11 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
                 result = _handleSingleFile(data);
             }
         } catch(Exception ex) {
-            mPromise.resolve(toJson(new Response(false, ex.getMessage())));
+            mPromise.resolve(new Response(false, ex.getMessage()).toJson());
             return;
         }
 
-        mPromise.resolve(toJson(result));
+        mPromise.resolve(result.toJson());
     }
 
     /**
@@ -214,9 +213,5 @@ public class FilePickerModule extends ReactContextBaseJavaModule implements Acti
         List<FilePathModel> res = new ArrayList<FilePathModel>();
         res.add(new FilePathModel(name, path));
         return new ListResponse<>(res, true, null);
-    }
-
-    private String toJson(Object convertible) {
-        return GsonSingle.getInstanse().toJson(convertible);
     }
 }

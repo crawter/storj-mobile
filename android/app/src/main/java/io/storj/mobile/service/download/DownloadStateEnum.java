@@ -1,8 +1,4 @@
-package io.storj.mobile.storjlibmodule.enums;
-
-/**
- * Created by Yaroslav-Note on 3/26/2018.
- */
+package io.storj.mobile.service.download;
 
 public enum DownloadStateEnum {
     DEFAULT(0),

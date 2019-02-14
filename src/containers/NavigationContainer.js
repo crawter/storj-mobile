@@ -156,18 +156,26 @@ class Apps extends Component {
 	}
 
 	onFileDownloadStart(params) {
+		params = JSON.parse(params);
+		console.log("onFileDownloadStart", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadProgress(params) {
+		params = JSON.parse(params);
+		console.log("onFileDownloadProgress", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadSuccess(params) {		
+		params = JSON.parse(params);
+		console.log("onFileDownloadSuccess", params);
 		this.props.downloadFileSuccess(null, params.fileId, params.localPath, params.thumbnail);
 	}
 
 	onFileDownloadError(params) {		
+		params = JSON.parse(params);
+		console.log("onFileDownloadError", params);
 		this.props.downloadFileError(null, params.fileId);
 	}
 
@@ -216,7 +224,6 @@ class Apps extends Component {
 		}
 
 		let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
-			console.log(filesResponse);
 			if(filesResponse.isSuccess) {
 				let files = filesResponse.result.map((file) => {
 					return new ListItemModel(new FileModel(file));

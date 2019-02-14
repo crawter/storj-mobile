@@ -46,12 +46,7 @@ public class FetchIntentService extends BaseReactService {
         try {
             storj = StorjAndroid.getInstance(this, "https://api.v2.storj.io");
         } catch(Exception e) {
-            // TODO: add proper logging, notifications, send error intent
-            // redirect user to error activity and close app
             this.stopSelf();
-
-            // GRACEFULLY CLOSE APP :D
-            //mService.createBucket("");
             return;
         }
 
@@ -112,11 +107,11 @@ public class FetchIntentService extends BaseReactService {
                     getFileResponse.getError().getMessage()
             );
 
-            sendEvent(EVENT_FILES_UPDATED, toJson(result));
+            sendEvent(EVENT_FILES_UPDATED, result.toJson());
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again
-            sendEvent(EVENT_FILES_UPDATED, toJson(new SingleResponse<String>(null, false, "keys not found")));
+            sendEvent(EVENT_FILES_UPDATED, new SingleResponse<String>(null, false, "keys not found").toJson());
         } catch (InterruptedException ex) {
             //TODO: handle InterruptedException, no need to send event
         }
@@ -124,11 +119,11 @@ public class FetchIntentService extends BaseReactService {
 
     private void createBucket(final String bucketName) {
         try {
-            sendEvent(EVENT_BUCKET_CREATED, toJson(mService.createBucket(bucketName)));
+            sendEvent(EVENT_BUCKET_CREATED, mService.createBucket(bucketName).toJson());
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again
-            sendEvent(EVENT_BUCKET_CREATED, toJson(new Response(false, "keys not found")));
+            sendEvent(EVENT_BUCKET_CREATED, new Response(false, "keys not found").toJson());
         } catch (InterruptedException ex) {
             //TODO: handle InterruptedException, no need to send event
         }
@@ -138,14 +133,14 @@ public class FetchIntentService extends BaseReactService {
         try {
             Response deleteBucketResponse = mService.deleteBucket(bucketId);
             if (!deleteBucketResponse.isSuccess()) {
-                sendEvent(EVENT_BUCKET_DELETED, toJson(deleteBucketResponse));
+                sendEvent(EVENT_BUCKET_DELETED, deleteBucketResponse.toJson());
             }
 
-            sendEvent(EVENT_BUCKET_DELETED, toJson(new SingleResponse<>(bucketId, true, null)));
+            sendEvent(EVENT_BUCKET_DELETED, new SingleResponse<>(bucketId, true, null).toJson());
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again
-            sendEvent(EVENT_BUCKET_DELETED, toJson(new Response(false, "keys not found")));
+            sendEvent(EVENT_BUCKET_DELETED, new Response(false, "keys not found").toJson());
         } catch (InterruptedException ex) {
             //TODO: handle InterruptedException, no need to send event
         }
@@ -155,18 +150,18 @@ public class FetchIntentService extends BaseReactService {
         try {
             Response fileDeleteResponse = mService.deleteFile(bucketId, fileId);
             if (!fileDeleteResponse.isSuccess()) {
-                sendEvent(EVENT_FILE_DELETED, toJson(fileDeleteResponse));
+                sendEvent(EVENT_FILE_DELETED, fileDeleteResponse.toJson());
             }
 
-            sendEvent(EVENT_FILE_DELETED, toJson(new SingleResponse<>(
+            sendEvent(EVENT_FILE_DELETED, new SingleResponse<>(
                     new FileDeleteModel(bucketId, fileId),
                     true,
                     null
-            )));
+            ).toJson());
         } catch (KeysNotFoundException ex) {
             // TODO: finish handling keys not found exception, send
             // a toast that will ask user to sign out and sign in again
-            sendEvent(EVENT_BUCKET_DELETED, toJson(new Response(false, "keys not found")));
+            sendEvent(EVENT_BUCKET_DELETED, new Response(false, "keys not found").toJson());
         } catch (InterruptedException ex) {
             //TODO: handle InterruptedException, no need to send event
         }

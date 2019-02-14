@@ -3,7 +3,10 @@ package io.storj.mobile.common.responses;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Response {
+import io.storj.mobile.common.Convertible;
+import io.storj.mobile.common.utils.GsonSingle;
+
+public class Response extends Convertible {
     @Expose
     @SerializedName("isSuccess")
     private boolean _isSuccess = false;

@@ -1,4 +1,4 @@
-package io.storj.mobile.storjlibmodule;
+package io.storj.mobile.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

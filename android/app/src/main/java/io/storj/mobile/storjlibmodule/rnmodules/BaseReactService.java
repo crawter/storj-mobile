@@ -7,12 +7,11 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import io.storj.mobile.storjlibmodule.GsonSingle;
+import io.storj.mobile.service.IEventEmitter;
 
-public abstract class BaseReactService extends IntentService {
+public abstract class BaseReactService extends IntentService implements IEventEmitter {
 
     protected String mServiceName;
     protected ReactContext mContext;
@@ -38,22 +37,8 @@ public abstract class BaseReactService extends IntentService {
         }
     }
 
-    protected final <T> String toJson(T[] convertible) {
-        return GsonSingle.getInstanse().toJson(convertible);
-    }
-
-    protected final <T> String toJson(T convertible) {
-        return GsonSingle.getInstanse().toJson(convertible);
-    }
-
-    protected final void sendEvent(String eventName, String result) {
-        if(mContext != null) {
-            mContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(eventName, result);
-        }
-    }
-
-    protected final void sendEvent(String eventName, WritableMap result) {
+    @Override
+    public final void sendEvent(String eventName, String result) {
         if(mContext != null) {
             mContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, result);

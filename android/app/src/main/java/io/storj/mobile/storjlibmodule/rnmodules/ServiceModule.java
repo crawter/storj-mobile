@@ -15,10 +15,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import io.storj.mobile.service.FetchService;
-import io.storj.mobile.service.storj.StorjService;
 import io.storj.mobile.storjlibmodule.models.PromiseHandler;
-import io.storj.mobile.storjlibmodule.services.DownloadService;
+import io.storj.mobile.storjlibmodule.services.DownloadIntentService;
 import io.storj.mobile.storjlibmodule.services.FetchIntentService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
 import io.storj.mobile.storjlibmodule.services.UploadService;
@@ -33,7 +31,7 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
     public final static String FILE_DELETED = "FILE_DELETED";
 
     private FetchIntentService mFetchIntentService;
-    private DownloadService mDownloadService;
+    private DownloadIntentService mDownloadIntentService;
 
     private PromiseHandler mPromise;
     private PromiseHandler mDownloadServicePromise;
@@ -46,15 +44,14 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
             String serviceName = name.getClassName();
 
-            // TODO: please, kill me
             switch (serviceName) {
                 case FetchIntentService.SERVICE_NAME:
                     // TODO: and me too
                     mFetchIntentService = (FetchIntentService)baseReactService;
                     mPromise.resolveString(serviceName);
                     break;
-                case DownloadService.SERVICE_NAME:
-                    mDownloadService = (DownloadService)baseReactService;
+                case DownloadIntentService.SERVICE_NAME:
+                    mDownloadIntentService = (DownloadIntentService)baseReactService;
                     mDownloadServicePromise.resolveString(serviceName);
                     break;
             }
@@ -66,8 +63,8 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
                 case FetchIntentService.SERVICE_NAME:
                     mFetchIntentService = null;
                     break;
-                case DownloadService.SERVICE_NAME:
-                    mDownloadService = null;
+                case DownloadIntentService.SERVICE_NAME:
+                    mDownloadIntentService = null;
                     break;
             }
         }
@@ -94,7 +91,7 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
     @ReactMethod
     public void bindDownloadService(Promise promise) {
-        bindService(mDownloadServicePromise, DownloadService.class, promise);
+        bindService(mDownloadServicePromise, DownloadIntentService.class, promise);
     }
 
     @ReactMethod
@@ -134,11 +131,11 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
             return;
         }
 
-        Intent downloadIntent = new Intent(getReactApplicationContext(), DownloadService.class);
-        downloadIntent.setAction(DownloadService.ACTION_DOWNLOAD_FILE);
-        downloadIntent.putExtra(DownloadService.PARAMS_BUCKET_ID, bucketId);
-        downloadIntent.putExtra(DownloadService.PARAMS_FILE_ID, fileId);
-        downloadIntent.putExtra(DownloadService.PARAMS_LOCAL_PATH, localPath);
+        Intent downloadIntent = new Intent(getReactApplicationContext(), DownloadIntentService.class);
+        downloadIntent.setAction("ACTION_DOWNLOAD_FILE");
+        downloadIntent.putExtra("bucketId", bucketId);
+        downloadIntent.putExtra("fileId", fileId);
+        downloadIntent.putExtra("localPath", localPath);
 
         getReactApplicationContext().startService(downloadIntent);
     }
@@ -150,12 +147,12 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
             return;
         }
 
-        Intent downloadIntent = new Intent(getReactApplicationContext(), DownloadService.class);
-        downloadIntent.setAction(DownloadService.ACTION_COPY_FILE);
-        downloadIntent.putExtra(DownloadService.PARAMS_BUCKET_ID, bucketId);
-        downloadIntent.putExtra(DownloadService.PARAMS_TARGET_BUCKET_ID, targetBucketId);
-        downloadIntent.putExtra(DownloadService.PARAMS_FILE_ID, fileId);
-        downloadIntent.putExtra(DownloadService.PARAMS_LOCAL_PATH, localPath);
+        Intent downloadIntent = new Intent(getReactApplicationContext(), DownloadIntentService.class);
+        downloadIntent.setAction("ACTION_COPY_FILE");
+        downloadIntent.putExtra("bucketId", bucketId);
+        downloadIntent.putExtra("targetBucketId", targetBucketId);
+        downloadIntent.putExtra("fileId", fileId);
+        downloadIntent.putExtra("localPath", localPath);
 
         getReactApplicationContext().startService(downloadIntent);
     }

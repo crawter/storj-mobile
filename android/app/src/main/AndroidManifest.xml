@@ -43,7 +43,7 @@
           android:enabled="true" />
 
         <service
-            android:name=".storjlibmodule.services.DownloadService"
+            android:name=".storjlibmodule.services.DownloadIntentService"
             android:exported="true"
             android:enabled="true" />
 
