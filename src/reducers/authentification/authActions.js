@@ -3,7 +3,7 @@ import authActions from '../../utils/constants/actionConstants';
 import { changePasswordRequest } from '../../utils/dataservice';
 
 const { LOGIN, LOGIN_SUCCESS, LOGIN_ERROR, 
-    REGISTER, REGISTER_SUCCESS, REGISTER_ERROR, 
+    REGISTER, REGISTER_SUCCESS, REGISTER_ERROR,
     SET_EMAIL_NOT_CONFIRMED, SET_EMAIL_CONFIRMED,
     SET_ACCOUNT_NOT_EXIST, SET_ACCOUNT_EXIST, CLEAR,
     SAVE_MNEMONIC } = authActions;
@@ -179,28 +179,8 @@ export function redirectToInitializeScreen() {
     return NavigationActions.navigate({ routeName: 'InitializationScreen' });
 }
 
-export function setEmailNotConfirmed() {
-    return { type: SET_EMAIL_NOT_CONFIRMED }
-}
-
-export function setEmailConfirmed() {
-    return { type: SET_EMAIL_CONFIRMED }
-}
-
-export function setAccountNotExist() {
-    return { type: SET_ACCOUNT_NOT_EXIST }
-}
-
-export function setAccountExist() {
-    return { type: SET_ACCOUNT_EXIST }
-}
-
 // ActionCreators for LoginContainer
 export const loginActionsCreators = {
-    setAccountNotExist,
-    setAccountExist,
-    setEmailNotConfirmed,
-    setEmailConfirmed,
     loginSuccess,
     loginError,
     login,

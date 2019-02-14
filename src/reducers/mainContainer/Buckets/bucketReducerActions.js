@@ -13,8 +13,6 @@ const {
     DELETE_BUCKET,
     GET_BUCKETS, 
     UPDATE_FAVOURITE,
-    SET_NAME_ALREADY_EXIST_EXCEPTION,
-    UNSET_NAME_ALREADY_EXIST_EXCEPTION
 } = BUCKET_ACTIONS;
 
 export function selectBucket(bucket) {
@@ -55,14 +53,6 @@ export function updateFavourite(buckets, starredStatus) {
     return { type: UPDATE_FAVOURITE, payload: { buckets, starredStatus} } 
 }
 
-export function setNameAlreadyExistException() {
-    return { type: SET_NAME_ALREADY_EXIST_EXCEPTION } 
-}
-
-export function unsetNameAlreadyExistException() {
-    return { type: UNSET_NAME_ALREADY_EXIST_EXCEPTION } 
-}
-
 export function getPicturesBucketId(buckets) {
     ServiceModule.createBaseBuckets(buckets);
 
@@ -93,8 +83,6 @@ export const mainContainerBucketActions = {
 export const bucketsContainerBucketActions = {
     selectBucket,
     deselectBucket,
-    setNameAlreadyExistException,
-    unsetNameAlreadyExistException,
     createBucket
 };
 

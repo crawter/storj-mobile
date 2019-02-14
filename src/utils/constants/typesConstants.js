@@ -6,3 +6,9 @@ export const TYPES = {
     BUCKETS: 'BUCKETS',
     SYNCED: 'SYNCED'
 };
+
+export const NOTIFICATION_TYPES = {
+    SUCCESS: 'SUCCESS',
+    NOTIFICATION: 'NOTIFICATION',
+    ERROR: 'ERROR',
+};

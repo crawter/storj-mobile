@@ -34,20 +34,12 @@ const {
     POP_LOADING,
     SET_SEARCH,
     CLEAR_SEARCH,
-    SET_IS_CONNECTED,
     CHANGE_PIN_OPTIONS_STATUS,
     CHANGE_PASSWORD_POPUP_STATUS,
     SET_BUCKETID_TO_COPY,
     CHANGE_SYNC_WINDOW_POPUP_STATUS
 } = MAIN_ACTIONS;
 
-/**
- * Action for changing isConnected to interted state
- * @param {bool} isConnected - indicates state of internet conection
- */
-export function setIsConnected(isConnected) {
-    return { type: SET_IS_CONNECTED, payload: { isConnected } };
-}
 
 export function setEmail(email) {
     return { type: SET_EMAIL, payload: { email } };
@@ -204,7 +196,6 @@ export const mainContainerActions = {
     disableSelectionMode,
     showCreateBucketInput,
     hideCreateBucketInput,
-    clearSelection,
     setFirstSignIn,
     removeFirstSignIn,
     setLoading,
@@ -245,7 +236,6 @@ export const dashboardContainerActions = {
 
 export const initializeContainerActions = {
     setFirstSignIn,
-    setEmail
 };
 
 export const bucketsListContainerActions = {
@@ -288,8 +278,4 @@ export const setCurrentMainScreenActions = {
     hideActionBar,
     pushLoading,
     popLoading
-};
-
-export const navigationContainerMainActions = {
-    setIsConnected
 };

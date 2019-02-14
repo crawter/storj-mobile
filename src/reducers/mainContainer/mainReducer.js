@@ -29,7 +29,6 @@ const {
     POP_LOADING,
     SET_SEARCH,
     CLEAR_SEARCH,
-    SET_IS_CONNECTED,
     CHANGE_PIN_OPTIONS_STATUS,
     CHANGE_PASSWORD_POPUP_STATUS,
     SET_BUCKETID_TO_COPY,
@@ -57,7 +56,6 @@ const initialState = {
     dashboardFilesSearchSubSequence: null,
     selectBucketsSearchSubSequence: null,
     loadingStack: [],
-    isConnected: true,
     isPinOptionsShown: false,
     isChangePasswordPopupShown: false,
     bucketIdToCopy: null, 
@@ -73,9 +71,6 @@ export default function mainReducer(state = initialState, action) {
     switch(action.type) {
         case CHANGE_SYNC_WINDOW_POPUP_STATUS:
             newState.isSyncWindowShown = action.payload.value;
-            break; 
-        case SET_IS_CONNECTED:
-            newState.isConnected = action.payload.isConnected;
             break;
         case SET_EMAIL:
             newState.email = action.payload.email;

@@ -10,6 +10,7 @@ import bucketReducer from '../reducers/mainContainer/Buckets/bucketReducer';
 import billingReducer from '../reducers/billing/billingReducer';
 import settingsReducer from "../reducers/mainContainer/MyAccount/Settings/SettingsReducer";
 import syncQueueReducer from "../reducers/mainContainer/SyncQueue/syncQueueReducer";
+import notificationReducer from "../reducers/notification/notificationReducer";
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { ACTIONS } from "../utils/constants/actionConstants"
 import thunk from "redux-thunk";
@@ -29,7 +30,8 @@ export const combinedReducers = combineReducers({
     bucketReducer,
     billingReducer,
     settingsReducer,
-    syncQueueReducer
+    syncQueueReducer,
+    notificationReducer,
 });
 
 // Reducer to set global state to all reducers

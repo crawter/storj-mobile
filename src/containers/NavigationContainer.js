@@ -17,12 +17,9 @@ import {
 	setLoading,
 	unsetLoading,
 	popLoading,
-	setIsConnected
 } from '../reducers/mainContainer/mainReducerActions';
 import { saveMnemonic } from '../reducers/authentification/authActions';
 import {
-	setNameAlreadyExistException,
-	unsetNameAlreadyExistException,
 	createBucket,
 	getBuckets,
     deleteBucket
@@ -56,6 +53,7 @@ import WarningComponent from '../components/Common/WarningComponent';
 import { uploadFileStart, uploadFileSuccess } from '../reducers/asyncActions/fileActionsAsync';
 import { listSyncQueueEntriesAsync, getSyncQueueEntryAsync } from "../reducers/mainContainer/SyncQueue/syncQueueReducerAsyncActions";
 import { listSettingsAsync } from "../reducers/mainContainer/MyAccount/Settings/SettingsActionsAsync";
+import { addErrorNotification, deleteNotification } from '../reducers/notification/notificationActions';
 
 import SyncModule from '../utils/syncModule';
 import ServiceModule from '../utils/serviceModule';
@@ -112,7 +110,9 @@ class Apps extends Component {
 		this.syncStartedListener = eventEmitter.addListener(eventNames.EVENT_SYNC_STARTED, this.onSyncStarted.bind(this));
 
 		NetInfo.isConnected.fetch().then(isConnected => {
-			this.props.setIsConnected(isConnected);
+			if (isConnected) return;
+
+			this.props.addErrorNotification('No internet connection', this.props.deleteNotification);
 		});
 
 		NetInfo.isConnected.addEventListener('connectionChange', this.onConnectionChange.bind(this));
@@ -126,10 +126,10 @@ class Apps extends Component {
 	}
 	
 	onConnectionChange(isConnected) {
-		this.props.setIsConnected(isConnected);
-
 		if(!isConnected) {
+			this.props.addErrorNotification('No internet connection', this.props.deleteNotification);
 
+			return;
 		}
 	}
 
@@ -141,11 +141,11 @@ class Apps extends Component {
 		this.props.uploadSuccess(result.fileHandle, result.fileId);
 	}
 
-	async fileUploadProgress(result) {		
+	async fileUploadProgress(result) {
 		this.props.updateFileUploadProgress(result.fileHandle, result.progress, result.uploaded);
 	}
 
-	async onFileUploadStart(result) {		
+	async onFileUploadStart(result) {
 		this.props.getUploadingFile(result.fileHandle);
 	}
 
@@ -157,25 +157,21 @@ class Apps extends Component {
 
 	onFileDownloadStart(params) {
 		params = JSON.parse(params);
-		console.log("onFileDownloadStart", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadProgress(params) {
 		params = JSON.parse(params);
-		console.log("onFileDownloadProgress", params);
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadSuccess(params) {		
 		params = JSON.parse(params);
-		console.log("onFileDownloadSuccess", params);
 		this.props.downloadFileSuccess(null, params.fileId, params.localPath, params.thumbnail);
 	}
 
-	onFileDownloadError(params) {		
+	onFileDownloadError(params) {
 		params = JSON.parse(params);
-		console.log("onFileDownloadError", params);
 		this.props.downloadFileError(null, params.fileId);
 	}
 
@@ -204,6 +200,10 @@ class Apps extends Component {
 		this.downloadFileErrorListener.remove();
 		this.syncQueueEntryUpdateListener.remove();
 		this.syncStartedListener.remove();
+		this.fileUploadStartedListener.remove();
+		this.fileUploadProgressListener.remove();
+		this.fileUploadSuccessListener.remove();
+		this.fileUploadErrorListener.remove();
 	}
 
 	onHardwareBackPress() {
@@ -217,13 +217,13 @@ class Apps extends Component {
 
 	async onFilesReceived(response) {
 		response = JSON.parse(response);
-		
+
 		if(!response.isSuccess) {
 			this.props.popLoading("files");
 			return;
 		}
 
-		let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);		
+		let filesResponse = await SyncModule.listFiles(response.result, this.props.sortingMode);
 			if(filesResponse.isSuccess) {
 				let files = filesResponse.result.map((file) => {
 					return new ListItemModel(new FileModel(file));
@@ -233,35 +233,23 @@ class Apps extends Component {
         
 		this.props.popLoading("files");
 	}
-	
-	unsetNameAlreadyExistException() {
-		this.props.unsetNameAlreadyExistException();
-		clearTimeout(this.timer);
-	}
-
-	unsetInternetConnectionException() {
-		this.props.unsetNameAlreadyExistException();
-		clearTimeout(this.timer);
-	}
 
 	onBucketCreated(response) {
 		response = JSON.parse(response);
-		
+		console.log("response", response)
+
 		if(response.isSuccess) {
 			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));	
 		} else {
-			switch(response.error.code) {				
+			switch(response.error.code) {
 				case 409:
-					this.props.setNameAlreadyExistException();
-					this.timer = setTimeout(this.unsetNameAlreadyExistException.bind(this), 3000);
+					this.props.addErrorNotification(response.error.message, this.props.deleteNotification);
 					break;
 				case 10006:
-					this.props.setNameAlreadyExistException(); //TODO: add internet exc
-					this.timer = setTimeout(this.unsetNameAlreadyExistException.bind(this), 3000);
+					this.props.addErrorNotification(response.error.message, this.props.deleteNotification);
 					break;
 				default:
-					this.props.setNameAlreadyExistException(); //TODO: add default exc
-					this.timer = setTimeout(this.unsetNameAlreadyExistException.bind(this), 3000);
+					this.props.addErrorNotification(response.error.message, this.props.deleteNotification);
 					break;
 			}
 		}
@@ -284,8 +272,8 @@ class Apps extends Component {
         this.props.unsetLoading();
 	}
 
-	onBucketDeleted(response) {			
-		response = JSON.parse(response);		
+	onBucketDeleted(response) {
+		response = JSON.parse(response);
 
 		if(response.isSuccess) {
 			this.props.deleteBucket(response.result);
@@ -299,28 +287,6 @@ class Apps extends Component {
 			let result = response.result;
 			this.props.deleteFile(result.bucketId, result.fileId);
 		}
-	}
-
-	chooseWarning() {
-		let color = '#EB5757';
-		let message;
-
-		if(!this.props.isEmailConfirmed) {			
-			message = 'Please confirm your email';
-		} else if(!this.props.isAccountExist) {			
-			message = 'This account doesn`t exist';
-		} else if(this.props.isNameExistException) {			
-			message = 'Name already used by another bucket';
-		} if(!this.props.isConnected) {			
-			message = 'No internet connection';
-		} else {
-			color = null;
-			message = null;
-		}	
-
-		return <WarningComponent
-						message = { message }
-						statusBarColor = { color } />;
 	}
 
 	render() {
@@ -346,9 +312,8 @@ class Apps extends Component {
 						state: this.props.nav					
 					})}
 				/>
-				{
-					this.chooseWarning()
-				}	
+				<WarningComponent
+					notification = { this.props.notification } />
 			</View>
 		);
 	};
@@ -371,12 +336,9 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
 		nav: state.navReducer,
-		isEmailConfirmed: state.authReducer.user.isEmailConfirmed,
-		isAccountExist: state.authReducer.user.isAccountExist,
-		isNameExistException: state.bucketReducer.isNameExistException,
 		sortingMode: state.mainReducer.sortingMode,
-		isConnected: state.mainReducer.isConnected,
-		email: state.authReducer.user.email
+		email: state.authReducer.user.email,
+		notification: state.notificationReducer.notificationQueue[0],
     };
 }
 
@@ -385,9 +347,7 @@ function mapDispatchToProps(dispatch) {
 		...bindActionCreators( {
 		saveMnemonic,
 		setLoading,
-		unsetLoading, 
-		setNameAlreadyExistException,
-		unsetNameAlreadyExistException,
+		unsetLoading,
 		createBucket,
 		getBuckets,
 		popLoading,
@@ -399,7 +359,6 @@ function mapDispatchToProps(dispatch) {
 		updateFileDownloadProgress,
 		deleteFile,
 		listFiles,
-		setIsConnected,
 		redirectToLoginScreen,
 		redirectToMainScreen,
 		redirectToMnemonicConfirmationScreen,
@@ -412,6 +371,8 @@ function mapDispatchToProps(dispatch) {
 		redirectToRegisterSuccessScreen,
 		navigateBack,
 		listSyncQueueEntriesAsync,
+		addErrorNotification,
+		deleteNotification,
 		getSyncQueueEntryAsync  }, dispatch),
 		listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId)),
 		uploadSuccess: (fileHandle, fileId) => dispatch(uploadFileSuccess(fileHandle, fileId)),		

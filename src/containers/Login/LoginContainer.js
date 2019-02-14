@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Linking } from 'react-native';
-import { 
-    setAccountNotExist,
-    setAccountExist,
-    setEmailNotConfirmed,
-    setEmailConfirmed,
+import {
     loginSuccess,
     loginError,
     login,
@@ -16,6 +12,7 @@ import {
     redirectToInitializeScreen,
     redirectToQRScannerScreen
 } from '../../reducers/authentification/authActions';
+import { addErrorNotification, deleteNotification } from '../../reducers/notification/notificationActions';
 import StorjLib from '../../utils/storjModule';
 import SyncModule from "../../utils/syncModule";
 import LoginComponent from '../../components/Login/LoginComponent';
@@ -174,9 +171,11 @@ class LoginContainer extends Component {
             });
 
             switch (areCredentialsValidError) {
-                case 403: this.props.setEmailNotConfirmed();
+                case 403:
+                    this.props.addErrorNotification('Please confirm your email', this.props.deleteNotification);
                 break;
-                case 401: this.props.setAccountNotExist();
+                case 401:
+                    this.props.addErrorNotification('This account doesn`t exist', this.props.deleteNotification);
                 break;
                 default: this.props.redirectToAuthFailureScreen({ 
                     mainText: infoScreensConstants.loginFailureMainText, 
@@ -198,8 +197,6 @@ class LoginContainer extends Component {
         
         if(areKeysImported) {
             await this.handleFirstLaunch(this.state.stateModel.email);
-            this.props.setEmailConfirmed();
-            this.props.setAccountExist();
             this.props.loginSuccess();
             this.props.redirectToInitializeScreen();
         } else {
@@ -215,16 +212,12 @@ class LoginContainer extends Component {
      * invokes actionCreators that provides navigations
      */
     redirectToRegisterScreen() {
-        this.props.setAccountExist();
-        this.props.setEmailConfirmed();
 		this.props.navigateToRegisterScreen();
     };
     redirectToMainPageScreen() {
 		this.props.redirectToMainScreen();
     };
     redirectToQRScannerScreen() {
-        this.props.setAccountExist();
-        this.props.setEmailConfirmed();
         this.props.redirectToQRScannerScreen();
     };
 
@@ -263,13 +256,11 @@ class LoginContainer extends Component {
 function mapStateToProps(state) { return { user: state.authReducer.user }; };
 function mapDispatchToProps(dispatch) { 
     return bindActionCreators({
-            setAccountNotExist,
-            setAccountExist,
-            setEmailNotConfirmed,
-            setEmailConfirmed,
             loginSuccess,
             loginError,
             login,
+            addErrorNotification,
+            deleteNotification,
             navigateToRegisterScreen,
             redirectToAuthFailureScreen,
             redirectToMainScreen,
