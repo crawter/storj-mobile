@@ -114,10 +114,10 @@ function mapDispatchToProps(dispatch) {
             listSyncQueueEntriesAsync,
             updateSyncQueueEntryFileNameAsync,
             updateSyncQueueEntryStatusAsync,
-            redirectToRecentSyncFilesScreen
+            redirectToRecentSyncFilesScreen,
+            getUploadingFile: uploadFileStart,
+            uploadSuccess: uploadFileSuccess,
         }, dispatch),
-        getUploadingFile: (fileHandle) => dispatch(uploadFileStart(fileHandle)),
-        uploadSuccess: (fileHandle, fileId) => dispatch(uploadFileSuccess(fileHandle, fileId))
     }
 }
 

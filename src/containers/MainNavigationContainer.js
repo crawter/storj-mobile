@@ -70,11 +70,10 @@ function mapDispatchToProps(dispatch) {
         ...bindActionCreators({ 
             setPhotosBucketId,
             hideActionBar,
-            pushLoading 
-        }, dispatch),
-        goToBucketsScreen: () => { dispatch(NavigationActions.navigate({ routeName: 'BucketsScreen'})); },
-		listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId)),
-        dispatch
+            pushLoading,
+            goToBucketsScreen: NavigationActions.navigate({ routeName: 'BucketsScreen'}),
+            listSettings:listSettingsAsync,
+        }, dispatch)
     };
 };
 

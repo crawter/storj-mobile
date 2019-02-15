@@ -127,7 +127,6 @@ function mapDispatchToProps(dispatch) {
             redirectToMyAccountMnemonicScreen,
             clear,
             changePasswordPopupStatus,
-
             toggleSyncWindow
         }, dispatch)
     }

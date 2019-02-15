@@ -267,7 +267,8 @@ function mapDispatchToProps(dispatch) {
             redirectToLoginScreen,
             redirectToAuthFailureScreen,
             redirectToRegisterSuccessScreen, 
-            login}, dispatch)
+            login
+        }, dispatch)
     }
 };
 

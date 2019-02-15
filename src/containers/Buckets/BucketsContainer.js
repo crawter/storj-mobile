@@ -167,9 +167,10 @@ function mapDispatchToProps(dispatch) {
             closeBucket,
             setSearch,
             clearSearch, 
-            bucketNavigateBack }, dispatch),
-        setFirstSignIn: (settingsId, value, callback) => { dispatch(setFirstSignInAsync(settingsId, value, callback)); },
-        changeSyncStatus: (settingsId, value) => { dispatch(changeSyncStatusAsync(settingsId, value));}
+            bucketNavigateBack,
+            setFirstSignIn: setFirstSignInAsync,
+            changeSyncStatus: changeSyncStatusAsync,
+        }, dispatch),
     }
 }
 

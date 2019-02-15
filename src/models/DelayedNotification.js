@@ -12,14 +12,14 @@ export class DelayedNotification {
 
         switch (type) {
             case NOTIFICATION_TYPES.SUCCESS:
-                this.color = 'rgba(214, 235, 208, 1.0)';
+                this.color = 'green';
                 break;
             case NOTIFICATION_TYPES.ERROR:
-                this.color = 'rgba(246, 205, 204, 1.0)';
+                this.color = 'red';
                 break;
             case NOTIFICATION_TYPES.NOTIFICATION:
             default:
-                this.color = 'rgba(219, 225, 232, 1.0)';
+                this.color = 'blue';
                 break;
         }
 

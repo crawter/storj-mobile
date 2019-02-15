@@ -53,7 +53,7 @@ import WarningComponent from '../components/Common/WarningComponent';
 import { uploadFileStart, uploadFileSuccess } from '../reducers/asyncActions/fileActionsAsync';
 import { listSyncQueueEntriesAsync, getSyncQueueEntryAsync } from "../reducers/mainContainer/SyncQueue/syncQueueReducerAsyncActions";
 import { listSettingsAsync } from "../reducers/mainContainer/MyAccount/Settings/SettingsActionsAsync";
-import { addErrorNotification, deleteNotification } from '../reducers/notification/notificationActions';
+import { addErrorNotification, deleteNotification, addSuccessNotification } from '../reducers/notification/notificationActions';
 
 import SyncModule from '../utils/syncModule';
 import ServiceModule from '../utils/serviceModule';
@@ -243,7 +243,8 @@ class Apps extends Component {
 		response = JSON.parse(response);
 
 		if(response.isSuccess) {
-			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));	
+			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));
+			this.props.addSuccessNotification('Bucket successfully created', this.props.deleteNotification);
 		} else {
 			switch(response.error.code) {
 				case 409:
@@ -281,7 +282,12 @@ class Apps extends Component {
 
 		if(response.isSuccess) {
 			this.props.deleteBucket(response.result);
+			this.props.addSuccessNotification('Buckets successfully deleted', this.props.deleteNotification);
+
+			return;
 		}
+
+		this.props.addErrorNotification(response.error.message, this.props.deleteNotification);
 	}
 	
 	onFileDeleted(response) {		
@@ -290,7 +296,12 @@ class Apps extends Component {
 		if(response.isSuccess) {
 			let result = response.result;
 			this.props.deleteFile(result.bucketId, result.fileId);
+			this.props.addSuccessNotification('Files successfully deleted', this.props.deleteNotification);
+
+			return;
 		}
+
+		this.props.addErrorNotification(response.error.message, this.props.deleteNotification);
 	}
 
 	render() {
@@ -349,38 +360,41 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		...bindActionCreators( {
-		saveMnemonic,
-		setLoading,
-		unsetLoading,
-		createBucket,
-		getBuckets,
-		popLoading,
-		deleteBucket,
-		uploadFileError,
-		updateFileUploadProgress,
-		downloadFileSuccess,
-		downloadFileError,
-		updateFileDownloadProgress,
-		deleteFile,
-		listFiles,
-		redirectToLoginScreen,
-		redirectToMainScreen,
-		redirectToMnemonicConfirmationScreen,
-		redirectToMnemonicConfirmedScreen,
-		redirectToMnemonicGenerationScreen,
-		redirectToMnemonicInfoScreen,
-		redirectToMnemonicHelpScreen,
-		redirectToMnemonicNotConfirmedScreen,
-		redirectToRegisterScreen,
-		redirectToRegisterSuccessScreen,
-		navigateBack,
-		listSyncQueueEntriesAsync,
-		addErrorNotification,
-		deleteNotification,
-		getSyncQueueEntryAsync  }, dispatch),
-		listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId)),
-		uploadSuccess: (fileHandle, fileId) => dispatch(uploadFileSuccess(fileHandle, fileId)),		
-		getUploadingFile: (fileHandle) => dispatch(uploadFileStart(fileHandle))};
+            saveMnemonic,
+            setLoading,
+            unsetLoading,
+            createBucket,
+            getBuckets,
+            popLoading,
+            deleteBucket,
+            uploadFileError,
+            updateFileUploadProgress,
+            downloadFileSuccess,
+            downloadFileError,
+            updateFileDownloadProgress,
+            deleteFile,
+            listFiles,
+            redirectToLoginScreen,
+            redirectToMainScreen,
+            redirectToMnemonicConfirmationScreen,
+            redirectToMnemonicConfirmedScreen,
+            redirectToMnemonicGenerationScreen,
+            redirectToMnemonicInfoScreen,
+            redirectToMnemonicHelpScreen,
+            redirectToMnemonicNotConfirmedScreen,
+            redirectToRegisterScreen,
+            redirectToRegisterSuccessScreen,
+            navigateBack,
+            listSyncQueueEntriesAsync,
+            addErrorNotification,
+            addSuccessNotification,
+            deleteNotification,
+            getSyncQueueEntryAsync,
+            listSettings: listSettingsAsync,
+            uploadSuccess: uploadFileSuccess,
+            getUploadingFile: uploadFileStart,
+        }, dispatch),
+	}
 }
 
 /**

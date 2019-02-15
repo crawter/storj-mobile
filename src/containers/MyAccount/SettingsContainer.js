@@ -120,15 +120,15 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         ...bindActionCreators({ 
-            changePINOptionStatus }, dispatch), 
-        listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId)),
-        changeSyncStatus: (settingsId, value) => dispatch(changeSyncStatusAsync(settingsId, value)),
-        setWifiConstraint: (settingsId, value, prevSettingsState) => dispatch(setWifiConstraintAsync(settingsId, value, prevSettingsState)),
-        setChargingConstraint: (settingsId, value, prevSettingsState) => dispatch(setChargingConstraintAsync(settingsId, value, prevSettingsState)),
-        syncPhotosAction: (settingsId, value, prevSettingsState) => dispatch(syncPhotosAsync(settingsId, value, prevSettingsState)),
-        syncMoviesAction: (settingsId, value, prevSettingsState) => dispatch(syncMoviesAsync(settingsId, value, prevSettingsState)),
-        syncDocumentsAction: (settingsId, value, prevSettingsState) => dispatch(syncDocumentsAsync(settingsId, value, prevSettingsState)),
-        syncMusicAction: (settingsId, value, prevSettingsState) => dispatch(syncMusicAsync(settingsId, value, prevSettingsState))
+            changePINOptionStatus,
+            listSettings: listSettingsAsync,
+            changeSyncStatus: changeSyncStatusAsync,
+            setWifiConstraint: setWifiConstraintAsync,
+            setChargingConstraint: setChargingConstraintAsync,
+            syncPhotosAction: syncPhotosAsync,
+            syncMoviesAction: syncMoviesAsync,
+            syncDocumentsAction: syncDocumentsAsync,
+            syncMusicAction: syncMusicAsync,}, dispatch),
     };
 }
 

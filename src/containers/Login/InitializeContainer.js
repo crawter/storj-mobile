@@ -27,6 +27,7 @@ import {
 import {
     listFiles
 } from '../../reducers/mainContainer/Files/filesReducerActions';
+import { addErrorNotification, deleteNotification } from '../../reducers/notification/notificationActions';
 import ServiceModule from '../../utils/serviceModule';
 import SyncModule from '../../utils/syncModule';
 import PropTypes from 'prop-types';
@@ -95,6 +96,7 @@ class InitializeContainer extends Component {
         
         if(!getKeyResponse.isSuccess) {
             this.setState({ isFinished: false });
+            this.props.addErrorNotification(getKeyResponse.error.message, this.props.deleteNotification);
 
             if(this.state.isFirstLaunch) { 
                 this.setState({ enterPassCode: true, isFirstLaunch: false });  
@@ -197,9 +199,11 @@ function mapDispatchToProps(dispatch) {
             getBuckets,
             listFiles, 
             getDebits, 
-            getCredits, 
-            getWallets }, dispatch),
-            listSettings: (settingsId) => dispatch(listSettingsAsync(settingsId))
+            getCredits,
+            addErrorNotification,
+            deleteNotification,
+            getWallets,
+            listSettings: listSettingsAsync}, dispatch),
     };
 };
 
