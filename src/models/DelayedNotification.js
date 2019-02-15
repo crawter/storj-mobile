@@ -12,14 +12,14 @@ export class DelayedNotification {
 
         switch (type) {
             case NOTIFICATION_TYPES.SUCCESS:
-                this.color = 'rgba(214, 235, 208, 0.4)';
+                this.color = 'rgba(214, 235, 208, 1.0)';
                 break;
             case NOTIFICATION_TYPES.ERROR:
-                this.color = 'rgba(246, 205, 204, 0.4)';
+                this.color = 'rgba(246, 205, 204, 1.0)';
                 break;
             case NOTIFICATION_TYPES.NOTIFICATION:
             default:
-                this.color = 'rgba(219, 225, 232, 0.4)';
+                this.color = 'rgba(219, 225, 232, 1.0)';
                 break;
         }
 
@@ -32,7 +32,6 @@ export class DelayedNotification {
     }
 
     start() {
-        console.log("start", this.callback)
         this.startTime = new Date().getMilliseconds();
         this.timerId = setTimeout(this.callback, this.remainingTime);
     }

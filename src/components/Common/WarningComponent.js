@@ -22,10 +22,9 @@ export default class WarningComponent extends Component {
 
     render() {
         let props = this.props;
-        console.log("render",this.props )
 
         if (props.notification) {
-            let customColor = { backgroundColor: props.notification.color }
+            let customColor = { backgroundColor: props.notification.color };
 
             return(
                 <View style = { props.notification ? [styles.secretPhraseButton, customColor] : [styles.secretPhraseHide, customColor] } >
@@ -62,7 +61,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: getWidth(20),
         alignItems: 'center', 
-        flexDirection: 'row' 
+        flexDirection: 'row',
+        zIndex: 9999,
     },
     secretPhraseHide: { 
         position: 'absolute',

@@ -241,7 +241,6 @@ class Apps extends Component {
 
 	onBucketCreated(response) {
 		response = JSON.parse(response);
-		console.log("response", response)
 
 		if(response.isSuccess) {
 			this.props.createBucket(new ListItemModel(new BucketModel(response.result)));	
