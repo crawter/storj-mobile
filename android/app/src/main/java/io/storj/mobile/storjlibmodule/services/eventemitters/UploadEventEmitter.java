@@ -15,8 +15,8 @@ public class UploadEventEmitter extends BaseEventEmitter implements Uploader.Cal
     public final static String EVENT_FILE_UPLOADED_SUCCESSFULLY = "EVENT_FILE_UPLOADED_SUCCESSFULLY";
     public final static String EVENT_FILE_UPLOAD_ERROR = "EVENT_FILE_UPLOAD_ERROR";
 
-    public final static String ERROR_MESSAGE = "errorMessage";
-    public final static String ERROR_CODE = "errorCode";
+    public final static String ERROR_MESSAGE = "message";
+    public final static String ERROR_CODE = "code";
 
     public UploadEventEmitter() {
         super(null);

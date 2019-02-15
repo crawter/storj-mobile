@@ -21,10 +21,6 @@ public class BaseEventEmitter {
             return;
         }
 
-//                ReactContext reactContext = ((ReactApplication)mContext).getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
-//                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-//                        .emit(eventName, WritableMapMapper.get(map));
-
         Intent eventIntent = new Intent(ACTION_EVENT);
         eventIntent.putExtra(PARAM_DATA, map);
         eventIntent.putExtra(PARAM_EVENT_NAME, eventName);

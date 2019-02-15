@@ -58,18 +58,24 @@ public class DownloadIntentService extends BaseReactService {
         String fileId = intent.getStringExtra(PARAMS_FILE_ID);
         String localPath = intent.getStringExtra(PARAMS_LOCAL_PATH);
 
-        switch (action) {
-            case ACTION_DOWNLOAD_FILE:
-                mDownloadService.DownloadFile(bucketId, fileId, localPath);
-                break;
-            case ACTION_COPY_FILE:
-                String targetBucketId = intent.getStringExtra(PARAMS_TARGET_BUCKET_ID);
+        try {
+            switch (action) {
+                case ACTION_DOWNLOAD_FILE:
+                    mDownloadService.download(bucketId, fileId, localPath);
+                    break;
+                case ACTION_COPY_FILE:
+                    String targetBucketId = intent.getStringExtra(PARAMS_TARGET_BUCKET_ID);
 
-                if(mDownloadService.DownloadFile(bucketId, fileId, localPath)) {
-                    uploadFile(targetBucketId, localPath);
-                }
+                    if(mDownloadService.download(bucketId, fileId, localPath)) {
+                        uploadFile(targetBucketId, localPath);
+                    }
 
-                break;
+                    break;
+            }
+        } catch (InterruptedException ex) {
+            // TODO: handle exceptions
+        } catch (Exception ex) {
+            // TODO: handle exceptions
         }
     }
 

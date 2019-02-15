@@ -1,5 +1,7 @@
 package io.storj.mobile.service.download;
 
+import java.util.concurrent.CountDownLatch;
+
 import io.storj.libstorj.DownloadFileCallback;
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.common.responses.SingleResponse;
@@ -7,7 +9,6 @@ import io.storj.mobile.domain.IDatabase;
 import io.storj.mobile.domain.files.File;
 import io.storj.mobile.service.IEventEmitter;
 import io.storj.mobile.service.storj.StorjService;
-import io.storj.mobile.service.utils.AwaitSyncObject;
 import io.storj.mobile.service.utils.ThumbnailProcessor;
 
 public class DownloadService {
@@ -26,12 +27,16 @@ public class DownloadService {
         mEventEmitter = eventEmitter;
     }
 
-    public boolean DownloadFile(String bucketId, final String fileId, final String localPath) {
+    public boolean download(String bucketId, final String fileId, final String localPath)
+            throws InterruptedException, Exception {
+
         java.io.File file = new java.io.File(localPath);
 
         if(bucketId == null || fileId == null || file.isDirectory()) {
             return false;
         }
+
+        final CountDownLatch downloadLatch = new CountDownLatch(1);
 
         // TODO: get as external interface dependency in constructor?
         final ThumbnailProcessor tProc = new ThumbnailProcessor();
@@ -41,14 +46,11 @@ public class DownloadService {
             return false;
         }
 
-        final AwaitSyncObject uploadSyncObject = new AwaitSyncObject();
         //final ProgressResolver progressResolver = new ProgressResolver();
 
         final File fileDbo = getFileResponse.getResult();
-        long fileHandle = 0;
 
-        try {
-            fileHandle = mStorj.downloadFile(bucketId, fileId, localPath, new DownloadFileCallback() {
+        final long fileHandle = mStorj.downloadFile(bucketId, fileId, localPath, new DownloadFileCallback() {
             @Override
             public void onProgress(String fileId, double progress, long downloadedBytes, long totalBytes) {
                 synchronized (fileDbo) {
@@ -58,8 +60,6 @@ public class DownloadService {
                         } catch(Exception ignored) {}
                     }
                 }
-
-                // progress resolvers
 
                 mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_PROGRESS,
                         new LoadFileModel(fileId, fileDbo.getFileHandle(), progress).toJson());
@@ -83,9 +83,7 @@ public class DownloadService {
                             new LoadFileModel(fileId, localPath, fileDbo.getThumbnail()).toJson());
                 }
 
-                synchronized(uploadSyncObject) {
-                    uploadSyncObject.finish(true);
-                }
+                downloadLatch.countDown();
             }
 
             @Override
@@ -99,30 +97,23 @@ public class DownloadService {
                     mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_ERROR, new LoadFileModel(fileId, localPath).toJson());
                 }
 
-                synchronized(uploadSyncObject) {
-                    uploadSyncObject.finish(false);
-                }
+                downloadLatch.countDown();
             }
         });
-        } catch(Exception ignored) {}
 
-        synchronized(fileDbo) {
-            fileDbo.setFileHandle(fileHandle);
-            fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADING.getValue());
-            fileDbo.setUri(null);
+        fileDbo.setFileHandle(fileHandle);
+        fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADING.getValue());
+        fileDbo.setUri(null);
 
-            Response updateFileResponse = mStore.files().update(fileDbo);
+        Response updateFileResponse = mStore.files().update(fileDbo);
 
-            if(updateFileResponse.isSuccess()) {
-                mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_START,
-                        new LoadFileModel(fileId, fileHandle, 0).toJson());
-            }
-
-            fileDbo.notifyAll();
+        if(updateFileResponse.isSuccess()) {
+            mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_START,
+                    new LoadFileModel(fileId, fileHandle, 0).toJson());
         }
 
-        synchronized(uploadSyncObject) {
-            return uploadSyncObject.await();
-        }
+        downloadLatch.await();
+
+        return fileDbo.getFileHandle() != 0;
     }
 }

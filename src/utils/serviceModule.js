@@ -26,6 +26,10 @@ const ServiceModule = (() => {
             return await serviceModule.bindDownloadService();
         }
 
+        async bindUploadService() {
+            return await serviceModule.bindUploadService();
+        }
+
         getFiles(bucketId) {
             serviceModule.getFiles(bucketId);
         }

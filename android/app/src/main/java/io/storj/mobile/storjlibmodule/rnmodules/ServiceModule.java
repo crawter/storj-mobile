@@ -19,6 +19,7 @@ import io.storj.mobile.storjlibmodule.models.PromiseHandler;
 import io.storj.mobile.storjlibmodule.services.DownloadIntentService;
 import io.storj.mobile.storjlibmodule.services.FetchIntentService;
 import io.storj.mobile.storjlibmodule.services.SynchronizationService;
+import io.storj.mobile.storjlibmodule.services.UploadIntentService;
 import io.storj.mobile.storjlibmodule.services.UploadService;
 import io.storj.mobile.storjlibmodule.utils.WritableMapMapper;
 
@@ -32,9 +33,11 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
     private FetchIntentService mFetchIntentService;
     private DownloadIntentService mDownloadIntentService;
+    private UploadIntentService mUploadIntentService;
 
     private PromiseHandler mPromise;
     private PromiseHandler mDownloadServicePromise;
+    private PromiseHandler mUploadServicePromise;
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -54,6 +57,10 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
                     mDownloadIntentService = (DownloadIntentService)baseReactService;
                     mDownloadServicePromise.resolveString(serviceName);
                     break;
+                case "UploadIntentService":
+                    mUploadIntentService = (UploadIntentService)baseReactService;
+                    mUploadServicePromise.resolveString(serviceName);
+                    break;
             }
         }
 
@@ -66,15 +73,18 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
                 case DownloadIntentService.SERVICE_NAME:
                     mDownloadIntentService = null;
                     break;
+                case "UploadIntentService":
+                    mUploadIntentService = null;
+                    break;
             }
         }
     };
 
-    public ServiceModule(ReactApplicationContext reactContext)
-    {
+    public ServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mPromise = new PromiseHandler();
         mDownloadServicePromise = new PromiseHandler();
+        mUploadServicePromise = new PromiseHandler();
 
         reactContext.addActivityEventListener(this);
     }
@@ -92,6 +102,11 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
     @ReactMethod
     public void bindDownloadService(Promise promise) {
         bindService(mDownloadServicePromise, DownloadIntentService.class, promise);
+    }
+
+    @ReactMethod
+    public void bindUploadService(Promise promise) {
+        bindService(mUploadServicePromise, UploadIntentService.class, promise);
     }
 
     @ReactMethod
@@ -115,7 +130,7 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
             }
         }
 
-        Intent uploadIntent = new Intent(getReactApplicationContext(), UploadService.class);
+        Intent uploadIntent = new Intent(getReactApplicationContext(), UploadIntentService.class);
 
         uploadIntent.setAction(UploadService.ACTION_UPLOAD_FILE);
         uploadIntent.putExtra(UploadService.PARAM_BUCKET_ID, bucketId);

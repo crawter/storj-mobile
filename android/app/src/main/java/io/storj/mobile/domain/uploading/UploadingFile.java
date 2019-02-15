@@ -3,7 +3,9 @@ package io.storj.mobile.domain.uploading;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UploadingFile {
+import io.storj.mobile.common.Convertible;
+
+public class UploadingFile extends Convertible {
     @Expose
     @SerializedName("fileHandle")
     private long _fileHandle;
@@ -76,5 +78,9 @@ public class UploadingFile {
     }
     public void setSize(long totalBytes) {
         _size = totalBytes;
+    }
+    public void setFileHandle(long handle) {
+        _fileHandle = handle;
+        isIdSet = true;
     }
 }

@@ -6,6 +6,7 @@ import io.storj.libstorj.DownloadFileCallback;
 import io.storj.libstorj.Keys;
 import io.storj.libstorj.KeysNotFoundException;
 import io.storj.libstorj.Storj;
+import io.storj.libstorj.UploadFileCallback;
 import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.common.responses.Response;
 import io.storj.mobile.common.responses.SingleResponse;
@@ -124,7 +125,8 @@ public class StorjService {
         return fDeleter.getResult();
     }
 
-    public long downloadFile(String bucketId, String fileId, String localPath, final DownloadFileCallback callback) throws Exception {
+    public long downloadFile(String bucketId, String fileId, String localPath, final DownloadFileCallback callback)
+            throws Exception {
         return mInstance.downloadFile(bucketId, fileId, localPath, new DownloadFileCallback() {
             @Override
             public void onProgress(String fileId, double progress, long downloadedBytes, long totalBytes) {
@@ -139,6 +141,27 @@ public class StorjService {
             @Override
             public void onError(String fileId, int code, String message) {
                 callback.onError(fileId, code, message);
+            }
+        });
+    }
+
+    public long uploadFile(String bucketId, String fileName, String localPath, final UploadFileCallback callback)
+            throws Exception {
+        return mInstance.uploadFile(bucketId, fileName, localPath, new UploadFileCallback(){
+
+            @Override
+            public void onProgress(String filePath, double progress, long uploadedBytes, long totalBytes) {
+                callback.onProgress(filePath, progress, uploadedBytes, totalBytes);
+            }
+
+            @Override
+            public void onComplete(String filePath, io.storj.libstorj.File file) {
+                callback.onComplete(filePath, file);
+            }
+
+            @Override
+            public void onError(String filePath, int code, String message) {
+                callback.onError(filePath, code, message);
             }
         });
     }

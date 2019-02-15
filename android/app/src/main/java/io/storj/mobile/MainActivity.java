@@ -9,8 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
-
-    private BroadcastReceiver mEventReciever = new BroadcastReceiver() {
+    private BroadcastReceiver mEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             MainActivity.this.onNewIntent(intent);
@@ -28,12 +27,12 @@ public class MainActivity extends ReactActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mEventReciever, new IntentFilter("ACTION_EVENT"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mEventReceiver, new IntentFilter("ACTION_EVENT"));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mEventReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mEventReceiver);
     }
 }

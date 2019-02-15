@@ -50,7 +50,7 @@ const SyncModule = (() => {
         }
         
         async updateSyncSettings(settingsId, syncSettings) {
-            return JSON.parse(await syncModule.updateSyncSettings(String(settingsId), Number(syncSettings)));
+            return JSON.parse(await syncModule.updateSettings(String(settingsId), Number(syncSettings)));
         }
 
         async setFirstSignIn(settingsId, syncSettings) {

@@ -120,6 +120,7 @@ class Apps extends Component {
 		if(this.isAndroid) {
 			await ServiceModule.bindGetBucketsService();
 			await ServiceModule.bindDownloadService();
+			await ServiceModule.bindUploadService();
 		}
 
 		//ServiceModule.startSync();
@@ -133,20 +134,24 @@ class Apps extends Component {
 		}
 	}
 
-	async fileUploadError(result) {
-		this.props.uploadFileError(result.fileHandle);
+	async fileUploadError(params) {
+		params = JSON.parse(params);
+		this.props.uploadFileError(params.fileHandle);
 	}
 
-	async fileUploadSuccess(result) {
-		this.props.uploadSuccess(result.fileHandle, result.fileId);
+	async fileUploadSuccess(params) {
+		params = JSON.parse(params);
+		this.props.uploadSuccess(params.fileHandle, params.fileId);
 	}
 
-	async fileUploadProgress(result) {
-		this.props.updateFileUploadProgress(result.fileHandle, result.progress, result.uploaded);
+	async fileUploadProgress(params) {		
+		params = JSON.parse(params);
+		this.props.updateFileUploadProgress(params.fileHandle, params.progress, params.uploaded);
 	}
 
-	async onFileUploadStart(result) {
-		this.props.getUploadingFile(result.fileHandle);
+	async onFileUploadStart(params) {
+        params = JSON.parse(params);
+		this.props.getUploadingFile(params.fileHandle);
 	}
 
 	componentDidMount() {
@@ -156,12 +161,12 @@ class Apps extends Component {
 	}
 
 	onFileDownloadStart(params) {
-		params = JSON.parse(params);
+		params = JSON.parse(params);		
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
 	onFileDownloadProgress(params) {
-		params = JSON.parse(params);
+		params = JSON.parse(params);		
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
@@ -170,8 +175,8 @@ class Apps extends Component {
 		this.props.downloadFileSuccess(null, params.fileId, params.localPath, params.thumbnail);
 	}
 
-	onFileDownloadError(params) {
-		params = JSON.parse(params);
+	onFileDownloadError(params) {		
+		params = JSON.parse(params);		
 		this.props.downloadFileError(null, params.fileId);
 	}
 
