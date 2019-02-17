@@ -36,7 +36,6 @@ public class SyncHandler extends Handler {
         int syncEntryId = data.getInt(PARAM_SYNC_ENTRY_ID);
 
         try {
-
             NotificationService notificationService = new NotificationService();
             notificationService.init(mContext, mContext instanceof NotificationResolver ? (NotificationResolver) mContext : null);
 

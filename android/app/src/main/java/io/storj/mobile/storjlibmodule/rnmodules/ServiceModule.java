@@ -18,7 +18,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import io.storj.mobile.storjlibmodule.models.PromiseHandler;
 import io.storj.mobile.storjlibmodule.services.DownloadIntentService;
 import io.storj.mobile.storjlibmodule.services.FetchIntentService;
-import io.storj.mobile.storjlibmodule.services.SynchronizationService;
+import io.storj.mobile.storjlibmodule.services.SyncQueueService;
 import io.storj.mobile.storjlibmodule.services.UploadIntentService;
 import io.storj.mobile.storjlibmodule.services.UploadService;
 import io.storj.mobile.storjlibmodule.utils.WritableMapMapper;
@@ -192,8 +192,8 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
     @ReactMethod
     public void cancelSync() {
-        Intent cancelSyncIntent = new Intent(getReactApplicationContext(), SynchronizationService.class);
-        cancelSyncIntent.setAction(SynchronizationService.ACTION_SYNC_CANCEL);
+        Intent cancelSyncIntent = new Intent(getReactApplicationContext(), SyncQueueService.class);
+        cancelSyncIntent.setAction(SyncQueueService.ACTION_SYNC_CANCEL);
 
         getReactApplicationContext().startService(cancelSyncIntent);
     }
@@ -219,8 +219,8 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
     @ReactMethod
     public void removeFileFromSyncQueue(int id) {
-        Intent removeFromQueueIntent = new Intent(getReactApplicationContext(), SynchronizationService.class);
-        removeFromQueueIntent.setAction(SynchronizationService.ACTION_REMOVE_FROM_QUEUE);
+        Intent removeFromQueueIntent = new Intent(getReactApplicationContext(), SyncQueueService.class);
+        removeFromQueueIntent.setAction(SyncQueueService.ACTION_REMOVE_FROM_QUEUE);
         removeFromQueueIntent.putExtra(UploadService.PARAM_SYNC_ENTRY_ID, id);
 
         getReactApplicationContext().startService(removeFromQueueIntent);
@@ -228,8 +228,8 @@ public class ServiceModule extends ReactContextBaseJavaModule implements Activit
 
     @ReactMethod
     public void startSync() {
-        Intent startSyncIntent = new Intent(getReactApplicationContext(), SynchronizationService.class);
-        startSyncIntent.setAction(SynchronizationService.ACTION_SYNC);
+        Intent startSyncIntent = new Intent(getReactApplicationContext(), SyncQueueService.class);
+        startSyncIntent.setAction(SyncQueueService.ACTION_SYNC);
 
         getReactApplicationContext().startService(startSyncIntent);
     }

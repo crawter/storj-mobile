@@ -53,11 +53,11 @@
             android:enabled="true" />
 
         <service
-            android:name=".storjlibmodule.services.SynchronizationService"
+            android:name=".storjlibmodule.services.SyncQueueService"
             android:exported="true"
             android:enabled="true" />
 
-        <service android:name=".storjlibmodule.services.SynchronizationSchedulerJobService" android:enabled="true">
+        <service android:name=".storjlibmodule.services.SyncSchedulerJobService" android:enabled="true">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>

@@ -19,7 +19,7 @@ import io.storj.mobile.dataprovider.Database;
 import io.storj.mobile.storjlibmodule.interfaces.NotificationResolver;
 import io.storj.mobile.storjlibmodule.StorjLibPackage;
 import io.storj.mobile.storjlibmodule.services.NotificationService;
-import io.storj.mobile.storjlibmodule.services.SynchronizationService;
+import io.storj.mobile.storjlibmodule.services.SyncQueueService;
 
 public class MainApplication extends Application implements ReactApplication, Application.ActivityLifecycleCallbacks, NotificationResolver {
 
@@ -60,7 +60,7 @@ public class MainApplication extends Application implements ReactApplication, Ap
             // TODO: close app
         }
 
-        SynchronizationService.clean(this);
+        SyncQueueService.clean(this);
         super.onCreate();
         NotificationService.Init(this);
         SoLoader.init(this, /* native exopackage */ false);

@@ -23,7 +23,7 @@ import io.storj.mobile.domain.settings.Settings;
 import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
 
-public class SynchronizationSchedulerJobService extends JobService {
+public class SyncSchedulerJobService extends JobService {
     private AsyncTask mBackgroundTask;
 
     @Override
@@ -59,9 +59,9 @@ public class SynchronizationSchedulerJobService extends JobService {
 
             @Override
             protected void onPostExecute(Object o) {
-                Intent syncIntent = new Intent(SynchronizationSchedulerJobService.this, SynchronizationService.class);
-                syncIntent.setAction(SynchronizationService.ACTION_SYNC);
-                SynchronizationSchedulerJobService.this.startService(syncIntent);
+                Intent syncIntent = new Intent(SyncSchedulerJobService.this, SyncQueueService.class);
+                syncIntent.setAction(SyncQueueService.ACTION_SYNC);
+                SyncSchedulerJobService.this.startService(syncIntent);
                 jobFinished(job, true);
             }
         };
@@ -81,48 +81,31 @@ public class SynchronizationSchedulerJobService extends JobService {
     private final static String DEBUG_TAG = "SYNCHRONIZATION DEBUG";
 
     private void syncFolder(String settingsId, int syncSettings, SyncSettingsEnum syncEnum) {
-        IDatabase db = Database.getInstance();
-
-        if(syncEnum != SyncSettingsEnum.SYNC_DOCUMENTS
-                && syncEnum != SyncSettingsEnum.SYNC_MUSIC
-                && syncEnum != SyncSettingsEnum.SYNC_MOVIES
-                && syncEnum != SyncSettingsEnum.SYNC_PHOTOS) {
+        if (!shouldSync(settingsId, syncSettings, syncEnum)) {
             return;
         }
 
-        int syncValue = syncEnum.getValue();
+        IDatabase db = Database.getInstance();
+
         String bucketName = syncEnum.getBucketName();
+        String folderUri = syncEnum.geetFolderUri();
 
         SingleResponse<Bucket> getBucketResponse = db.buckets().get(BucketContract._NAME, bucketName);
         if (!getBucketResponse.isSuccess()) {
             return;
         }
 
-        boolean isSyncOn = (syncSettings & syncValue) == syncValue;
+        String bucketId = getBucketResponse.getResult().getId();
 
-        if(isSyncOn) {
-            _syncFolder(syncEnum.geetFolderUri(), getBucketResponse.getResult().getId(), settingsId, syncSettings);
-        }
-
-    }
-
-    private void _syncFolder(String folderUri, String bucketId, String settingsId, int syncSettings) {
-        IDatabase db = Database.getInstance();
-
-        Log.d(DEBUG_TAG, "sync: " + "Start sync of " + folderUri + " and " + bucketId);
         File folder = new File(folderUri);
-
         if(!folder.exists() || !folder.isDirectory()) {
-            Log.d(DEBUG_TAG, "sync: " + "File not exist or is not a directory");
             return;
         }
 
         File[] files = folder.listFiles();
 
         for(File file : files) {
-            Log.d(DEBUG_TAG, "sync: " + "File, name: " + file.getName());
             if (file.isDirectory()) {
-                Log.d(DEBUG_TAG, "sync: " + "File is directory continue");
                 continue;
             }
 
@@ -134,6 +117,24 @@ public class SynchronizationSchedulerJobService extends JobService {
                 db.syncQueueEntries().insert(dbo);
             }
         }
+    }
+
+    private boolean shouldSync(String settingsId, int syncSettings, SyncSettingsEnum syncEnum) {
+        if (syncEnum != SyncSettingsEnum.SYNC_DOCUMENTS &&
+                syncEnum != SyncSettingsEnum.SYNC_MUSIC &&
+                syncEnum != SyncSettingsEnum.SYNC_MOVIES &&
+                syncEnum != SyncSettingsEnum.SYNC_PHOTOS) {
+            return false;
+        }
+
+        int syncValue = syncEnum.getValue();
+        boolean isSyncOn = (syncSettings & syncValue) == syncValue;
+
+        if(!isSyncOn) {
+            return false;
+        }
+
+        return true;
     }
 
     private String getDateTime() {

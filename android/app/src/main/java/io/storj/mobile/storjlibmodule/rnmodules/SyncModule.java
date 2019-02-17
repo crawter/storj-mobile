@@ -31,8 +31,8 @@ import io.storj.mobile.domain.settings.Settings;
 import io.storj.mobile.service.SyncService;
 import io.storj.mobile.service.download.DownloadStateEnum;
 import io.storj.mobile.storjlibmodule.enums.SyncSettingsEnum;
-import io.storj.mobile.storjlibmodule.services.SynchronizationSchedulerJobService;
-import io.storj.mobile.storjlibmodule.services.SynchronizationService;
+import io.storj.mobile.storjlibmodule.services.SyncSchedulerJobService;
+import io.storj.mobile.storjlibmodule.services.SyncQueueService;
 
 public class SyncModule extends ReactContextBaseJavaModule {
     private static final int KEEP_ALIVE_TIME = 1;
@@ -264,8 +264,8 @@ public class SyncModule extends ReactContextBaseJavaModule {
     }
 
     private void cancelSync() {
-        Intent cancelSyncIntent = new Intent(getReactApplicationContext(), SynchronizationService.class);
-        cancelSyncIntent.setAction(SynchronizationService.ACTION_SYNC_CANCEL);
+        Intent cancelSyncIntent = new Intent(getReactApplicationContext(), SyncQueueService.class);
+        cancelSyncIntent.setAction(SyncQueueService.ACTION_SYNC_CANCEL);
 
         getReactApplicationContext().startService(cancelSyncIntent);
     }
@@ -371,7 +371,7 @@ public class SyncModule extends ReactContextBaseJavaModule {
     private Job.Builder getJobBuilder(FirebaseJobDispatcher dispatcher, Bundle bundle, List<Integer> constaraints) {
         Job.Builder myJobBuilder = dispatcher.newJobBuilder()
                 // the JobService that will be called
-                .setService(SynchronizationSchedulerJobService.class)
+                .setService(SyncSchedulerJobService.class)
                 // uniquely identifies the job
                 .setTag("sync-job")
                 // one-off job

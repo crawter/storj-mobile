@@ -13,7 +13,7 @@ import io.storj.mobile.domain.IDatabase;
 import io.storj.mobile.domain.syncqueue.SyncQueueEntry;
 import io.storj.mobile.storjlibmodule.enums.SyncStateEnum;
 import io.storj.mobile.storjlibmodule.services.NotificationService;
-import io.storj.mobile.storjlibmodule.services.SynchronizationService;
+import io.storj.mobile.storjlibmodule.services.SyncQueueService;
 import io.storj.mobile.storjlibmodule.services.UploadService;
 import io.storj.mobile.storjlibmodule.services.eventemitters.BaseEventEmitter;
 import io.storj.mobile.storjlibmodule.services.eventemitters.SynchronizationEventEmitter;
@@ -117,6 +117,6 @@ public class SyncUploaderCallback extends WorkerUploaderCallback {
     }
 
     private Intent getCancelSyncIntent() {
-        return new Intent(mContext, SynchronizationService.class).setAction(SynchronizationService.ACTION_SYNC_CANCEL);
+        return new Intent(mContext, SyncQueueService.class).setAction(SyncQueueService.ACTION_SYNC_CANCEL);
     }
 }
