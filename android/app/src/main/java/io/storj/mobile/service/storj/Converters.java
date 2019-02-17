@@ -1,4 +1,4 @@
-package io.storj.mobile.common;
+package io.storj.mobile.service.storj;
 
 import io.storj.mobile.domain.buckets.Bucket;
 import io.storj.mobile.domain.files.File;

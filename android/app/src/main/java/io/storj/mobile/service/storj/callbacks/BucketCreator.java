@@ -3,7 +3,7 @@ package io.storj.mobile.service.storj.callbacks;
 import java.util.concurrent.CountDownLatch;
 
 import io.storj.libstorj.CreateBucketCallback;
-import io.storj.mobile.common.Converters;
+import io.storj.mobile.service.storj.Converters;
 import io.storj.mobile.common.responses.SingleResponse;
 import io.storj.mobile.domain.buckets.Bucket;
 

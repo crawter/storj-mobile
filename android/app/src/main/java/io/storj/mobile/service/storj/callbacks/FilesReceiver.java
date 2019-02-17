@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import io.storj.libstorj.ListFilesCallback;
-import io.storj.mobile.common.Converters;
+import io.storj.mobile.service.storj.Converters;
 import io.storj.mobile.common.responses.ListResponse;
 import io.storj.mobile.domain.files.File;
 
