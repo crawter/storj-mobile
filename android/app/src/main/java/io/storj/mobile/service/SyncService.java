@@ -55,7 +55,7 @@ public class SyncService {
         }
 
         Bucket bucketToUpdate = getBucketResponse.getResult();
-        bucketToUpdate.setStarred(isStarred);
+        bucketToUpdate.isStarred = isStarred;
 
         return mStore.buckets().update(bucketToUpdate);
     }

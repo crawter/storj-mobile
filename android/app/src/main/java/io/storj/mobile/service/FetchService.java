@@ -53,14 +53,14 @@ public class FetchService {
         outer:
         for (Bucket dbBucket : dbBuckets) {
             int i = 0;
-            String dbBucketId = dbBucket.getId();
+            String dbBucketId = dbBucket.id;
 
             do {
                 Bucket bucket = buckets.get(i);
-                String id = bucket.getId();
+                String id = bucket.id;
 
                 if (dbBucketId.equals(id)) {
-                    bucket.setStarred(dbBucket.isStarred());
+                    bucket.isStarred = dbBucket.isStarred;
                     Response updateResponse = mStore.buckets().update(bucket);
                     if (!updateResponse.isSuccess()) {
                         // TODO: log?

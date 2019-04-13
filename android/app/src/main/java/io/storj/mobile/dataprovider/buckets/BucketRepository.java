@@ -122,12 +122,12 @@ public class BucketRepository extends BaseRepository implements IBucketRepositor
 
         ContentValues map = new ContentValues();
 
-        map.put(BucketContract._ID, model.getId());
-        map.put(BucketContract._CREATED, model.getCreated());
-        map.put(BucketContract._NAME, model.getName());
-        map.put(BucketContract._HASH, model.getHashcode());
-        map.put(BucketContract._DECRYPTED, model.isDecrypted() ? 1 : 0);
-        map.put(BucketContract._STARRED, model.isStarred() ? 1 : 0);
+        map.put(BucketContract._ID, model.id);
+        map.put(BucketContract._CREATED, model.created);
+        map.put(BucketContract._NAME, model.name);
+        map.put(BucketContract._HASH, model.hash);
+        map.put(BucketContract._DECRYPTED, model.isDecrypted ? 1 : 0);
+        map.put(BucketContract._STARRED, model.isStarred ? 1 : 0);
 
         return _executeInsert(BucketContract.TABLE_NAME, map);
     }
@@ -152,13 +152,13 @@ public class BucketRepository extends BaseRepository implements IBucketRepositor
 
     ContentValues map = new ContentValues();
 
-        map.put(BucketContract._CREATED, model.getCreated());
-        map.put(BucketContract._NAME, model.getName());
-        map.put(BucketContract._HASH, model.getHashcode());
-        map.put(BucketContract._DECRYPTED, model.isDecrypted());
-        map.put(BucketContract._DECRYPTED, model.isStarred());
+        map.put(BucketContract._CREATED, model.created);
+        map.put(BucketContract._NAME, model.name);
+        map.put(BucketContract._HASH, model.hash);
+        map.put(BucketContract._DECRYPTED, model.isDecrypted);
+        map.put(BucketContract._DECRYPTED, model.isStarred);
 
-        return _executeUpdate(BucketContract.TABLE_NAME, model.getId(), null,null, map);
+        return _executeUpdate(BucketContract.TABLE_NAME, model.id, null,null, map);
     }
 
     @Override
@@ -195,33 +195,31 @@ public class BucketRepository extends BaseRepository implements IBucketRepositor
     }
 
     private Bucket readFromCursor(Cursor cursor) {
-        String created = "", name = "", id = "";
-        boolean isDecr = false, isStarred = false;
-        long hashcode = 0;
+        Bucket result = new Bucket();
 
         for(int i = 0; i < mColumns.length; i++) {
             switch (mColumns[i]) {
                 case BucketContract._CREATED:
-                    created = cursor.getString(i);
+                    result.created = cursor.getString(i);
                     break;
                 case BucketContract._NAME:
-                    name = cursor.getString(i);
+                    result.name = cursor.getString(i);
                     break;
                 case BucketContract._ID:
-                    id = cursor.getString(i);
+                    result.id = cursor.getString(i);
                     break;
                 case BucketContract._DECRYPTED:
-                    isDecr = cursor.getInt(i) == 1;
+                    result.isDecrypted = cursor.getInt(i) == 1;
                     break;
                 case BucketContract._STARRED:
-                    isStarred = cursor.getInt(i) == 1;
+                    result.isStarred = cursor.getInt(i) == 1;
                     break;
                 case BucketContract._HASH:
-                    hashcode = cursor.getLong(i);
+                    result.hash = cursor.getLong(i);
                     break;
             }
         }
 
-        return new Bucket(id, name, created, hashcode, isDecr, isStarred);
+        return result;
     }
 }

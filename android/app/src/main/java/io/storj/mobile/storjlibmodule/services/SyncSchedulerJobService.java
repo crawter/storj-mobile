@@ -95,7 +95,7 @@ public class SyncSchedulerJobService extends JobService {
             return;
         }
 
-        String bucketId = getBucketResponse.getResult().getId();
+        String bucketId = getBucketResponse.getResult().id;
 
         File folder = new File(folderUri);
         if(!folder.exists() || !folder.isDirectory()) {

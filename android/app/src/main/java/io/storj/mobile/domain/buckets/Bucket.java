@@ -7,56 +7,20 @@ import com.google.gson.annotations.SerializedName;
 public class Bucket {
     @Expose
     @SerializedName("id")
-    private String _id;
+    public String id;
     @Expose
     @SerializedName("name")
-    private String _name;
+    public String name;
     @Expose
     @SerializedName("created")
-    private String _created;
+    public String created;
     @Expose
     @SerializedName("hash")
-    private long _hash;
+    public long hash;
     @Expose
     @SerializedName("isDecrypted")
-    private boolean _isDecrypted;
+    public boolean isDecrypted;
     @Expose
     @SerializedName("isStarred")
-    private boolean _isStarred;
-
-    // Bucket - is a constructor for bucket entity
-    public Bucket() {}
-
-    // Bucket - is a constructor for bucket entity
-    public Bucket(String id, String name, String created, long hash, boolean isDecrypted, boolean isStarred) {
-        _id = id;
-        _name = name;
-        _created = created;
-        _hash = hash;
-        _isDecrypted = isDecrypted;
-        _isStarred = isStarred;
-    }
-
-    public String getId() {
-        return _id;
-    }
-    public String getName() {
-        return _name;
-    }
-    public String getCreated() {
-        return _created;
-    }
-    public long getHashcode() {
-        return _hash;
-    }
-    public boolean isDecrypted() {
-        return _isDecrypted;
-    }
-    public boolean isStarred() {
-        return _isStarred;
-    }
-
-    public void setStarred(boolean isStarred) {
-        _isStarred = isStarred;
-    }
+    public boolean isStarred;
 }

@@ -5,7 +5,15 @@ import io.storj.mobile.domain.files.File;
 
 public class Converters {
     public static Bucket toDomain(io.storj.libstorj.Bucket bucket) {
-        return new Bucket(bucket.getId(), bucket.getName(), bucket.getCreated(), bucket.hashCode(), bucket.isDecrypted(), false);
+        Bucket result = new Bucket();
+
+        result.id = bucket.getId();
+        result.name = bucket.getName();
+        result.created = bucket.getCreated();
+        result.hash = bucket.hashCode();
+        result.isDecrypted = bucket.isDecrypted();
+
+        return result;
     }
 
     public static File toDomain(io.storj.libstorj.File file) {
