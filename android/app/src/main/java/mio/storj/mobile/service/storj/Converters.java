@@ -19,8 +19,25 @@ public class Converters {
     }
 
     public static File toDomain(io.storj.libstorj.File file) {
-        return new File(file.getBucketId(), file.getCreated(), file.getErasure(), file.getHMAC(), file.getId(),
-                file.getIndex(), file.getMimeType(), file.getName(), null, null, 0,
-                0, file.getSize(), file.isDecrypted(), false, false);
+        File result = new File();
+
+        result.bucketId = file.getBucketId();
+        result.created = file.getCreated();
+        result.erasure = file.getErasure();
+        result.hmac = file.getHMAC();
+        result.fileId = file.getId();
+        result.index = file.getIndex();
+        result.mimeType = file.getMimeType();
+        result.name = file.getName();
+        result.fileUri = null;
+        result.thumbnail = null;
+        result.downloadState = 0;
+        result.fileHandle = 0;
+        result.size = file.getSize();
+        result.isDecrypted = file.isDecrypted();
+        result.isSynced = false;
+        result.isStarred = false;
+
+        return result;
     }
 }

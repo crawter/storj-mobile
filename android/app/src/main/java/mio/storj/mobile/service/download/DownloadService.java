@@ -59,7 +59,7 @@ public class DownloadService {
             @Override
             public void onProgress(String fileId, double progress, long downloadedBytes, long totalBytes) {
                 synchronized (fileDbo) {
-                    if(!fileDbo.isFileHandleSet()) {
+                    if(!fileDbo.isFileHandleSet) {
                         try {
                             fileDbo.wait();
                         } catch(Exception ignored) {}
@@ -67,25 +67,25 @@ public class DownloadService {
                 }
 
                 mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_PROGRESS,
-                        new LoadFileModel(fileId, fileDbo.getFileHandle(), progress).toJson());
+                        new LoadFileModel(fileId, fileDbo.fileHandle, progress).toJson());
             }
 
             @Override
             public void onComplete(String fileId, String localPath) {
-                fileDbo.setFileHandle(0);
-                fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADED.getValue());
-                fileDbo.setUri(localPath);
+                fileDbo.fileHandle = 0;
+                fileDbo.downloadState = DownloadStateEnum.DOWNLOADED.getValue();
+                fileDbo.fileUri = localPath;
 
                 Response updateFileResponse = mStore.files().update(fileDbo);
                 if(updateFileResponse.isSuccess()) {
 
-                    if(fileDbo.getMimeType().contains("image/")) {
-                        fileDbo.setThumbnail(tProc.getThumbnail(localPath));
+                    if(fileDbo.mimeType.contains("image/")) {
+                        fileDbo.thumbnail = tProc.getThumbnail(localPath);
                         mStore.files().update(fileDbo);
                     }
 
                     mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_SUCCESS,
-                            new LoadFileModel(fileId, localPath, fileDbo.getThumbnail()).toJson());
+                            new LoadFileModel(fileId, localPath, fileDbo.thumbnail).toJson());
                 }
 
                 downloadLatch.countDown();
@@ -94,8 +94,8 @@ public class DownloadService {
             @Override
             public void onError(String fileId, int code, String message) {
                 fileDbo.setFileHandle(0);
-                fileDbo.setDownloadState(DownloadStateEnum.DEFAULT.getValue());
-                fileDbo.setUri(null);
+                fileDbo.downloadState = DownloadStateEnum.DEFAULT.getValue();
+                fileDbo.fileUri = null;
 
                 Response updateFileResponse = mStore.files().update(fileDbo);
                 if(updateFileResponse.isSuccess()) {
@@ -107,8 +107,8 @@ public class DownloadService {
         });
 
         fileDbo.setFileHandle(fileHandle);
-        fileDbo.setDownloadState(DownloadStateEnum.DOWNLOADING.getValue());
-        fileDbo.setUri(null);
+        fileDbo.downloadState = DownloadStateEnum.DOWNLOADING.getValue();
+        fileDbo.fileUri = null;
 
         Response updateFileResponse = mStore.files().update(fileDbo);
 
@@ -119,6 +119,6 @@ public class DownloadService {
 
         downloadLatch.await();
 
-        return fileDbo.getFileHandle() != 0;
+        return fileDbo.fileHandle != 0;
     }
 }

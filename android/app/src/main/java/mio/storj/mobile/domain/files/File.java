@@ -7,154 +7,59 @@ import com.google.gson.annotations.SerializedName;
 public class File {
     @Expose
     @SerializedName("bucketId")
-    private String _bucketId;
+    public String bucketId;
     @Expose
     @SerializedName("created")
-    private String _created;
+    public String created;
     @Expose
     @SerializedName("id")
-    private String _erasure;
+    public String erasure;
     @Expose
     @SerializedName("hmac")
-    private String _hmac;
+    public String hmac;
     @Expose
     @SerializedName("fileId")
-    private String _fileId;
+    public String fileId;
     @Expose
     @SerializedName("index")
-    private String _index;
+    public String index;
     @Expose
     @SerializedName("mimeType")
-    private String _mimeType;
+    public String mimeType;
     @Expose
     @SerializedName("name")
-    private String _name;
+    public String name;
     @Expose
     @SerializedName("fileUri")
-    private String _fileUri;
+    public String fileUri;
     @Expose
     @SerializedName("thumbnail")
-    private String _thumbnail;
+    public String thumbnail;
     @Expose
     @SerializedName("downloadState")
-    private int _downloadState;
+    public int downloadState;
     @Expose
     @SerializedName("fileHandle")
-    private long _fileHandle;
+    public long fileHandle;
     @Expose
     @SerializedName("size")
-    private long _size;
+    public long size;
     @Expose
     @SerializedName("isDecrypted")
-    private boolean _isDecrypted;
+    public boolean isDecrypted;
     @Expose
     @SerializedName("isStarred")
-    private boolean _isStarred;
+    public boolean isStarred;
     @Expose
     @SerializedName("isSynced")
-    private boolean _isSynced;
+    public boolean isSynced;
     @Expose
     @SerializedName("isFileHandleSet")
-    private boolean _isFileHandleSet;
+    public boolean isFileHandleSet;
 
 
-    // File - is a constructor for file entity
-    public File(String bucketId,
-                String created,
-                String erasure,
-                String hmac,
-                String fileId,
-                String index,
-                String mimeType,
-                String name,
-                String fileUri,
-                String thumbnail,
-                int downloadState,
-                long fileHandle,
-                long size,
-                boolean isDecrypted,
-                boolean isStarred,
-                boolean isSynced) {
-        _bucketId = bucketId;
-        _created = created;
-        _erasure = erasure;
-        _hmac = hmac;
-        _fileId = fileId;
-        _index = index;
-        _mimeType = mimeType;
-        _name = name;
-        _fileUri = fileUri;
-        _thumbnail = thumbnail;
-        _downloadState = downloadState;
-        _fileHandle = fileHandle;
-        _size = size;
-        _isDecrypted = isDecrypted;
-        _isStarred = isStarred;
-        _isSynced = isSynced;
+    public void setFileHandle(long newFileHandle) {
+        fileHandle = newFileHandle;
+        isFileHandleSet = true;
     }
-
-    public String getBucketId () {
-        return _bucketId;
-    }
-    public String getCreated () {
-        return _created;
-    }
-    public String getErasure () {
-        return _erasure;
-    }
-    public String getHmac () {
-        return _hmac;
-    }
-    public String getFileId () {
-        return _fileId;
-    }
-    public String getIndex () {
-        return _index;
-    }
-    public String getMimeType () {
-        return _mimeType;
-    }
-    public String getName () {
-        return _name;
-    }
-    public String getFileUri () {
-        return _fileUri;
-    }
-    public String getThumbnail () {
-        return _thumbnail;
-    }
-    public int getDownloadState() {
-        return _downloadState;
-    }
-    public long getFileHandle() {
-        return _fileHandle;
-    }
-    public long getSize() {
-        return _size;
-    }
-    public boolean isDecrypted() {
-        return _isDecrypted;
-    }
-    public boolean isStarred() {
-        return _isStarred;
-    }
-    public boolean isSynced() {
-        return _isSynced;
-    }
-    public boolean isFileHandleSet() { return _isFileHandleSet; }
-
-    public void setStarred(boolean isStarred) {
-        _isStarred = isStarred;
-    }
-    public void setDownloadState(int downState) {
-        _downloadState = downState;
-    }
-    public void setFileHandle(long fileHandle) {
-        _fileHandle = fileHandle;
-        _isFileHandleSet = true;
-    }
-    public void setUri(String localPath) {
-        _fileUri = localPath;
-    }
-    public void setThumbnail(String thumb) { _thumbnail = thumb; }
 }

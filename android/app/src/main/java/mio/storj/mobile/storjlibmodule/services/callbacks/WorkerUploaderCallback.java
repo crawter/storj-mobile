@@ -52,25 +52,29 @@ public class WorkerUploaderCallback extends BaseUploaderCallback {
             thumbnail = tProc.getThumbnail(localPath);
         }
 
-        mio.storj.mobile.domain.files.File fileModel = new mio.storj.mobile.domain.files.File(
-                file.getBucketId(),
-                file.getCreated(),
-                file.getErasure(),
-                file.getHMAC(),
-                file.getId(),
-                file.getIndex(),
-                file.getMimeType(),
-                file.getName(),
-                localPath,
-                thumbnail,
-                DownloadStateEnum.DOWNLOADED.getValue(),
-                0,
-                file.getSize(),
-                file.isDecrypted(),
-                false,
-                mIsSync);
+        mio.storj.mobile.domain.files.File fileModel = new mio.storj.mobile.domain.files.File();
+        fileModel.bucketId = file.getBucketId();
+        fileModel.created = file.getCreated();
+        fileModel.erasure = file.getErasure();
+        fileModel.hmac = file.getHMAC();
+        fileModel.fileId = file.getId();
+        fileModel.index = file.getIndex();
+        fileModel.mimeType = file.getMimeType();
+        fileModel.name = file.getName();
+        fileModel.fileUri = localPath;
+        fileModel.thumbnail = thumbnail;
+        fileModel.downloadState = DownloadStateEnum.DOWNLOADED.getValue();
+        fileModel.fileHandle = 0;
+        fileModel.size = file.getSize();
+        fileModel.isDecrypted = file.isDecrypted();
+        fileModel.isStarred = false;
+        fileModel.isSynced = mIsSync;
 
         Response response = mStore.files().insert(fileModel);
+        if (!response.isSuccess()) {
+            // TODO: notify somehow
+        }
+
         mEventEmitter.onComplete(localPath, file);
     }
 

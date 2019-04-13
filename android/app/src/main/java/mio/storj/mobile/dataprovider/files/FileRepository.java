@@ -158,22 +158,22 @@ public class FileRepository extends BaseRepository implements IFileRepository {
 
         ContentValues map = new ContentValues();
 
-        map.put(FileContract._ID, model.getFileId());
-        map.put(FileContract._CREATED, model.getCreated());
-        map.put(FileContract._DECRYPTED, model.isDecrypted());
-        map.put(FileContract._ERASURE, model.getErasure());
-        map.put(FileContract._HMAC, model.getHmac());
-        map.put(FileContract._INDEX, model.getIndex());
-        map.put(FileContract._MIMETYPE, model.getMimeType());
-        map.put(FileContract._STARRED, model.isStarred());
-        map.put(FileContract._SYNCED, model.isSynced());
-        map.put(FileContract._DOWNLOAD_STATE, model.getDownloadState());
-        map.put(FileContract._FILE_HANDLE, model.getFileHandle());
-        map.put(FileContract._FILE_URI, model.getFileUri());
-        map.put(FileContract._SIZE, model.getSize());
-        map.put(FileContract.FILE_FK, model.getBucketId());
-        map.put(FileContract._NAME, model.getName());
-        map.put(FileContract._FILE_THUMBNAIL, model.getThumbnail());
+        map.put(FileContract._ID, model.fileId);
+        map.put(FileContract._CREATED, model.created);
+        map.put(FileContract._DECRYPTED, model.isDecrypted);
+        map.put(FileContract._ERASURE, model.erasure);
+        map.put(FileContract._HMAC, model.hmac);
+        map.put(FileContract._INDEX, model.index);
+        map.put(FileContract._MIMETYPE, model.mimeType);
+        map.put(FileContract._STARRED, model.isStarred);
+        map.put(FileContract._SYNCED, model.isSynced);
+        map.put(FileContract._DOWNLOAD_STATE, model.downloadState);
+        map.put(FileContract._FILE_HANDLE, model.fileHandle);
+        map.put(FileContract._FILE_URI, model.fileUri);
+        map.put(FileContract._SIZE, model.size);
+        map.put(FileContract.FILE_FK, model.bucketId);
+        map.put(FileContract._NAME, model.name);
+        map.put(FileContract._FILE_THUMBNAIL, model.thumbnail);
 
         return _executeInsert(FileContract.TABLE_NAME, map);
     }
@@ -199,22 +199,22 @@ public class FileRepository extends BaseRepository implements IFileRepository {
 
         ContentValues map = new ContentValues();
 
-        map.put(FileContract._CREATED, model.getCreated());
-        map.put(FileContract._DECRYPTED, model.isDecrypted());
-        map.put(FileContract._ERASURE, model.getErasure());
-        map.put(FileContract._HMAC, model.getHmac());
-        map.put(FileContract._INDEX, model.getIndex());
-        map.put(FileContract._MIMETYPE, model.getMimeType());
-        map.put(FileContract._SIZE, model.getSize());
-        map.put(FileContract.FILE_FK, model.getBucketId());
-        map.put(FileContract._NAME, model.getName());
-        map.put(FileContract._STARRED, model.isStarred());
-        map.put(FileContract._DOWNLOAD_STATE, model.getDownloadState());
-        map.put(FileContract._FILE_HANDLE, model.getFileHandle());
-        map.put(FileContract._FILE_URI, model.getFileUri());
-        map.put(FileContract._FILE_THUMBNAIL, model.getThumbnail());
+        map.put(FileContract._CREATED, model.created);
+        map.put(FileContract._DECRYPTED, model.isDecrypted);
+        map.put(FileContract._ERASURE, model.erasure);
+        map.put(FileContract._HMAC, model.hmac);
+        map.put(FileContract._INDEX, model.index);
+        map.put(FileContract._MIMETYPE, model.mimeType);
+        map.put(FileContract._SIZE, model.size);
+        map.put(FileContract.FILE_FK, model.bucketId);
+        map.put(FileContract._NAME, model.name);
+        map.put(FileContract._STARRED, model.isStarred);
+        map.put(FileContract._DOWNLOAD_STATE, model.downloadState);
+        map.put(FileContract._FILE_HANDLE, model.fileHandle);
+        map.put(FileContract._FILE_URI, model.fileUri);
+        map.put(FileContract._FILE_THUMBNAIL, model.thumbnail);
 
-        return _executeUpdate(FileContract.TABLE_NAME, model.getFileId(), null,null, map);
+        return _executeUpdate(FileContract.TABLE_NAME, model.fileId, null,null, map);
     }
 
     @Override
@@ -251,63 +251,58 @@ public class FileRepository extends BaseRepository implements IFileRepository {
     }
 
     private File readFromCursor(Cursor cursor) {
-        String created = "", name = "", id = "", erasure = "",
-                hmac = "", index = "", mime = "", bucketId = "", uri = "", thumb = "";
-        boolean isDecr = false, isStarred = false, isSync = false;
-        int downState = 0;
-        long size = 0, fhandle = 0;
+        File result = new File();
 
         for(int i = 0; i < _columns.length; i++) {
             switch(_columns[i]) {
                 case FileContract._CREATED :
-                    created = cursor.getString(i);
+                    result.created = cursor.getString(i);
                     break;
                 case FileContract._NAME :
-                    name = cursor.getString(i);
+                    result.name = cursor.getString(i);
                     break;
                 case FileContract._ID :
-                    id = cursor.getString(i);
+                    result.fileId = cursor.getString(i);
                     break;
                 case FileContract._ERASURE:
-                    erasure = cursor.getString(i);
+                    result.erasure = cursor.getString(i);
                     break;
                 case FileContract._HMAC:
-                    hmac = cursor.getString(i);
+                    result.hmac = cursor.getString(i);
                     break;
                 case FileContract._INDEX:
-                    index = cursor.getString(i);
+                    result.index = cursor.getString(i);
                     break;
                 case FileContract._MIMETYPE:
-                    mime = cursor.getString(i);
+                    result.mimeType = cursor.getString(i);
                     break;
                 case FileContract.FILE_FK:
-                    bucketId = cursor.getString(i);
+                    result.bucketId = cursor.getString(i);
                     break;
                 case FileContract._FILE_URI:
-                    uri = cursor.getString(i);
+                    result.fileUri = cursor.getString(i);
                     break;
                 case FileContract._FILE_THUMBNAIL:
-                    thumb = cursor.getString(i);
+                    result.thumbnail = cursor.getString(i);
                     break;
                 case FileContract._DECRYPTED :
-                    isDecr = cursor.getInt(i) == 1;
+                    result.isDecrypted = cursor.getInt(i) == 1;
                 case FileContract._STARRED :
-                    isStarred = cursor.getInt(i) == 1;
+                    result.isStarred = cursor.getInt(i) == 1;
                 case FileContract._SYNCED :
-                    isSync = cursor.getInt(i) == 1;
+                    result.isSynced = cursor.getInt(i) == 1;
                     break;
                 case FileContract._DOWNLOAD_STATE:
-                    cursor.getInt(i);
+                    result.downloadState = cursor.getInt(i);
                     break;
                 case FileContract._SIZE :
-                    size = cursor.getLong(i);
+                    result.size = cursor.getLong(i);
                 case FileContract._FILE_HANDLE:
-                    fhandle = cursor.getLong(i);
+                    result.fileHandle = cursor.getLong(i);
                     break;
             }
         }
 
-        return new File(bucketId, created, erasure, hmac, id, index, mime, name, uri,
-                thumb, downState, fhandle, size, isDecr, isStarred, isSync);
+        return result;
     }
 }

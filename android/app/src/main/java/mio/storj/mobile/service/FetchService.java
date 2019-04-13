@@ -128,14 +128,14 @@ public class FetchService {
         outer:
         for(File dbFile : dbFiles) {
             int i = 0;
-            String dbFileId = dbFile.getFileId();
+            String dbFileId = dbFile.fileId;
 
             do {
                 File file = files.get(i);
-                String id = file.getFileId();
+                String id = file.fileId;
 
                 if(dbFileId.equals(id)) {
-                    file.setStarred(dbFile.isStarred());
+                    file.isStarred = dbFile.isStarred;
                     Response updateFileResponse = mStore.files().update(file);
                     if (!updateFileResponse.isSuccess()) {
                         // TODO: log?

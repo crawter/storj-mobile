@@ -68,7 +68,7 @@ public class SyncService {
         }
 
         File fileToUpdate = getFileResponse.getResult();
-        fileToUpdate.setStarred(isStarred);
+        fileToUpdate.isStarred = isStarred;
 
         return mStore.files().update(fileToUpdate);
     }
@@ -80,9 +80,9 @@ public class SyncService {
         }
 
         File file = fileResponse.getResult();
-        file.setDownloadState(downState);
+        file.downloadState = downState;
         file.setFileHandle(fileHandle);
-        file.setUri(localPath);
+        file.fileUri = localPath;
 
         return mStore.files().update(file);
     }
