@@ -100,29 +100,29 @@ export default class TabBarComponent extends Component {
     }
 
     onDashboardPress() {                              
-            this.props.navigation.navigate("DashboardScreen");
+            this.props.navigation.goToDashboardScreen();
             this.props.navigation.listSettings(this.props.navigation.email);
     }
 
     onBucketPress() {
-            this.props.navigation.navigate("BucketsScreen");          
+            this.props.navigation.goToBucketsScreen();          
             this.props.navigation.listSettings(this.props.navigation.email);      
     }
 
     onPicturesPress() {
             let picturesBucketId = getPicturesBucketId(this.props.navigation.buckets);
-
+            console.log('navigation', this.props.navigation)
             if(!picturesBucketId) return;
             this.props.navigation.listSettings(this.props.navigation.email);
             ServiceModule.getFiles(picturesBucketId);   
             this.props.navigation.pushLoading("files");
             this.props.navigation.setPhotosBucketId(picturesBucketId);                     
-            this.props.navigation.navigate("MyPhotosScreen");
+            this.props.navigation.goToMyPhotosScreen();
     }
 
     onAccountPress() {                                                     
             this.props.navigation.hideActionBar();                                
-            this.props.navigation.navigate("MyAccountScreen");
+            this.props.navigation.goToMyAccountScreen();
     }
 
     onActionBarPress() {

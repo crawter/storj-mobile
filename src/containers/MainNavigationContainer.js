@@ -9,6 +9,7 @@ import {
     hideActionBar,
     pushLoading
 } from '../reducers/mainContainer/mainReducerActions';
+import { navigateToMyPhotosScreen } from '../reducers/navigation/navigationActions';
 import { listSettingsAsync } from "../reducers/mainContainer/MyAccount/Settings/SettingsActionsAsync";
 
 /**
@@ -42,7 +43,10 @@ class MainNavigationContainer extends Component {
                     isSingleItemSelected: this.props.isSingleItemSelected,
                     dispatch: this.props.dispatch,
                     state: this.props.nav,
+                    goToDashboardScreen: this.props.goToDashboardScreen,
                     goToBucketsScreen: this.props.goToBucketsScreen,
+                    goToMyPhotosScreen: this.props.goToMyPhotosScreen,
+                    goToMyAccountScreen: this.props.goToMyAccountScreen,
                     onActionBarPress: this.props.onActionBarPress,
                     hideActionBar: this.props.hideActionBar,
                     currentRouteIndex: this.props.nav.index,
@@ -50,7 +54,8 @@ class MainNavigationContainer extends Component {
                     openBucket: this.props.openBucket, 
                     bucketNavigateBack: this.props.bucketNavigateBack,
                     dashboardNavigateBack: this.props.dashboardNavigateBack,
-                    setPhotosBucketId: this.props.setPhotosBucketId 
+                    setPhotosBucketId: this.props.setPhotosBucketId,
+                    navigateToMyPhotosScreen: this.props.navigateToMyPhotosScreen,
                 })} />
         );
     };
@@ -71,7 +76,11 @@ function mapDispatchToProps(dispatch) {
             setPhotosBucketId,
             hideActionBar,
             pushLoading,
-            goToBucketsScreen: NavigationActions.navigate({ routeName: 'BucketsScreen'}),
+            navigateToMyPhotosScreen,
+            goToDashboardScreen: () => NavigationActions.navigate({ routeName: 'DashboardScreen'}),
+            goToBucketsScreen: () => NavigationActions.navigate({ routeName: 'BucketsScreen'}),
+            goToMyPhotosScreen: () => NavigationActions.navigate({ routeName: 'MyPhotosScreen'}),
+            goToMyAccountScreen: () => NavigationActions.navigate({ routeName: 'MyAccountScreen'}),
             listSettings:listSettingsAsync,
         }, dispatch)
     };

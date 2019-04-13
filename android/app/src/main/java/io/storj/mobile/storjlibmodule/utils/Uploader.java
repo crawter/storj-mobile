@@ -29,7 +29,7 @@ public class Uploader {
 
         Storj storj = null;
         try {
-            storj = StorjAndroid.getInstance(mContext, "https://api.v2.storj.io");
+            storj = StorjAndroid.getInstance(mContext, "https://api.storj.io");
         } catch (MalformedURLException e) {
             Log.e("Storj.Lib.Module", "getStorj: ", e);
             // TODO: 06.02.19 Handle NPE corner case
@@ -65,7 +65,7 @@ public class Uploader {
 
         Storj storj = null;
         try {
-            storj = StorjAndroid.getInstance(mContext, "https://api.v2.storj.io");
+            storj = StorjAndroid.getInstance(mContext, "https://api.storj.io");
         } catch (MalformedURLException e) {
             Log.e("Storj.Lib.Module", "getStorj: ", e);
             return false;

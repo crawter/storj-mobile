@@ -37,7 +37,7 @@ public class StorjLibPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         Storj storj = null;
         try {
-            storj = StorjAndroid.getInstance(reactContext, "https://api.v2.storj.io");
+            storj = StorjAndroid.getInstance(reactContext, "https://api.storj.io");
         } catch (MalformedURLException e) {
             Log.e("StorjModule", "getStorj: ", e);
             // TODO: 06.02.19 Handle NPE corner case

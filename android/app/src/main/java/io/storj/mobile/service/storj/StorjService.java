@@ -38,7 +38,14 @@ public class StorjService {
     }
 
     public int verifyKeys(final String email, final String password) throws InterruptedException {
-            return mInstance.verifyKeys(email, password);
+        int res = 0;
+        try {
+            res = mInstance.verifyKeys(email, password);
+        } catch(Exception e) {
+            String s = e.getMessage();
+        }
+
+        return res;
     }
 
     public boolean keysExist() {

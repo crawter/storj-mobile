@@ -237,6 +237,15 @@ export function redirectToMyAccountMnemonicScreen() {
         ]
     });
 }
+export function navigateToMyPhotosScreen() {
+    return NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'MyPhotosScreen' })
+        ]
+    });
+}
+
 
 export const authNavigationActions = {
     redirectToLoginScreen,

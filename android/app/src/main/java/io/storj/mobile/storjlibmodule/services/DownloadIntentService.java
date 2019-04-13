@@ -36,7 +36,7 @@ public class DownloadIntentService extends BaseReactService {
         super.onCreate();
 
         try {
-            storj = StorjAndroid.getInstance(this, "https://api.v2.storj.io");
+            storj = StorjAndroid.getInstance(this, "https://api.storj.io");
         } catch(Exception e) {
             this.stopSelf();
             return;

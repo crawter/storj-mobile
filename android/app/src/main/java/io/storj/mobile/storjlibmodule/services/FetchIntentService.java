@@ -44,7 +44,7 @@ public class FetchIntentService extends BaseReactService {
 
         Storj storj;
         try {
-            storj = StorjAndroid.getInstance(this, "https://api.v2.storj.io");
+            storj = StorjAndroid.getInstance(this, "https://api.storj.io");
         } catch(Exception e) {
             this.stopSelf();
             return;
