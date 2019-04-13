@@ -9,6 +9,7 @@ import mio.storj.mobile.common.responses.SingleResponse;
 import mio.storj.mobile.domain.IDatabase;
 import mio.storj.mobile.domain.buckets.Bucket;
 import mio.storj.mobile.domain.files.File;
+import mio.storj.mobile.service.download.DownloadStateEnum;
 import mio.storj.mobile.service.storj.StorjService;
 import mio.storj.mobile.domain.IDatabase;
 
@@ -137,6 +138,12 @@ public class FetchService {
                 if(dbFileId.equals(id)) {
                     file.isStarred = dbFile.isStarred;
                     file.thumbnail = dbFile.thumbnail;
+                    if (dbFile.downloadState == DownloadStateEnum.DOWNLOADED.getValue()) {
+                        file.downloadState = DownloadStateEnum.DOWNLOADED.getValue();
+                        file.fileUri = dbFile.fileUri;
+                    }
+
+
                     Response updateFileResponse = mStore.files().update(file);
                     if (!updateFileResponse.isSuccess()) {
                         // TODO: log?

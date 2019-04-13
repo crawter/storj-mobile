@@ -44,7 +44,7 @@ class BaseFileViewerContainer extends Component {
     async componentWillMount() {
         if(Platform.OS === 'android') {
 			BackHandler.addEventListener("hardwareBackPress", this.navigateBack);
-		}
+        }
         
         if(!this.props.isDownloaded) {
             let result = await StorjModule.getDownloadFolderPath();
