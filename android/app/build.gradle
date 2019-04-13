@@ -94,13 +94,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "io.storj.mobile"
+        applicationId "mio.storj.mobile"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         ndk {

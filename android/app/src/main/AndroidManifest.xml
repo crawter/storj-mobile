@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.storj.mobile"
+    package="mio.storj.mobile"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -21,11 +21,11 @@
         android:icon="@mipmap/ic_launcher"
 	android:usesCleartextTraffic="true"
         
-      android:name="io.storj.mobile.MainApplication"
+      android:name="mio.storj.mobile.MainApplication"
       android:allowBackup="true"
       android:theme="@style/AppTheme">
       <activity
-        android:name="io.storj.mobile.MainActivity"
+        android:name="mio.storj.mobile.MainActivity"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
         android:screenOrientation="portrait"
@@ -37,28 +37,28 @@
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-      <service android:name=".storjlibmodule.services.FetchIntentService" android:enabled="true" />
+      <service android:name="mio.storj.mobile.storjlibmodule.services.FetchIntentService" android:enabled="true" />
       <service
-          android:name=".storjlibmodule.services.UploadService"
+          android:name="mio.storj.mobile.storjlibmodule.services.UploadService"
           android:exported="true"
           android:enabled="true" />
 
         <service
-            android:name=".storjlibmodule.services.DownloadIntentService"
+            android:name="mio.storj.mobile.storjlibmodule.services.DownloadIntentService"
             android:exported="true"
             android:enabled="true" />
 
         <service
-            android:name=".storjlibmodule.services.UploadIntentService"
+            android:name="mio.storj.mobile.storjlibmodule.services.UploadIntentService"
             android:exported="true"
             android:enabled="true" />
 
         <service
-            android:name=".storjlibmodule.services.SyncQueueService"
+            android:name="mio.storj.mobile.storjlibmodule.services.SyncQueueService"
             android:exported="true"
             android:enabled="true" />
 
-        <service android:name=".storjlibmodule.services.SyncSchedulerJobService" android:enabled="true">
+        <service android:name="mio.storj.mobile.storjlibmodule.services.SyncSchedulerJobService" android:enabled="true">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
