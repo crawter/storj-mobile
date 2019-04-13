@@ -136,6 +136,7 @@ public class FetchService {
 
                 if(dbFileId.equals(id)) {
                     file.isStarred = dbFile.isStarred;
+                    file.thumbnail = dbFile.thumbnail;
                     Response updateFileResponse = mStore.files().update(file);
                     if (!updateFileResponse.isSuccess()) {
                         // TODO: log?
