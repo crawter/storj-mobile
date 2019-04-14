@@ -87,7 +87,12 @@ public class OpenFileModule  extends ReactContextBaseJavaModule {
             return;
         }
 
-        getCurrentActivity().startActivity(Intent.createChooser(shareIntent, "Share file to..."));
+        try{
+            getCurrentActivity().startActivity(Intent.createChooser(shareIntent, "Share file to..."));
+        }catch(Exception ex) {
+            String m = ex.getMessage();
+        }
+
         //promise.resolve(new Response(true, null).toWritableMap());
     }
 

@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontFamily: 'montserrat_regular', 
-        fontSize: getHeight(16),
+        fontSize: getHeight(14),
         lineHeight: getHeight(23),
         color: '#384B65'
     },

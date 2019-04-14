@@ -110,13 +110,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    logo: {
-        position: 'absolute',
-        height: getHeight(56),
-        width: getWidth(120),
-        top: getHeight(20),
-        left: getWidth(20)
-    },
     titleBold: {
         fontFamily: 'montserrat_extrabold',
         fontSize: getHeight(30),
@@ -129,7 +122,7 @@ const styles = StyleSheet.create({
     },
     mnemonicInput: {
         height: getHeight(80),
-        fontSize: getHeight(14)
+        fontSize: getHeight(12)
     },
     inputHeight: {
         marginTop: getHeight(20),

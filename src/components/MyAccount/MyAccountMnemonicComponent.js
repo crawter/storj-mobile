@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     },
     titleText: { 
         fontFamily: 'montserrat_bold', 
-        fontSize: getHeight(28),
+        fontSize: getHeight(25),
         color: '#384B65' 
     },
     infoContainer: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     },
     lesserTitleText: {
         fontFamily: 'montserrat_regular', 
-        fontSize: getHeight(16), 
+        fontSize: getHeight(15), 
         lineHeight: getHeight(25),
         color: '#384B65'
     },
@@ -217,7 +217,8 @@ const styles = StyleSheet.create({
         color: '#384B65'
     },
     copyToClipboardContainer: {
-        height: getHeight(55),
+        marginTop: getHeight(15),
+        height: getHeight(50),
         flexDirection: 'row',
         alignItems: 'center'
     },

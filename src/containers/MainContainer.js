@@ -67,7 +67,6 @@ import {getDeviceHeight} from "../utils/adaptive";
 import {getFileCopyName} from "../utils/fileUtils";
 import {setButtonInvokeTimeout} from '../utils/buttonDelay';
 
-
 const { PICTURES } = SYNC_BUCKETS;
 
 class MainContainer extends Component {
@@ -564,6 +563,7 @@ class MainContainer extends Component {
             let selectedFiles = this.props.fileListModels.filter(fileItem => fileItem.isSelected);
 
             selectedFiles.forEach(async fileItem => {
+                console.log('selected file to copy', fileItem)
                 if(fileItem.entity.isDownloaded) {
                     ServiceModule.uploadFile(bucketId, fileItem.entity.localPath);
                 } else {

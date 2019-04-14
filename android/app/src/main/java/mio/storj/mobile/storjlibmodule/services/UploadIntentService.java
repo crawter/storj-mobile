@@ -9,7 +9,6 @@ import mio.storj.mobile.dataprovider.Database;
 import mio.storj.mobile.service.storj.StorjService;
 import mio.storj.mobile.service.upload.UploadingService;
 import mio.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
-import mio.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 
 public class UploadIntentService extends BaseReactService {
     private final static String SERVICE_NAME_SHORT = "UploadIntentService";

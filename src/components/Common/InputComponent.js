@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         height: getHeight(24),
         width: getWidth(281),
         lineHeight: getHeight(24),
-        fontSize: getHeight(16),
+        fontSize: getHeight(14),
         color: '#1c1b1b',
         fontFamily: 'Montserrat',
         padding: 0,
