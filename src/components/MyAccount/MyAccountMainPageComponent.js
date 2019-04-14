@@ -13,9 +13,9 @@ import StorjModule from '../../utils/storjModule';
 import PropTypes from 'prop-types';
 import { InfoButtonComponent } from '../Common/InfoButtonComponent';
 
-export default MyAccountMainPageComponent = (props) => {
+export default (props) => {
 
-    logOut = () => {
+    let logOut = () => {
         StorjModule.deleteKeys().then(() => {
             props.screenProps.clearAuthReducer();
             props.screenProps.redirectToInitializationScreen();
@@ -23,7 +23,12 @@ export default MyAccountMainPageComponent = (props) => {
             console.log(e);
         });
     };
-       
+
+    let openPayments = () => {
+        console.log("asdfdf;aldjsfasdf");
+        StorjModule.openPayment();
+    };
+
     return(
         <View style = { styles.mainContainer }>
             <ScrollView 
@@ -49,7 +54,7 @@ export default MyAccountMainPageComponent = (props) => {
                         title = { 'Bandwidth' }
                         amount = { props.screenProps.bandwidthAmount } />
                 </View>
-                <TouchableOpacity onPress = { props.screenProps.redirectToBalanceScreen } >
+                <TouchableOpacity onPress = { openPayments } >
                     <View style = { styles.balanceButton }>
                         <View style = { styles.balanceContentContainer }>  
                             <View style = { styles.balanceContent }>
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
     }
 });
 
-MyAccountMainPageComponent.propTypes = {
-    navigation: PropTypes.object,
-    screenProps: PropTypes.object
-};
+// MyAccountMainPageComponent.propTypes = {
+//     navigation: PropTypes.object,
+//     screenProps: PropTypes.object
+// };

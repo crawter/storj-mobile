@@ -1,5 +1,6 @@
 package mio.storj.mobile.storjlibmodule.rnmodules;
 
+import android.content.Intent;
 import android.os.Environment;
 
 import com.facebook.react.bridge.Promise;
@@ -77,6 +78,19 @@ public class StorjModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void openPaymentScreen(final Promise promise) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent i = new Intent();
+                i.setClassName("io.storj.mobile", "io.storj.mobile.PaymentActivity");
+                StorjModule.this.getCurrentActivity().startActivity(i);
+                promise.resolve(true);
+            }
+        }).run();
+    }
+
+    @ReactMethod
     public void importKeys(final String email, final String password, final String mnemonic, final String passcode, final Promise promise) {
         new Thread(new Runnable() {
             @Override
@@ -123,7 +137,7 @@ public class StorjModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(mService.cancelDownload((long)fileRef));
+                promise.resolve(mService.cancelDownload((long) fileRef));
             }
         }).run();
     }
@@ -133,7 +147,7 @@ public class StorjModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                promise.resolve(mService.cancelUpload((long)fileRef));
+                promise.resolve(mService.cancelUpload((long) fileRef));
             }
         }).run();
     }
@@ -144,13 +158,13 @@ public class StorjModule extends ReactContextBaseJavaModule {
                 Environment.DIRECTORY_DOWNLOADS);
         SingleResponse<String> response = null;
 
-        if(downloadDir == null || !downloadDir.exists() || !downloadDir.isDirectory()) {
+        if (downloadDir == null || !downloadDir.exists() || !downloadDir.isDirectory()) {
             response = new SingleResponse<>(null, false,
                     "Unable to retrieve downloads folder path.");
         } else {
-            response = new SingleResponse<>(downloadDir.getAbsolutePath(),true, null);
+            response = new SingleResponse<>(downloadDir.getAbsolutePath(), true, null);
         }
-        
+
         promise.resolve(response.toJson());
     }
 }
