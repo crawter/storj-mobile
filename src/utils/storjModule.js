@@ -1,6 +1,4 @@
-import {NativeModules, Platform} from 'react-native'
-import BucketModel from '../models/BucketModel';
-import FileModel from '../models//FileModel';
+import {NativeModules, Platform} from 'react-native';
 
 //TODO: StorjModule wil send us only Response objects, 
 // so all try/catch blocks should be removed and all error logic should be after checking !isSuccess

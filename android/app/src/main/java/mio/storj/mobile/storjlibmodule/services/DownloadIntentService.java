@@ -10,7 +10,6 @@ import mio.storj.mobile.domain.IDatabase;
 import mio.storj.mobile.service.download.DownloadService;
 import mio.storj.mobile.service.storj.StorjService;
 import mio.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
-import mio.storj.mobile.storjlibmodule.rnmodules.BaseReactService;
 
 public class DownloadIntentService extends BaseReactService {
     private final static String SERVICE_NAME_SHORT = "DownloadIntentService";
@@ -68,7 +67,7 @@ public class DownloadIntentService extends BaseReactService {
                     String targetBucketId = intent.getStringExtra(PARAMS_TARGET_BUCKET_ID);
 
                     if(mDownloadService.download(bucketId, fileId, localPath)) {
-                        uploadFile(targetBucketId, localPath);
+                        uploadFile(targetBucketId, localPath, null);
                     }
 
                     break;
@@ -80,12 +79,20 @@ public class DownloadIntentService extends BaseReactService {
         }
     }
 
-    private void uploadFile(String bucketId, String localPath) {
-        Intent uploadIntent = new Intent(this, UploadService.class);
+    private void uploadFile(String bucketId, String localPath, String fileName) {
+        Intent uploadIntent = new Intent(this, UploadIntentService.class);
+
+        if(fileName == null) {
+            int cut = localPath.lastIndexOf('/');
+            if (cut != -1) {
+                fileName = localPath.substring(cut + 1);
+            }
+        }
 
         uploadIntent.setAction(UploadService.ACTION_UPLOAD_FILE);
         uploadIntent.putExtra(UploadService.PARAM_BUCKET_ID, bucketId);
         uploadIntent.putExtra(UploadService.PARAM_LOCAL_PATH, localPath);
+        uploadIntent.putExtra(UploadService.PARAM_FILE_NAME, fileName);
 
         this.startService(uploadIntent);
     }

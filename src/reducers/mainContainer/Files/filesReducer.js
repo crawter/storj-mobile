@@ -59,7 +59,7 @@ export default function filesReducer(state = initialState, action) {
             newState.fileListModels = filesManager.fileDownloaded(action.payload.fileId, action.payload.filePath, action.payload.thumbnail);            
             break;
         case DOWNLOAD_FILE_ERROR:
-            newState.fileListModels = filesManager.fileDownloaded(action.payload.fileId);
+            newState.fileListModels = filesManager.fileDownloaded(action.payload.fileId, null, null);
             break;
         case UPDATE_FILE_DOWNLOAD_PROGRESS:             
             newState.fileListModels = filesManager.updateFileDownloadingProgress(action.payload.fileId, action.payload.progress, action.payload.fileRef);

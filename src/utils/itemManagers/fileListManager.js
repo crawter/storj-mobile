@@ -1,6 +1,6 @@
 import ListItemModel from '../../models/ListItemModel';
 import FileListModel from '../../models/FileListModel';
-import { includes } from "../utils"
+import { includes } from "../utils";
 
 /**
  * Exposes methods to manage Files in reducer.
@@ -244,15 +244,16 @@ export default class FileListManager {
         let length = this.newFilesList.length;
 
         for(let i = 0; i < length; i++) {
-            if(this.newFilesList[i].getId() === fileId){
-                this.newFilesList[i].isLoading = false;
-                this.newFilesList[i].progress = 0;
-                this.newFilesList[i].entity.localPath = localPath;
-                this.newFilesList[i].entity.isDownloaded = !!localPath;
-                this.newFilesList[i].entity.thumbnail = thumbnail;
+            let temp = this.newFilesList[i];
+            if(temp.getId() === fileId) {
+                temp.isLoading = false;
+                temp.progress = 0;
+                temp.entity.localPath = localPath;
+                temp.entity.isDownloaded = !!localPath;
+                temp.entity.thumbnail = thumbnail;
             }  
 
-            resultArray.push(this.newFilesList[i]);
+            resultArray.push(temp);
         }
 
         return resultArray;

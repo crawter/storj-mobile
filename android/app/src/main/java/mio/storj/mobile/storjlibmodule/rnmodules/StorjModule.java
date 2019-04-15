@@ -82,10 +82,14 @@ public class StorjModule extends ReactContextBaseJavaModule {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent();
-                i.setClassName("io.storj.mobile", "io.storj.mobile.PaymentActivity");
-                StorjModule.this.getCurrentActivity().startActivity(i);
-                promise.resolve(true);
+                try {
+                    Intent i = new Intent();
+                    i.setClassName("io.storj.mobile", "io.storj.mobile.PaymentActivity");
+                    StorjModule.this.getCurrentActivity().startActivity(i);
+                    promise.resolve(true);
+                } catch (Exception ex) {
+                    promise.resolve(false);
+                }
             }
         }).run();
     }
@@ -134,6 +138,11 @@ public class StorjModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void cancelDownload(final double fileRef, final Promise promise) {
+        if (fileRef == 0) {
+            promise.resolve(false);
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,6 +153,11 @@ public class StorjModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void cancelUpload(final double fileRef, final Promise promise) {
+        if (fileRef == 0) {
+            promise.resolve(false);
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {

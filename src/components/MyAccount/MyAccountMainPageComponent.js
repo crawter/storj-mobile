@@ -24,9 +24,11 @@ export default (props) => {
         });
     };
 
-    let openPayments = () => {
-        console.log("asdfdf;aldjsfasdf");
-        StorjModule.openPayment();
+    let openPayments = async () => {
+        let success = await StorjModule.openPayment();
+        if (!success) {
+            props.screenProps.redirectToBalanceScreen();
+        }
     };
 
     return(
@@ -92,10 +94,10 @@ export default (props) => {
                             imageSource = { require('../../images/MyAccount/Help.png') }
                             onPress = { props.screenProps.redirectToHelpPage } />
                         <View style = { styles.underline } />
-                        <OptionsComponent 
+                        {/* <OptionsComponent 
                             title = { 'Show synchronization queue' }
                             imageSource = { require('../../images/MyAccount/Info.png') }
-                            onPress = { props.screenProps.showSyncWindow } />
+                            onPress = { props.screenProps.showSyncWindow } /> */}
                     </View>
                     <TouchableOpacity onPress = { logOut }>
                         <View style = { styles.logOutButton }>
