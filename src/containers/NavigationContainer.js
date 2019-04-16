@@ -170,14 +170,15 @@ class Apps extends Component {
 		this.props.updateFileDownloadProgress(null, params.fileId, params.progress, params.fileHandle);
 	}
 
-	onFileDownloadSuccess(params) {		
+	onFileDownloadSuccess(params) {
 		params = JSON.parse(params);
 		this.props.downloadFileSuccess(null, params.fileId, params.localPath, params.thumbnail);
 	}
 
-	onFileDownloadError(params) {		
+	onFileDownloadError(params) {
 		params = JSON.parse(params);		
 		this.props.downloadFileError(null, params.fileId);
+		this.props.addErrorNotification(params.message, this.props.deleteNotification);
 	}
 
 	onSyncStarted() {

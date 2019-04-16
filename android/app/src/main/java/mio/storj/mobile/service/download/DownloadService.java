@@ -21,6 +21,8 @@ public class DownloadService {
     private final StorjService mStorj;
     private final IEventEmitter mEventEmitter;
 
+    private double mLastProgress = 0;
+
     private final static String EVENT_FILE_DOWNLOAD_START = "EVENT_FILE_DOWNLOAD_START";
     private final static String EVENT_FILE_DOWNLOAD_PROGRESS = "EVENT_FILE_DOWNLOAD_PROGRESS";
     private final static String EVENT_FILE_DOWNLOAD_SUCCESS = "EVENT_FILE_DOWNLOAD_SUCCESS";
@@ -66,8 +68,11 @@ public class DownloadService {
                     }
                 }
 
-                mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_PROGRESS,
-                        new LoadFileModel(fileId, fileDbo.fileHandle, progress).toJson());
+                if(progress - mLastProgress > 0.05) {
+                    mLastProgress = progress;
+                    mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_PROGRESS,
+                            new LoadFileModel(fileId, fileDbo.fileHandle, progress).toJson());
+                }
             }
 
             @Override
@@ -88,6 +93,7 @@ public class DownloadService {
                             new LoadFileModel(fileId, localPath, fileDbo.thumbnail).toJson());
                 }
 
+                mLastProgress = 0;
                 downloadLatch.countDown();
             }
 
@@ -99,9 +105,10 @@ public class DownloadService {
 
                 Response updateFileResponse = mStore.files().update(fileDbo);
                 if(updateFileResponse.isSuccess()) {
-                    mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_ERROR, new LoadFileModel(fileId, localPath).toJson());
+                    mEventEmitter.sendEvent(EVENT_FILE_DOWNLOAD_ERROR, new LoadFileErrorModel(fileId, localPath, message).toJson());
                 }
 
+                mLastProgress = 0;
                 downloadLatch.countDown();
             }
         });
